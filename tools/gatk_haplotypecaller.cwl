@@ -1,12 +1,12 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_haplotypecaller
-baseCommand: [/usr/bin/java, -jar, /GenomeAnalysisTK.jar]
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
+baseCommand: [/usr/bin/java, -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false

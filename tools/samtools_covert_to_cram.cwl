@@ -10,8 +10,7 @@ baseCommand: [samtools, view]
 arguments:
   - position: 1
     shellQuote: false
-    valueFrom: >-
-      -C -T $(inputs.reference.path) -o $(inputs.input_bam.nameroot).cram
+    valueFrom: -C -T $(inputs.reference.path) -o $(inputs.input_bam.nameroot).cram
 inputs:
   reference:
     type: File
@@ -25,4 +24,4 @@ outputs:
   output:
     type: File
     outputBinding:
-      glob: '*cram'
+      glob: '*.cram'
