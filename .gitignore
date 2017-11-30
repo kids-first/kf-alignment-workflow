@@ -1,0 +1,4 @@
+.*
+test/
+local-test/
+!.gitignore
