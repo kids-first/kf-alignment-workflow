@@ -25,9 +25,7 @@ arguments:
 inputs:
   reference:
     type: File
-    secondaryFiles:
-      - ^.dict
-      - .fai
+    secondaryFiles: [^.dict, .fai]
   input_bam:
     type: File
   interval_list:
@@ -36,6 +34,6 @@ outputs:
   output:
     type: File
     outputBinding:
-      glob: '*vcf.gz'
+      glob: '*.vcf.gz'
     secondaryFiles:
       - .tbi
