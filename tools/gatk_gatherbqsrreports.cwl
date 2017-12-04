@@ -1,29 +1,29 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: gatk4_applybqsr
+id: gatk_gatherbqsrreports
 requirements:
-  - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
+  - class: ShellCommandRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.1'
-baseCommand: [/gatk-launch, --javaOptions, "-Xms3000m"]
+baseCommand: [/gatk-launch]
 arguments:
-  - position: 0
+  - position: 1
     shellQuote: false
     valueFrom: >-
+      --javaOptions "-Xms3000m"
       GatherBQSRReports
-      -O bqsr.combined.report
+      -O GatherBqsrReports.recal_data.csv
 inputs:
-  bqsr:
+  input_brsq_reports:
     type:
       type: array
       items: File
       inputBinding:
-        prefix: '-I'
-    inputBinding: 
-      position: 1
+        prefix: -I
+        separate: true
 outputs:
-  output_report:
+  - id: output
     type: File
     outputBinding:
-      glob: 'bqsr.combined.report'
+      glob: '*.csv'
