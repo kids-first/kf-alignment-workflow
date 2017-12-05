@@ -29,7 +29,7 @@ inputs:
     type: File
     secondaryFiles:
       - ^.bai
-  refernece:
+  reference:
     type: File
     secondaryFiles:
       - ^.dict
