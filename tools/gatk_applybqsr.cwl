@@ -6,7 +6,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.1'
-baseCommand: [/gatk-launch]
+baseCommand: [/gatk-launch, ApplyBQSR]
 arguments:
   - position: 1
     shellQuote: false
@@ -19,7 +19,6 @@ arguments:
       -Xloggc:gc_log.log
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10"
-      ApplyBQSR
       --createOutputBamMD5
       --addOutputSAMProgramRecord
       -R $(inputs.indexed_reference_fasta.path)
