@@ -6,7 +6,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.1'
-baseCommand: [/gatk-launch]
+baseCommand: [/gatk-launch, BaseRecalibrator]
 arguments:
   - position: 0
     shellQuote: false
@@ -19,7 +19,6 @@ arguments:
       -XX:+PrintGCDateStamps
       -XX:+PrintGCDetails
       -Xloggc:gc_log.log"
-      BaseRecalibrator
       -R $(inputs.reference.path)
       -I $(inputs.input_bam.path)
       --useOriginalQualities
