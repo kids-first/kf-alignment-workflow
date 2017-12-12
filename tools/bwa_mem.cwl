@@ -54,6 +54,6 @@ inputs:
     type: string
 outputs:
   output:
-    type: File[]
+    type: File
     outputBinding:
       glob: '*.bam'
