@@ -12,7 +12,7 @@ arguments:
     valueFrom: >-
       SortSam
       INPUT=$(inputs.input_bam.path)
-      OUTPUT=$(inputs.input_bam.nameroot).sorted.bam
+      OUTPUT=$(inputs.base_file_name).aligned.duplicates_marked.sorted.bam
       SORT_ORDER="coordinate"
       CREATE_INDEX=true
       CREATE_MD5_FILE=true
@@ -20,6 +20,7 @@ arguments:
 inputs:
   input_bam:
     type: File
+  base_file_name: string
 outputs:
   output_sorted_bam:
     type: File

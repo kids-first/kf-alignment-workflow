@@ -13,7 +13,7 @@ arguments:
     valueFrom: >-
       --javaOptions "-Xms3000m"
       -V $(inputs.input_vcf.path)
-      -R $(inputs.input_reference.path)
+      -R $(inputs.reference.path)
       -L $(inputs.wgs_calling_interval_list.path)
       -gvcf
       --validationTypeToExclude ALLELES

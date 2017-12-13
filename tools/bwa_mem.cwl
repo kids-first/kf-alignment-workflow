@@ -26,7 +26,7 @@ arguments:
       ATTRIBUTES_TO_REMOVE=MD
       ALIGNED_BAM=/dev/stdin
       UNMAPPED_BAM=$(inputs.input_bam.path)
-      OUTPUT=$(inputs.output_bam_basename).bam
+      OUTPUT=$(inputs.input_bam.nameroot).aligned.unsorted.bam
       REFERENCE_SEQUENCE=$(inputs.indexed_reference_fasta.path)
       PAIRED_RUN=true
       SORT_ORDER='unsorted'
@@ -50,10 +50,9 @@ inputs:
     type: File
     secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa,
     ^.dict, .amb, .ann, .bwt, .pac, .sa]
-  output_bam_basename:
-    type: string
 outputs:
   output:
     type: File
     outputBinding:
       glob: '*.bam'
+
