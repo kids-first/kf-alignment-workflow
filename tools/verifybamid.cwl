@@ -23,8 +23,7 @@ arguments:
 inputs:
   input_bam:
     type: File
-    secondaryFiles:
-      - ^.bai
+    secondaryFiles: [^.bai]
   ref_fasta:
     type: File
   contamination_sites_ud:
