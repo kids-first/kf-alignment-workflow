@@ -21,18 +21,19 @@ arguments:
       -XX:GCHeapFreeLimit=10"
       --createOutputBamMD5
       --addOutputSAMProgramRecord
-      -R $(inputs.indexed_reference_fasta.path)
+      -R $(inputs.reference.path)
       -I $(inputs.input_bam.path)
       --useOriginalQualities
       -O $(inputs.input_bam.nameroot).bqsr.bam
       -bqsr $(inputs.bqsr_report.path)
       -SQQ 10 -SQQ 20 -SQQ 30
 inputs:
-  indexed_reference_fasta:
+  reference:
     type: File
     secondaryFiles: [^.dict, .fai]
   input_bam:
     type: File
+    secondaryFiles: [^.bai]
   bqsr_report:
     type: File
   sequence_interval:
