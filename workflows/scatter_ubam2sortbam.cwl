@@ -19,13 +19,13 @@ outputs:
 
 steps:
   picard_revertsam:
-    run: ../picard_revertsam.cwl
+    run: ../tools/picard_revertsam.cwl
     in:
       input_bam: input_bam
     out: [output]
 
   bwa_mem:
-    run: ../bwa_mem.cwl
+    run: ../tools/bwa_mem.cwl
     in:
       indexed_reference_fasta: indexed_reference_fasta
       input_bam: picard_revertsam/output
@@ -33,14 +33,14 @@ steps:
     out: [output]
 
   picard_markduplicates:
-    run: ../picard_markduplicates.cwl
+    run: ../tools/picard_markduplicates.cwl
     in:
       base_file_name: base_file_name
       input_bams: bwa_mem/output
     out: [output_markduplicates_bam]
 
   picard_sortsam:
-    run: ../picard_sortsam.cwl
+    run: ../tools/picard_sortsam.cwl
     in:
       base_file_name: base_file_name
       input_bam: picard_markduplicates/output_markduplicates_bam
