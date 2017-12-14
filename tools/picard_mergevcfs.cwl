@@ -11,9 +11,9 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      OUTPUT=$(inputs.output_bam_basename).g.vcf.gz
+      OUTPUT=$(inputs.output_vcf_basename).g.vcf.gz
 inputs:
-  input_bam:
+  input_vcf:
     type:
       type: array
       items: File
@@ -22,7 +22,7 @@ inputs:
         separate: false
     secondaryFiles:
       - .tbi
-  output_bam_basename:
+  output_vcf_basename:
     type: string
 outputs:
   output1:

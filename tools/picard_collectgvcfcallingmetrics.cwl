@@ -20,12 +20,14 @@ arguments:
 inputs:
   input_vcf:
     type: File
+    secondaryFiles: [.tbi]
   reference_dict:
     type: File
   final_gvcf_base_name:
     type: string
   dbsnp_vcf:
     type: File
+    secondaryFiles: [.tbi]
   wgs_evaluation_interval_list:
     type: File
 outputs:

@@ -28,6 +28,7 @@ inputs:
     secondaryFiles: [^.dict, .fai]
   input_bam:
     type: File
+    secondaryFiles: [^.bai]
   interval_list:
     type: File
 outputs:

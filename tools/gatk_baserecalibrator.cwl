@@ -29,6 +29,7 @@ inputs:
     secondaryFiles: [^.dict, .fai]
   input_bam:
     type: File
+    secondaryFiles: [^.bai]
   knownsites:
     type:
       type: array
@@ -37,6 +38,7 @@ inputs:
         prefix: -knownSites
     inputBinding:
       position: 1
+    secondaryFiles: [.tbi]
   sequence_interval:
     type:
       type: array
