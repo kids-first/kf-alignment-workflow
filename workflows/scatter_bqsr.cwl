@@ -20,13 +20,13 @@ outputs:
 
 steps:
   createsequencegrouping:
-    run: expression_createsequencegrouping.cwl
+    run: ../tools/expression_createsequencegrouping.cwl
     in:
       sequence_grouping_tsv: sequence_grouping_tsv
     out: [sequence_grouping_array]
 
   gatkv4_baserecalibrator:
-    run: gatk_baserecalibrator.cwl
+    run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: input_bam
       knownsites: knownsites
