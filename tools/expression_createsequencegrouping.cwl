@@ -12,17 +12,21 @@ inputs:
 
 outputs:
   sequence_grouping_array:
-    type: Any
+    type:
+      type: array
+      items:
+        type: array
+        items: string
 
 expression:
   "${
       var lines = inputs.sequence_grouping_tsv.contents.split('\\n');
       var nline = lines.length;
       var eachgroup = [];
-      var grouparray = {};
+      var grouparray = [];
       for (var i = 0; i < nline; i++) {
         eachgroup.push(lines[i].split('\\t'));
         grouparray[i] = lines[i].split('\\t');
       }
-      return {'output': grouparray};
+      return {'sequence_grouping_array': grouparray};
   }"  

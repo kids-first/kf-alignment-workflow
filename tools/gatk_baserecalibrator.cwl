@@ -22,7 +22,7 @@ arguments:
       -R $(inputs.reference.path)
       -I $(inputs.input_bam.path)
       --useOriginalQualities
-      -O $(inputs.input_bam.nameroot).grp
+      -O $(inputs.input_bam.nameroot).recal_data.csv
 inputs:
   reference:
     type: File
@@ -42,7 +42,7 @@ inputs:
   sequence_interval:
     type:
       type: array
-      items: File
+      items: string
       inputBinding:
         prefix: -L
     inputBinding:
@@ -51,5 +51,5 @@ outputs:
   output:
     type: File
     outputBinding:
-      glob: '*.grp'
+      glob: '*.recal_data.csv'
 
