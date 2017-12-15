@@ -5,7 +5,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.8.3'
+    dockerPull: 'kfdrc/picard:2.15.0'
 baseCommand: [ java, '-Xms2000m', '-jar', /picard.jar, CollectRawWgsMetrics]
 arguments:
   - position: 1
