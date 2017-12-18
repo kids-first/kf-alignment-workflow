@@ -5,10 +5,7 @@ requirements:
   - class: ScatterFeatureRequirement
 
 inputs:
-  sequence_grouping_tsv:
-    type: File
-    inputBinding:
-      loadContents: true
+  sequence_grouping_tsv: File
   knownsites: File[]
   reference: File
   input_bam: File
