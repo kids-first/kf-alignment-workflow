@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: scatter_bqsr
+id: paired_single_sample_wf
 requirements:
   - class: ScatterFeatureRequirement
 
@@ -21,10 +21,13 @@ outputs:
   bqsr_report:
     type: File
     outputSource: gatk_gatherbqsrreports/output
+  final_bam:
+    type: File
+    outputSource: picard_gatherbamfiles/output
 
 steps:
   picard_revertsam:
-    run: ../tools/picard_revertsam.cwl
+    run: picard_revertsam.cwl
     in:
       input_bam: input_bam
     out: [output]
@@ -57,7 +60,7 @@ steps:
       sequence_grouping_tsv: sequence_grouping_tsv
     out: [sequence_grouping_array]
 
-  gatkv4_baserecalibrator:
+  gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: picard_sortsam/output_sorted_bam
@@ -70,5 +73,22 @@ steps:
   gatk_gatherbqsrreports:
     run: ../tools/gatk_gatherbqsrreports.cwl
     in:
-      input_brsq_reports: gatkv4_baserecalibrator/output
+      input_brsq_reports: gatk_baserecalibrator/output
+    out: [output]
+
+  gatk_applybqsr:
+    run: ../tools/gatk_applybqsr.cwl
+    in:
+      reference: indexed_reference_fasta
+      input_bam: picard_sortsam/output_sorted_bam
+      bqsr_report: gatk_gatherbqsrreports/output
+      sequence_interval: createsequencegrouping/sequence_grouping_array
+    scatter: [sequence_interval]
+    out: [recalibrated_bam]
+
+  picard_gatherbamfiles:
+    run: ../tools/picard_gatherbamfiles.cwl
+    in:
+      input_bam: gatk_applybqsr/recalibrated_bam
+      output_bam_basename: base_file_name
     out: [output]
