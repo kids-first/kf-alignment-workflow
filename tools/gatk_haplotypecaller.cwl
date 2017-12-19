@@ -11,11 +11,12 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      PrintReads
+      -T PrintReads
       -I $(inputs.input_bam.path)
+      -R $(inputs.reference.path)
       --interval_padding 500
       -L $(inputs.interval_list.path)
-      -O local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
+      -o local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
       -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
       -R $(inputs.reference.path)
@@ -42,5 +43,4 @@ outputs:
     type: File
     outputBinding:
       glob: '*.vcf.gz'
-    secondaryFiles:
-      - .tbi
+    secondaryFiles: [.tbi]
