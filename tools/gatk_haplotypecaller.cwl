@@ -6,15 +6,21 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
-baseCommand: [/usr/bin/java, -jar, /GenomeAnalysisTK.jar]
+baseCommand: [/usr/bin/java, -Xms2g, -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
+      PrintReads
+      -I $(inputs.input_bam.path)
+      --interval_padding 500
+      -L $(inputs.interval_list.path)
+      -O local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
+      -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
       -R $(inputs.reference.path)
       -o $(inputs.input_bam.nameroot).vcf.gz
-      -I $(inputs.input_bam.path)
+      -I local.sharded.bam
       -L $(inputs.interval_list.path)
       -ERC GVCF
       --max_alternate_alleles 3
