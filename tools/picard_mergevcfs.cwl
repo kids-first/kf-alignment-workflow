@@ -25,7 +25,7 @@ inputs:
   output_vcf_basename:
     type: string
 outputs:
-  output1:
+  output:
     type: File
     outputBinding:
       glob: '*.vcf.gz'

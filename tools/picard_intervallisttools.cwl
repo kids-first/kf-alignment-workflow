@@ -26,4 +26,4 @@ outputs:
   output:
     type: File[]
     outputBinding:
-      glob: '*.interval_list'
+      glob: 'temp*/*.interval_list'
