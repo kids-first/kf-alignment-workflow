@@ -10,7 +10,9 @@ baseCommand: [samtools, view]
 arguments:
   - position: 1
     shellQuote: false
-    valueFrom: -C -T $(inputs.reference.path) -o $(inputs.input_bam.nameroot).cram  $(inputs.input_bam.path) && samtools index $(inputs.input_bam.nameroot).cram
+    valueFrom: >-
+    -C -T $(inputs.reference.path) -o $(inputs.input_bam.nameroot).cram $(inputs.input_bam.path)
+    && samtools index $(inputs.input_bam.nameroot).cram
 inputs:
   reference:
     type: File
