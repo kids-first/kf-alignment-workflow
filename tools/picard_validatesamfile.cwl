@@ -22,7 +22,7 @@ inputs:
   input_bam:
     type: File
     secondaryFiles:
-      - ^.bai
+      - .crai
   reference:
     type: File
     secondaryFiles:
