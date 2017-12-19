@@ -22,15 +22,12 @@ inputs:
       inputBinding:
         prefix: INPUT=
         separate: false
-    secondaryFiles:
-      - .bai
+    secondaryFiles: [^.bai]
   output_bam_basename:
     type: string
 outputs:
-  output1:
+  output:
     type: File
     outputBinding:
       glob: '*.bam'
-    secondaryFiles:
-      - ^.bai
-      - .md5
+    secondaryFiles: [^.bai, .md5]

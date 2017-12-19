@@ -24,7 +24,7 @@ arguments:
       -R $(inputs.reference.path)
       -I $(inputs.input_bam.path)
       --useOriginalQualities
-      -O $(inputs.input_bam.nameroot).bqsr.bam
+      -O $(inputs.input_bam.nameroot).aligned.duplicates_marked.recalibrated.bam
       -bqsr $(inputs.bqsr_report.path)
       -SQQ 10 -SQQ 20 -SQQ 30
 inputs:
@@ -39,11 +39,11 @@ inputs:
   sequence_interval:
     type:
       type: array
-      items: File
+      items: string
       inputBinding:
         prefix: '-L'
     inputBinding: 
-      position: 1
+      position: 2
 outputs:
   recalibrated_bam:
     type: File
