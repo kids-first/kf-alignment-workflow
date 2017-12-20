@@ -28,9 +28,22 @@ outputs:
   picard_validate_sam_file:
     type: File
     outputSource: picard_validatesamfile/output
+  collect_readgroupbam_quality_metrics:
+    type: File[]
+    outputSource: picard_collectreadgroupbamqualitymetrics/output1
+  collect_readgroupbam_quality_pdf:
+    type: File[]
+    outputSource: picard_collectreadgroupbamqualitymetrics/output2
+
 steps:
   picard_collectaggregationmetrics:
     run: ../tools/picard_collectaggregationmetrics.cwl
+    in:
+      input_bam: gather_input_bam
+      reference: indexed_reference_fasta
+    out: [output1, output2]
+  picard_collectreadgroupbamqualitymetrics:
+    run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
     in:
       input_bam: gather_input_bam
       reference: indexed_reference_fasta

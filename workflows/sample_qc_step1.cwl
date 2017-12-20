@@ -36,20 +36,6 @@ outputs:
         type: array
         items: File
     outputSource: picard_collectunsortedreadgroupbamqualitymetrics/output2
-  collect_readgroupbam_quality_metrics:
-    type:
-      type: array
-      items:
-        type: array
-        items: File
-    outputSource: picard_collectreadgroupbamqualitymetrics/output1
-  collect_readgroupbam_quality_pdf:
-    type:
-      type: array
-      items:
-        type: array
-        items: File
-    outputSource: picard_collectreadgroupbamqualitymetrics/output2
 
 steps:
   picard_revertsam:
@@ -77,14 +63,6 @@ steps:
     run: ../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
     in:
       input_bam: bwa_mem/output
-    scatter: [input_bam]
-    out: [output1, output2]
-
-  picard_collectreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
-    in:
-      input_bam: bwa_mem/output
-      reference: indexed_reference_fasta
     scatter: [input_bam]
     out: [output1, output2]
   
