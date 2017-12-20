@@ -13,12 +13,12 @@ arguments:
     valueFrom: >-
       --Verbose
       --NumPC 4
-      --Output ${inputs.input_bam.nameroot}
-      --BamFile ${inputs.input_bam.path}
-      --Reference ${inputs.ref_fasta.path}
-      --UDPath ${inputs.contamination_sites_ud.path}
-      --MeanPath ${inputs.contamination_sites_mu.path}
-      --BedPath ${inputs.contamination_sites_bed.path}
+      --Output $(inputs.input_bam.nameroot)
+      --BamFile $(inputs.input_bam.path)
+      --Reference $(inputs.ref_fasta.path)
+      --UDPath $(inputs.contamination_sites_ud.path)
+      --MeanPath $(inputs.contamination_sites_mu.path)
+      --BedPath $(inputs.contamination_sites_bed.path)
       1>/dev/null
 inputs:
   input_bam:
@@ -26,6 +26,7 @@ inputs:
     secondaryFiles: [^.bai]
   ref_fasta:
     type: File
+    secondaryFiles: [.fai]
   contamination_sites_ud:
     type: File
   contamination_sites_mu:
