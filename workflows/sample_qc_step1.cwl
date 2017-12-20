@@ -36,6 +36,9 @@ outputs:
         type: array
         items: File
     outputSource: picard_collectunsortedreadgroupbamqualitymetrics/output2
+  verify_bam_id:
+    type: File
+    outputSource: verifybamid/output
 
 steps:
   picard_revertsam:
