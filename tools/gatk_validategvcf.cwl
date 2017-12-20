@@ -5,13 +5,13 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.beta.1'
-baseCommand: [/gatk-launch, ValidateVariants]
+    dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
+baseCommand: [/usr/bin/java, -Xms2g, -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms3000m"
+      -T ValidateVariants
       -V $(inputs.input_vcf.path)
       -R $(inputs.reference.path)
       -L $(inputs.wgs_calling_interval_list.path)
@@ -21,6 +21,7 @@ arguments:
 inputs:
   input_vcf:
     type: File
+    secondaryFiles: .tbi
   reference:
     type: File
     secondaryFiles: [^.dict, .fai]
@@ -28,4 +29,5 @@ inputs:
     type: File
   dbsnp_vcf:
     type: File
+    secondaryFiles: .tbi
 outputs: []
