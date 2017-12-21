@@ -15,6 +15,9 @@ inputs:
   sequence_grouping_tsv: File
   wgs_coverage_interval_list: File
   wgs_calling_interval_list: File
+  reference_dict: File
+  wgs_evaluation_interval_list: File
+  dbsnp_vcf: File
 
 outputs:
   duplicates_marked_bam:
@@ -73,6 +76,9 @@ outputs:
   collect_readgroupbam_quality_pdf:
     type: File[]
     outputSource: picard_collectreadgroupbamqualitymetrics/output2
+  picard_collect_gvcf_calling_metrics:
+    type: File[]
+    outputSource: picard_collectgvcfcallingmetrics/output
 
 steps:
   picard_revertsam:
@@ -116,6 +122,16 @@ steps:
       base_file_name: base_file_name
       input_bam: picard_markduplicates/output_markduplicates_bam
     out: [output_sorted_bam]
+
+  verifybamid:
+    run: ../tools/verifybamid.cwl
+    in:
+      input_bam: picard_sortsam/output_sorted_bam
+      ref_fasta: indexed_reference_fasta
+      contamination_sites_ud: contamination_sites_ud
+      contamination_sites_mu: contamination_sites_mu
+      contamination_sites_bed: contamination_sites_bed
+    out: [output]
 
   createsequencegrouping:
     run: ../tools/expression_createsequencegrouping.cwl
@@ -213,3 +229,21 @@ steps:
       output_vcf_basename: base_file_name
     out:
       [output]
+
+  picard_collectgvcfcallingmetrics:
+    run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    in:
+      input_vcf: picard_mergevcfs/output
+      reference_dict: reference_dict
+      final_gvcf_base_name: base_file_name
+      dbsnp_vcf: dbsnp_vcf
+      wgs_evaluation_interval_list: wgs_evaluation_interval_list
+    out: [output]
+  gatk_validategvcf:
+    run: ../tools/gatk_validategvcf.cwl
+    in:
+      input_vcf: picard_mergevcfs/output
+      reference: indexed_reference_fasta
+      wgs_calling_interval_list: wgs_calling_interval_list
+      dbsnp_vcf: dbsnp_vcf
+    out: []
