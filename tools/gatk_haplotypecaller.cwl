@@ -27,7 +27,7 @@ arguments:
       --max_alternate_alleles 3
       -variant_index_parameter 128000
       -variant_index_type LINEAR
-      -contamination 0
+      -contamination $(inputs.contamination)
       --read_filter OverclippedRead
 inputs:
   reference:
@@ -38,6 +38,8 @@ inputs:
     secondaryFiles: [^.bai]
   interval_list:
     type: File
+  contamination:
+    type: string
 outputs:
   output:
     type: File
