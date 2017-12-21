@@ -39,7 +39,7 @@ inputs:
   interval_list:
     type: File
   contamination:
-    type: string
+    type: float
 outputs:
   output:
     type: File
