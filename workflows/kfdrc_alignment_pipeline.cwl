@@ -225,6 +225,7 @@ steps:
       reference: indexed_reference_fasta
       input_bam: picard_gatherbamfiles/output
       interval_list: picard_intervallisttools/output
+      contamination: checkcontamination/contamination
     scatter: [interval_list]
     out: [output]
 
