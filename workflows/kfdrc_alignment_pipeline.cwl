@@ -38,7 +38,7 @@ outputs:
   cram:
     type: File
     outputSource: samtools_coverttocram/output
-  verify_bam_id:
+  verifybamid_output:
     type: File
     outputSource: verifybamid/output
   collect_quality_yield_metrics:
@@ -213,6 +213,12 @@ steps:
       interval_list: wgs_calling_interval_list
     out: [output]
 
+  checkcontamination:
+    run: ../tools/expression_checkcontamination.cwl
+    in: 
+      verifybamid_selfsm: verifybamid/output
+    out: [contamination]
+
   gatk_haplotypecaller:
     run: ../tools/gatk_haplotypecaller.cwl
     in:
@@ -239,6 +245,7 @@ steps:
       dbsnp_vcf: dbsnp_vcf
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
+
   gatk_validategvcf:
     run: ../tools/gatk_validategvcf.cwl
     in:
