@@ -27,7 +27,7 @@ inputs:
     type: string
   dbsnp_vcf:
     type: File
-    secondaryFiles: [.tbi]
+    secondaryFiles: [.idx]
   wgs_evaluation_interval_list:
     type: File
 outputs:

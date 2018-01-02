@@ -29,5 +29,5 @@ inputs:
     type: File
   dbsnp_vcf:
     type: File
-    secondaryFiles: .tbi
+    secondaryFiles: .idx
 outputs: []
