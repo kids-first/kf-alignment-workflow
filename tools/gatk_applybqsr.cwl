@@ -11,7 +11,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms3000m
+      --javaOptions "-Xms3G
       -XX:+PrintFlagsFinal
       -XX:+PrintGCTimeStamps
       -XX:+PrintGCDateStamps

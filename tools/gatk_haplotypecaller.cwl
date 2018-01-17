@@ -16,7 +16,7 @@ arguments:
       -R $(inputs.reference.path)
       --interval_padding 500
       -L $(inputs.interval_list.path)
-      -o local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
+      -o local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx8000m
       -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
       -R $(inputs.reference.path)
