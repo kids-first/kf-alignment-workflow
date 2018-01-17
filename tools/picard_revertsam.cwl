@@ -5,7 +5,7 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.8.3'
   - class: ShellCommandRequirement
-baseCommand: [java, '-Xmx8G', '-jar', /picard.jar]
+baseCommand: [java, -Xmx8G, -jar, /picard.jar]
 arguments:
   - position: 0
     shellQuote: false

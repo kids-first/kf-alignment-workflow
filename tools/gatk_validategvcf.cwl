@@ -6,7 +6,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
-baseCommand: [/usr/bin/java, -Xms2g, -jar, /GenomeAnalysisTK.jar]
+baseCommand: [/usr/bin/java, -Xms2G, -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false
