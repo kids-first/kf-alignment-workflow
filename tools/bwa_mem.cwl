@@ -6,7 +6,7 @@ requirements:
     dockerPull: 'kfdrc/bwa-picard:broad'
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
-baseCommand: [java, '-Xms5000m', '-jar', /picard.jar]
+baseCommand: [java, -Xms5G, -jar, /picard.jar]
 arguments:
   - position: 0
     shellQuote: false
@@ -17,7 +17,7 @@ arguments:
       INTERLEAVE=true
       NON_PF=true
       | bwa mem -K 100000000 -p -v 3 -t 16 -Y $(inputs.indexed_reference_fasta.path) -
-      | java -Dsamjdk.compression_level=2 -Xms4000m -jar /picard.jar
+      | java -Dsamjdk.compression_level=2 -Xms4G -jar /picard.jar
       MergeBamAlignment
       VALIDATION_STRINGENCY=SILENT
       EXPECTED_ORIENTATIONS=FR
