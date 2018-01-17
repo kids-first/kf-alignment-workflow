@@ -7,17 +7,26 @@ requirements:
 inputs:
   input_bam: File
   base_file_name: string
-  indexed_reference_fasta: File
+  indexed_reference_fasta:
+    type: File
+    secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa,
+    ^.dict, .amb, .ann, .bwt, .pac, .sa, .fai]
   contamination_sites_ud: File
   contamination_sites_mu: File
   contamination_sites_bed: File
-  knownsites: File[]
+  knownsites:
+    type:
+      type: array
+      items: File
+    secondaryFiles: [.tbi]
   sequence_grouping_tsv: File
   wgs_coverage_interval_list: File
   wgs_calling_interval_list: File
   reference_dict: File
   wgs_evaluation_interval_list: File
-  dbsnp_vcf: File
+  dbsnp_vcf:
+    type: File
+    secondaryFiles: [.idx]
 
 outputs:
   duplicates_marked_bam:
