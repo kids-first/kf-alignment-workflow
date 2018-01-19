@@ -6,12 +6,14 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.1'
+  - class: ResourceRequirement
+    ramMin: 8000
 baseCommand: [/gatk-launch, ApplyBQSR]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms3G
+      --javaOptions "-Xms3000m -Xmx8000m
       -XX:+PrintFlagsFinal
       -XX:+PrintGCTimeStamps
       -XX:+PrintGCDateStamps

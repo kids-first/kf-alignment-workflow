@@ -6,7 +6,9 @@ requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.8.3'
-baseCommand: [ java, -Xms2G, -jar, /picard.jar, CheckFingerprint]
+  - class: ResourceRequirement
+    ramMin: 8000
+baseCommand: [ java, -Xms2000m, -Xmx8000m, -jar, /picard.jar, CheckFingerprint]
 arguments:
   - position: 1
     shellQuote: false

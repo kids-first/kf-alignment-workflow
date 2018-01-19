@@ -6,7 +6,9 @@ requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.8.3'
-baseCommand: [ java, -Xms2G, -jar, /picard.jar, ValidateSamFile]
+  - class: ResourceRequirement
+    ramMin: 8000
+baseCommand: [ java, -Xms2000m, -Xmx8000m, -jar, /picard.jar, ValidateSamFile]
 arguments:
   - position: 1
     shellQuote: false
@@ -21,13 +23,10 @@ arguments:
 inputs:
   input_bam:
     type: File
-    secondaryFiles:
-      - .crai
+    secondaryFiles: [.crai]
   reference:
     type: File
-    secondaryFiles:
-      - ^.dict
-      - .fai
+    secondaryFiles: [^.dict, .fai]
 outputs:
   - id: output
     type: File
