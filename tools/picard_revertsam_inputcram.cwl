@@ -3,7 +3,7 @@ class: CommandLineTool
 id: picard_revertsam
 requirements:
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.8.3'
+    dockerPull: 'kfdrc/picard:2.17.4'
   - class: ShellCommandRequirement
 baseCommand: [java, -Xmx8000m, -jar, /picard.jar]
 arguments:
@@ -11,7 +11,8 @@ arguments:
     shellQuote: false
     valueFrom: >-
       RevertSam
-      INPUT=$(inputs.input_bam.path)
+      REFERENCE_SEQUENCE=$(inputs.reference.path)
+      INPUT=$(inputs.input_cram.path)
       OUTPUT=$(runtime.outdir)
       SANITIZE=true
       MAX_DISCARD_FRACTION=0.005
@@ -25,8 +26,11 @@ arguments:
       REMOVE_ALIGNMENT_INFORMATION=true
       OUTPUT_BY_READGROUP=true
 inputs:
-  input_bam:
+  input_cram:
     type: File
+  reference:
+    type: File
+    secondaryFiles: [.fai]
 outputs:
   output:
     type: File[]

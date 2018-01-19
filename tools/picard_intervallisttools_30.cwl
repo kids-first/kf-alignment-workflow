@@ -12,7 +12,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       IntervalListTools
-      SCATTER_COUNT=50
+      SCATTER_COUNT=30
       SUBDIVISION_MODE=BALANCING_WITHOUT_INTERVAL_SUBDIVISION_WITH_OVERFLOW
       UNIQUE=true
       SORT=true

@@ -18,7 +18,7 @@ arguments:
       FASTQ=/dev/stdout
       INTERLEAVE=true
       NON_PF=true
-      | bwa mem -K 100000000 -p -v 3 -t 16 -Y $(inputs.indexed_reference_fasta.path) -
+      | bwa mem -K 100000000 -p -v 3 -t 32 -Y $(inputs.indexed_reference_fasta.path) -
       | java -Dsamjdk.compression_level=2 -Xms4000m -jar /picard.jar
       MergeBamAlignment
       VALIDATION_STRINGENCY=SILENT
@@ -42,7 +42,7 @@ arguments:
       PROGRAM_RECORD_ID='bwamem'
       PROGRAM_GROUP_NAME='bwamem'
       PROGRAM_GROUP_VERSION='0.7.15-r1140'
-      PROGRAM_GROUP_COMMAND_LINE='bwa mem -K 100000000 -p -v 3 -t 16 -Y $(inputs.indexed_reference_fasta.basename)'
+      PROGRAM_GROUP_COMMAND_LINE='bwa mem -K 100000000 -p -v 3 -t 32 -Y $(inputs.indexed_reference_fasta.basename)'
       ALIGNER_PROPER_PAIR_FLAGS=true UNMAP_CONTAMINANT_READS=true
       UNMAPPED_READ_STRATEGY=COPY_TO_TAG
 inputs:

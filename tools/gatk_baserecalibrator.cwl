@@ -6,12 +6,14 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.1'
+  - class: ResourceRequirement
+    ramMin: 8000
 baseCommand: [/gatk-launch, BaseRecalibrator]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms4G
+      --javaOptions "-Xms4000m -Xmx8000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10
       -XX:+PrintFlagsFinal

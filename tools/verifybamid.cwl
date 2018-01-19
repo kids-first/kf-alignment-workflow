@@ -6,6 +6,8 @@ requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/verifybamid:1.0.1'
+  - class: ResourceRequirement
+    ramMin: 5000
 baseCommand: [VerifyBamID]
 arguments:
   - position: 1

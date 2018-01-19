@@ -6,7 +6,9 @@ requirements:
     dockerPull: 'kfdrc/picard:2.8.3'
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
-baseCommand: [java, -Dsamjdk.compression_level=2, -Xms4G, -jar, /picard.jar, MarkDuplicates]
+  - class: ResourceRequirement
+    ramMin: 8000
+baseCommand: [java, -Dsamjdk.compression_level=2, -Xms4000m, -Xmx8000m, -jar, /picard.jar, MarkDuplicates]
 arguments:
   - position: 1
     shellQuote: false

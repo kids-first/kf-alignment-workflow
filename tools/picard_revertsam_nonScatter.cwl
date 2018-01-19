@@ -29,6 +29,6 @@ inputs:
     type: File
 outputs:
   output:
-    type: File[]
+    type: File
     outputBinding:
       glob: '*.bam'

@@ -4,6 +4,8 @@ id: samtools_convert_to_cram
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'kfdrc/samtools:1.3.1'
 baseCommand: [samtools, view]
@@ -16,16 +18,13 @@ arguments:
 inputs:
   reference:
     type: File
-    secondaryFiles:
-      - .fai
+    secondaryFiles: [.fai]
   input_bam:
     type: File
-    secondaryFiles:
-      - ^.bai
+    secondaryFiles: [^.bai]
 outputs:
   output:
     type: File
     outputBinding:
       glob: '*.cram'
-    secondaryFiles:
-      - .crai
+    secondaryFiles: [.crai]

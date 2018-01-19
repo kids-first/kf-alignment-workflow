@@ -4,9 +4,11 @@ id: gatk_haplotypecaller
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
-baseCommand: [/usr/bin/java, -Xms2g, -jar, /GenomeAnalysisTK.jar]
+baseCommand: [/usr/bin/java, -Xms2000m, -Xmx8000m -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false
