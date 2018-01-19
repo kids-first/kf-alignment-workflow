@@ -19,7 +19,7 @@ arguments:
       INTERLEAVE=true
       NON_PF=true
       | bwa mem -K 100000000 -p -v 3 -t 16 -Y $(inputs.indexed_reference_fasta.path) -
-      | java -Dsamjdk.compression_level=2 -Xms4000m -jar /picard.jar
+      | java -Dsamjdk.compression_level=2 -Xms4G -jar /picard.jar
       MergeBamAlignment
       VALIDATION_STRINGENCY=SILENT
       EXPECTED_ORIENTATIONS=FR
