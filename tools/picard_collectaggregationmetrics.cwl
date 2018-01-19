@@ -42,4 +42,4 @@ outputs:
   output2:
     type: File[]
     outputBinding:
-      glob: '*_pdf'
+      glob: '*.pdf'
