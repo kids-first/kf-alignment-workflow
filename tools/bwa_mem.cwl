@@ -7,7 +7,8 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 5000
+    ramMin: 14000
+    coresMin: 16
 baseCommand: [java, -Xms5000m, -jar, /picard.jar]
 arguments:
   - position: 0
@@ -50,7 +51,7 @@ inputs:
     type: File
   indexed_reference_fasta:
     type: File
-    secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa,
+    secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa, .64.alt,
     ^.dict, .amb, .ann, .bwt, .pac, .sa]
 outputs:
   output:

@@ -5,10 +5,10 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 8000
+    ramMin: 3000
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.8.3'
-baseCommand: [java, -Xms2000m, -Xmx8000m, -jar, /picard.jar, CollectVariantCallingMetrics]
+baseCommand: [java, -Xms2000m, -jar, /picard.jar, CollectVariantCallingMetrics]
 arguments:
   - position: 1
     shellQuote: false

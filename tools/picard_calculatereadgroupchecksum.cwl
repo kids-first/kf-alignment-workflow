@@ -7,8 +7,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.8.3'
   - class: ResourceRequirement
-    ramMin: 8000
-baseCommand: [ java, -Xms2000m, -Xmx8000m, -jar, /picard.jar, CalculateReadGroupChecksum]
+    ramMin: 4000
+baseCommand: [ java, -Xms2000m, -jar, /picard.jar, CalculateReadGroupChecksum]
 arguments:
   - position: 1
     shellQuote: false
@@ -24,4 +24,4 @@ outputs:
   - id: output
     type: File
     outputBinding:
-      glob: '*_md5'
+      glob: '*.md5'

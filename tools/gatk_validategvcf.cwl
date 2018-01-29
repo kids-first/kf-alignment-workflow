@@ -7,8 +7,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
   - class: ResourceRequirement
-    ramMin: 8000
-baseCommand: [/usr/bin/java, -Xms2G, -jar, /GenomeAnalysisTK.jar]
+    ramMin: 4000
+baseCommand: [/usr/bin/java, -Xms2000m, -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false

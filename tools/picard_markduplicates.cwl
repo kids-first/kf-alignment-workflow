@@ -8,7 +8,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     ramMin: 8000
-baseCommand: [java, -Dsamjdk.compression_level=2, -Xms4000m, -Xmx8000m, -jar, /picard.jar, MarkDuplicates]
+baseCommand: [java, -Dsamjdk.compression_level=2, -Xms4000m, -jar, /picard.jar, MarkDuplicates]
 arguments:
   - position: 1
     shellQuote: false

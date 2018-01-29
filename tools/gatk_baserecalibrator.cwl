@@ -13,7 +13,7 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms4000m -Xmx8000m
+      --javaOptions "-Xms4000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10
       -XX:+PrintFlagsFinal
