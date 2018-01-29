@@ -7,7 +7,8 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 5000
+    ramMin: 14000
+    coresMin: 32
 baseCommand: [java, -Xms5000m, -jar, /picard.jar]
 arguments:
   - position: 0
@@ -43,14 +44,14 @@ arguments:
       PROGRAM_GROUP_NAME='bwamem'
       PROGRAM_GROUP_VERSION='0.7.15-r1140'
       PROGRAM_GROUP_COMMAND_LINE='bwa mem -K 100000000 -p -v 3 -t 32 -Y $(inputs.indexed_reference_fasta.basename)'
-      ALIGNER_PROPER_PAIR_FLAGS=true UNMAP_CONTAMINANT_READS=true
+      ALIGNER_PROPER_PAIR_FLAGS=true UNMAP_CONTAMINANT_READS=false
       UNMAPPED_READ_STRATEGY=COPY_TO_TAG
 inputs:
   input_bam:
     type: File
   indexed_reference_fasta:
     type: File
-    secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa,
+    secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa, .64.alt,
     ^.dict, .amb, .ann, .bwt, .pac, .sa]
 outputs:
   output:

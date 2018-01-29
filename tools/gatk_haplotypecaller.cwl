@@ -5,10 +5,10 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 8000
+    ramMin: 15000
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
-baseCommand: [/usr/bin/java, -Xms2000m, -Xmx8000m -jar, /GenomeAnalysisTK.jar]
+baseCommand: [/usr/bin/java, -Xms2000m, -jar, /GenomeAnalysisTK.jar]
 arguments:
   - position: 1
     shellQuote: false
@@ -18,7 +18,7 @@ arguments:
       -R $(inputs.reference.path)
       --interval_padding 500
       -L $(inputs.interval_list.path)
-      -o local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx8000m
+      -o local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
       -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
       -R $(inputs.reference.path)

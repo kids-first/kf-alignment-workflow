@@ -5,7 +5,7 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.17.4'
   - class: ShellCommandRequirement
-baseCommand: [java, -Xmx8000m, -jar, /picard.jar]
+baseCommand: [java, -Xms8000m, -jar, /picard.jar]
 arguments:
   - position: 0
     shellQuote: false
@@ -14,6 +14,8 @@ arguments:
       REFERENCE_SEQUENCE=$(inputs.reference.path)
       INPUT=$(inputs.input_cram.path)
       OUTPUT=$(runtime.outdir)
+      OUTPUT_BY_READGROUP=true
+      OUTPUT_BY_READGROUP_FILE_FORMAT=bam
       SANITIZE=true
       MAX_DISCARD_FRACTION=0.005
       ATTRIBUTE_TO_CLEAR=XT
@@ -24,7 +26,6 @@ arguments:
       RESTORE_ORIGINAL_QUALITIES=true
       REMOVE_DUPLICATE_INFORMATION=true
       REMOVE_ALIGNMENT_INFORMATION=true
-      OUTPUT_BY_READGROUP=true
 inputs:
   input_cram:
     type: File

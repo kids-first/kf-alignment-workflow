@@ -7,7 +7,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 8000
-baseCommand: [java, -Xmx4000m, -Xmx8000m, -jar, /picard.jar]
+baseCommand: [java, -Xms4000m, -jar, /picard.jar]
 arguments:
   - position: 0
     shellQuote: false

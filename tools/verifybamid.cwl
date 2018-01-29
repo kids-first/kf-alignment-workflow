@@ -8,6 +8,7 @@ requirements:
     dockerPull: 'kfdrc/verifybamid:1.0.1'
   - class: ResourceRequirement
     ramMin: 5000
+    coresMin: 4
 baseCommand: [VerifyBamID]
 arguments:
   - position: 1

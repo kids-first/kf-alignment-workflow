@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 8000
+    ramMin: 4000
   - class: DockerRequirement
     dockerPull: 'kfdrc/samtools:1.3.1'
 baseCommand: [samtools, view]

@@ -13,7 +13,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms3000m -Xmx8000m"
+      --javaOptions "-Xms3000m"
       -O GatherBqsrReports.recal_data.csv
 inputs:
   input_brsq_reports:

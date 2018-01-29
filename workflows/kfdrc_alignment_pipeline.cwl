@@ -1,12 +1,11 @@
 cwlVersion: v1.0
 class: Workflow
-id: scatter_haplotypecaller
+id: kfdrc_alignment_pipeline
 requirements:
   - class: ScatterFeatureRequirement
 
 inputs:
   input_bam: File
-  base_file_name: string
   indexed_reference_fasta: File
   contamination_sites_ud: File
   contamination_sites_mu: File
@@ -81,6 +80,12 @@ outputs:
     outputSource: picard_collectgvcfcallingmetrics/output
 
 steps:
+  getbasename:
+    run: ../tools/expression_getbasename.cwl
+    in:
+      input_file: input_bam
+    out: [file_basename]
+
   picard_revertsam:
     run: ../tools/picard_revertsam.cwl
     in:
@@ -112,14 +117,14 @@ steps:
   picard_markduplicates:
     run: ../tools/picard_markduplicates.cwl
     in:
-      base_file_name: base_file_name
+      base_file_name: getbasename/file_basename
       input_bams: bwa_mem/output
     out: [output_markduplicates_bam]
 
   picard_sortsam:
     run: ../tools/picard_sortsam.cwl
     in:
-      base_file_name: base_file_name
+      base_file_name: getbasename/file_basename
       input_bam: picard_markduplicates/output_markduplicates_bam
     out: [output_sorted_bam]
 
@@ -169,7 +174,7 @@ steps:
     run: ../tools/picard_gatherbamfiles.cwl
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
-      output_bam_basename: base_file_name
+      output_bam_basename: getbasename/file_basename
     out: [output]
 
   picard_collectaggregationmetrics:
@@ -233,7 +238,7 @@ steps:
     run: ../tools/picard_mergevcfs.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
-      output_vcf_basename: base_file_name
+      output_vcf_basename: getbasename/file_basename
     out:
       [output]
 
@@ -242,7 +247,7 @@ steps:
     in:
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict
-      final_gvcf_base_name: base_file_name
+      final_gvcf_base_name: getbasename/file_basename
       dbsnp_vcf: dbsnp_vcf
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]

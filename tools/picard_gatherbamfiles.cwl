@@ -8,12 +8,12 @@ requirements:
     dockerPull: 'kfdrc/picard:2.8.3'
   - class: ResourceRequirement
     ramMin: 8000
-baseCommand: [ java, -Xms2000m, -Xmx8000m, -jar, /picard.jar, GatherBamFiles]
+baseCommand: [ java, -Xms2000m, -jar, /picard.jar, GatherBamFiles]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      OUTPUT=$(inputs.output_bam_basename).bam
+      OUTPUT=$(inputs.output_bam_basename).kfdrc.bam
       CREATE_INDEX=true
       CREATE_MD5_FILE=true
 inputs:
