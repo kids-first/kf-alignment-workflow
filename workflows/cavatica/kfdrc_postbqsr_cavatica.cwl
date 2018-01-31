@@ -122,7 +122,7 @@ steps:
     out: [contamination]
 
   gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller.cwl
+    run: ../tools/gatk_haplotypecaller_35.cwl
     in:
       reference: indexed_reference_fasta
       input_bam: input_final_bam
