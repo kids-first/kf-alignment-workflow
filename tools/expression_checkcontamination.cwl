@@ -16,6 +16,10 @@ outputs:
 
 expression:
   "${
-      var contam = inputs.verifybamid_selfsm.contents.split('\\n')[2].split('\\t')[6];
-      return {contamination: contam/0.75};
+      var lines=inputs.verifybamid_selfsm.contents.split('\\n');
+      for (var i=1; i<lines.length; i++){
+        var fields=lines[i].split('\\t');
+        if (fields.length != 19) {continue;}
+        return {contamination: fields[6]/0.75};
+      }
   }"  
