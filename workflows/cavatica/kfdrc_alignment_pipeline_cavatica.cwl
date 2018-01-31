@@ -95,26 +95,26 @@ outputs:
 
 steps:
   getbasename:
-    run: ../tools/expression_getbasename.cwl
+    run: ../../tools/expression_getbasename.cwl
     in:
       input_file: input_bam
     out: [file_basename]
 
   picard_revertsam:
-    run: ../tools/picard_revertsam.cwl
+    run: ../../tools/picard_revertsam.cwl
     in:
       input_bam: input_bam
     out: [output]
 
   picard_collectqualityyieldmetrics:
-    run: ../tools/picard_collectqualityyieldmetrics.cwl
+    run: ../../tools/picard_collectqualityyieldmetrics.cwl
     in:
       input_bam: picard_revertsam/output
     scatter: [input_bam]
     out: [output]
 
   bwa_mem:
-    run: ../tools/bwa_mem.cwl
+    run: ../../tools/bwa_mem.cwl
     in:
       indexed_reference_fasta: indexed_reference_fasta
       input_bam: picard_revertsam/output
@@ -122,28 +122,28 @@ steps:
     out: [output]
 
   picard_collectunsortedreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
+    run: ../../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
     in:
       input_bam: bwa_mem/output
     scatter: [input_bam]
     out: [output1, output2]
 
   picard_markduplicates:
-    run: ../tools/picard_markduplicates.cwl
+    run: ../../tools/picard_markduplicates.cwl
     in:
       base_file_name: getbasename/file_basename
       input_bams: bwa_mem/output
     out: [output_markduplicates_bam]
 
   picard_sortsam:
-    run: ../tools/picard_sortsam.cwl
+    run: ../../tools/picard_sortsam.cwl
     in:
       base_file_name: getbasename/file_basename
       input_bam: picard_markduplicates/output_markduplicates_bam
     out: [output_sorted_bam]
 
   verifybamid:
-    run: ../tools/verifybamid.cwl
+    run: ../../tools/verifybamid.cwl
     in:
       input_bam: picard_sortsam/output_sorted_bam
       ref_fasta: indexed_reference_fasta
@@ -153,13 +153,13 @@ steps:
     out: [output]
 
   createsequencegrouping:
-    run: ../tools/expression_createsequencegrouping.cwl
+    run: ../../tools/expression_createsequencegrouping.cwl
     in:
       sequence_grouping_tsv: sequence_grouping_tsv
     out: [sequence_grouping_array]
 
   gatk_baserecalibrator:
-    run: ../tools/gatk_baserecalibrator.cwl
+    run: ../../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: picard_sortsam/output_sorted_bam
       knownsites: knownsites
@@ -169,13 +169,13 @@ steps:
     out: [output]
 
   gatk_gatherbqsrreports:
-    run: ../tools/gatk_gatherbqsrreports.cwl
+    run: ../../tools/gatk_gatherbqsrreports.cwl
     in:
       input_brsq_reports: gatk_baserecalibrator/output
     out: [output]
 
   gatk_applybqsr:
-    run: ../tools/gatk_applybqsr.cwl
+    run: ../../tools/gatk_applybqsr.cwl
     in:
       reference: indexed_reference_fasta
       input_bam: picard_sortsam/output_sorted_bam
@@ -185,28 +185,28 @@ steps:
     out: [recalibrated_bam]
 
   picard_gatherbamfiles:
-    run: ../tools/picard_gatherbamfiles.cwl
+    run: ../../tools/picard_gatherbamfiles.cwl
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
       output_bam_basename: getbasename/file_basename
     out: [output]
 
   picard_collectaggregationmetrics:
-    run: ../tools/picard_collectaggregationmetrics.cwl
+    run: ../../tools/picard_collectaggregationmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
     out: [output1, output2]
 
   picard_collectreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
+    run: ../../tools/picard_collectreadgroupbamqualitymetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
     out: [output1, output2]
 
   picard_collectwgsmetrics:
-    run: ../tools/picard_collectwgsmetrics.cwl
+    run: ../../tools/picard_collectwgsmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
@@ -214,32 +214,32 @@ steps:
     out: [output]
 
   picard_calculatereadgroupchecksum:
-    run: ../tools/picard_calculatereadgroupchecksum.cwl
+    run: ../../tools/picard_calculatereadgroupchecksum.cwl
     in:
       input_bam: picard_gatherbamfiles/output
     out: [output]
 
   samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+    run: ../../tools/samtools_covert_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
     out: [output]
 
   picard_intervallisttools:
-    run: ../tools/picard_intervallisttools.cwl
+    run: ../../tools/picard_intervallisttools.cwl
     in:
       interval_list: wgs_calling_interval_list
     out: [output]
 
   checkcontamination:
-    run: ../tools/expression_checkcontamination.cwl
+    run: ../../tools/expression_checkcontamination.cwl
     in: 
       verifybamid_selfsm: verifybamid/output
     out: [contamination]
 
   gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller_35.cwl
+    run: ../../tools/gatk_haplotypecaller_35.cwl
     in:
       reference: indexed_reference_fasta
       input_bam: picard_gatherbamfiles/output
@@ -249,7 +249,7 @@ steps:
     out: [output]
 
   picard_mergevcfs:
-    run: ../tools/picard_mergevcfs.cwl
+    run: ../../tools/picard_mergevcfs.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
       output_vcf_basename: getbasename/file_basename
@@ -257,7 +257,7 @@ steps:
       [output]
 
   picard_collectgvcfcallingmetrics:
-    run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    run: ../../tools/picard_collectgvcfcallingmetrics.cwl
     in:
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict
@@ -267,7 +267,7 @@ steps:
     out: [output]
 
   gatk_validategvcf:
-    run: ../tools/gatk_validategvcf.cwl
+    run: ../../tools/gatk_validategvcf.cwl
     in:
       input_vcf: picard_mergevcfs/output
       reference: indexed_reference_fasta
