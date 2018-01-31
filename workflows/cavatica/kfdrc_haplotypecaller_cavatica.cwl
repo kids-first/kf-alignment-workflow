@@ -47,27 +47,27 @@ outputs:
     outputSource: picard_collectgvcfcallingmetrics/output
 steps:
   getbasename:
-    run: ../tools/expression_getbasename.cwl
+    run: ../../tools/expression_getbasename.cwl
     in:
       input_file: picard_gatherbamfiles_output
     out: [file_basename]
 
   picard_collectaggregationmetrics:
-    run: ../tools/picard_collectaggregationmetrics.cwl
+    run: ../../tools/picard_collectaggregationmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles_output
       reference: indexed_reference_fasta
     out: [output1, output2]
 
   picard_collectreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
+    run: ../../tools/picard_collectreadgroupbamqualitymetrics.cwl
     in:
       input_bam: picard_gatherbamfiles_output
       reference: indexed_reference_fasta
     out: [output1, output2]
 
   picard_collectwgsmetrics:
-    run: ../tools/picard_collectwgsmetrics.cwl
+    run: ../../tools/picard_collectwgsmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles_output
       reference: indexed_reference_fasta
@@ -75,26 +75,26 @@ steps:
     out: [output]
 
   samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+    run: ../../tools/samtools_covert_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles_output
       reference: indexed_reference_fasta
     out: [output]
 
   picard_intervallisttools:
-    run: ../tools/picard_intervallisttools.cwl
+    run: ../../tools/picard_intervallisttools.cwl
     in:
       interval_list: wgs_calling_interval_list
     out: [output]
 
   checkcontamination:
-    run: ../tools/expression_checkcontamination_2.cwl
+    run: ../../tools/expression_checkcontamination_2.cwl
     in: 
       verifybamid_selfsm: verifybamid_selfsm
     out: [contamination]
 
   gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller_35.cwl
+    run: ../../tools/gatk_haplotypecaller_35.cwl
     in:
       reference: indexed_reference_fasta
       input_bam: picard_gatherbamfiles_output
@@ -104,7 +104,7 @@ steps:
     out: [output]
 
   picard_mergevcfs:
-    run: ../tools/picard_mergevcfs.cwl
+    run: ../../tools/picard_mergevcfs.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
       output_vcf_basename: getbasename/file_basename
@@ -112,7 +112,7 @@ steps:
       [output]
 
   picard_collectgvcfcallingmetrics:
-    run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    run: ../../tools/picard_collectgvcfcallingmetrics.cwl
     in:
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict
@@ -122,7 +122,7 @@ steps:
     out: [output]
 
   gatk_validategvcf:
-    run: ../tools/gatk_validategvcf.cwl
+    run: ../../tools/gatk_validategvcf.cwl
     in:
       input_vcf: picard_mergevcfs/output
       reference: indexed_reference_fasta
