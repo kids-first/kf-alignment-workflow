@@ -6,6 +6,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 3000
+    coresMin: 16
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.8.3'
 baseCommand: [java, -Xms2000m, -jar, /picard.jar, CollectVariantCallingMetrics]
@@ -19,6 +20,7 @@ arguments:
       SEQUENCE_DICTIONARY=$(inputs.reference_dict.path)
       TARGET_INTERVALS=$(inputs.wgs_evaluation_interval_list.path)
       GVCF_INPUT=true
+      THREAD_COUNT=16
 inputs:
   input_vcf:
     type: File
