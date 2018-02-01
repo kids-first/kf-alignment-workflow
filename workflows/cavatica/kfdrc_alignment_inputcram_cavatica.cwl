@@ -272,6 +272,7 @@ steps:
     in:
       input_vcf: picard_mergevcfs/output
       reference: indexed_reference_fasta
-      wgs_calling_interval_list: wgs_calling_interval_list
+      wgs_calling_interval_list: picard_intervallisttools/output
       dbsnp_vcf: dbsnp_vcf
+    scatter: [wgs_calling_interval_list]
     out: []
