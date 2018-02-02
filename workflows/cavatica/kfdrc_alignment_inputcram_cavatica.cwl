@@ -234,7 +234,7 @@ steps:
     out: [output]
 
   checkcontamination:
-    run: ../../tools/expression_checkcontamination_2.cwl
+    run: ../../tools/expression_checkcontamination.cwl
     in: 
       verifybamid_selfsm: verifybamid/output
     out: [contamination]
