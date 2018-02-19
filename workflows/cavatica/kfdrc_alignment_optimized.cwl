@@ -474,7 +474,7 @@ steps:
         source:
           - input_bam
       - id: threads
-        default: 29
+        default: 33
     out:
       - id: bam_files
     run: ../../tools/samtools_split.cwl
@@ -487,7 +487,7 @@ steps:
         source:
           - bwa_mem/output
       - id: num_of_threads
-        default: 31
+        default: 36
       - id: base_file_name
         source:
           - getbasename/file_basename
@@ -505,7 +505,7 @@ steps:
         source:
           - sambamba_sort/indexed_bam
       - id: num_of_threads
-        default: 31
+        default: 36
     out:
       - id: indexed_bam
     run: ../../tools/sambamba_index.cwl
@@ -518,7 +518,7 @@ steps:
         source:
           - sambamba_merge/merged_bam
       - id: num_of_threads
-        default: 31
+        default: 36
       - id: base_file_name
         source:
           - getbasename/file_basename
