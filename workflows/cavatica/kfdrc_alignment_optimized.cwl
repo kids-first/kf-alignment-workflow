@@ -41,8 +41,8 @@ inputs:
       - .fai
   - id: input_bam
     type: File
-    'sbg:x': 0
-    'sbg:y': 878.09375
+    'sbg:x': -4.562143325805664
+    'sbg:y': 884.7412719726562
   - id: knownsites
     type: 'File[]'
     'sbg:x': 0
@@ -183,6 +183,8 @@ steps:
       - id: input_bam
         source:
           - samtools_split/bam_files
+      - id: threads
+        default: 18
     out:
       - id: output
       - id: rg
@@ -472,9 +474,9 @@ steps:
     in:
       - id: input_bam
         source:
-          - input_bam
+          - samtools_cram2bam/bam_file
       - id: threads
-        default: 33
+        default: 34
     out:
       - id: bam_files
     run: ../../tools/samtools_split.cwl
@@ -544,6 +546,22 @@ steps:
     label: picard-gatherbamfiles
     'sbg:x': 1573.0633544921875
     'sbg:y': -268.5864562988281
+  - id: samtools_cram2bam
+    in:
+      - id: input_reads
+        source:
+          - input_bam
+      - id: threads
+        default: 34
+      - id: reference
+        source:
+          - indexed_reference_fasta
+    out:
+      - id: bam_file
+    run: ../../tools/samtools_cram2bam.cwl
+    label: Samtools Cram2Bam
+    'sbg:x': 145.66845703125
+    'sbg:y': 390.7940673828125
 hints:
   - class: 'sbg:AWSInstanceType'
     value: c4.8xlarge;ebs-gp2;1024
