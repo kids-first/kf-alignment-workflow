@@ -42,12 +42,9 @@ inputs:
       position: 1
     secondaryFiles: [.tbi]
   sequence_interval:
-    type:
-      type: array
-      items: string
-      inputBinding:
-        prefix: -L
+    type: File
     inputBinding:
+      prefix: -L
       position: 2
 outputs:
   output:
