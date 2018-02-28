@@ -28,14 +28,16 @@ arguments:
                   tsv_string += "\n" + sequence_tuple[0] + hg38_protection_tag
               else:
                   i += 1
-                  tsv_file_name = "sequence_grouping_" + str(i) + ".intervals"
+                  pad = "{:0>2d}".format(i)
+                  tsv_file_name = "sequence_grouping_" + pad + ".intervals"
                   with open(tsv_file_name, "w") as tsv_file:
                       tsv_file.write(tsv_string)
                       tsv_file.close()
                   tsv_string = sequence_tuple[0] + hg38_protection_tag
                   temp_size = sequence_tuple[1]
           i += 1
-          tsv_file_name = "sequence_grouping_" + str(i) + ".intervals"
+          pad = "{:0>2d}".format(i)
+          tsv_file_name = "sequence_grouping_" + pad + ".intervals"
           with open(tsv_file_name, "w") as tsv_file:
               tsv_file.write(tsv_string)
               tsv_file.close()
