@@ -189,7 +189,7 @@ steps:
     out:
       - id: output
       - id: rg
-    run: ../../tools/bwa_mem_samblaster_sambamba.cwl
+    run: ../tools/bwa_mem_samblaster_sambamba.cwl
     label: bwa-mem
     scatter:
       - input_bam
@@ -202,7 +202,7 @@ steps:
           - samtools_split/bam_files
     out:
       - id: threads
-    run: ../../tools/get_bwa_threads.cwl
+    run: ../tools/get_bwa_threads.cwl
     label: get_bwa_threads
     'sbg:x': 386.3835754394531
     'sbg:y': 829.1324462890625
@@ -213,7 +213,7 @@ steps:
           - verifybamid/output
     out:
       - id: contamination
-    run: ../../tools/expression_checkcontamination.cwl
+    run: ../tools/expression_checkcontamination.cwl
     label: checkcontamination
     'sbg:x': 1660.0421142578125
     'sbg:y': 806.375
@@ -224,7 +224,7 @@ steps:
           - sequence_grouping_tsv
     out:
       - id: sequence_grouping_array
-    run: ../../tools/expression_createsequencegrouping.cwl
+    run: ../tools/expression_createsequencegrouping.cwl
     label: createsequencegrouping
     'sbg:x': 275.37452031301615
     'sbg:y': 723.2173109390484
@@ -244,7 +244,7 @@ steps:
           - createsequencegrouping/sequence_grouping_array
     out:
       - id: recalibrated_bam
-    run: ../../tools/gatk_applybqsr.cwl
+    run: ../tools/gatk_applybqsr.cwl
     label: gatk-applybqsr
     scatter:
       - sequence_interval
@@ -266,7 +266,7 @@ steps:
           - createsequencegrouping/sequence_grouping_array
     out:
       - id: output
-    run: ../../tools/gatk_baserecalibrator.cwl
+    run: ../tools/gatk_baserecalibrator.cwl
     label: gatk-baserecalibrator
     scatter:
       - sequence_interval
@@ -279,7 +279,7 @@ steps:
           - gatk_baserecalibrator/output
     out:
       - id: output
-    run: ../../tools/gatk_gatherbqsrreports.cwl
+    run: ../tools/gatk_gatherbqsrreports.cwl
     label: gatk-gatherbqsrreports
     'sbg:x': 1458.8999145978576
     'sbg:y': 366.1342441593146
@@ -299,7 +299,7 @@ steps:
           - indexed_reference_fasta
     out:
       - id: output
-    run: ../../tools/gatk_haplotypecaller_35.cwl
+    run: ../tools/gatk_haplotypecaller_35.cwl
     label: gatk-haplotypecaller
     scatter:
       - interval_list
@@ -312,7 +312,7 @@ steps:
           - input_bam
     out:
       - id: file_basename
-    run: ../../tools/expression_getbasename.cwl
+    run: ../tools/expression_getbasename.cwl
     label: getbasename
     'sbg:x': 273.59375
     'sbg:y': 611.0625
@@ -323,7 +323,7 @@ steps:
           - picard_gatherbamfiles/output
     out:
       - id: output
-    run: ../../tools/picard_calculatereadgroupchecksum.cwl
+    run: ../tools/picard_calculatereadgroupchecksum.cwl
     label: picard-calculatereadgroupchecksum
     'sbg:x': 1967.8353271484375
     'sbg:y': 597.0625
@@ -334,7 +334,7 @@ steps:
           - picard_gatherbamfiles/output
     out:
       - id: output
-    run: ../../tools/picard_calculatereadgroupchecksum.cwl
+    run: ../tools/picard_calculatereadgroupchecksum.cwl
     label: picard-collectaggregationmetrics
     'sbg:x': 1967.8353271484375
     'sbg:y': 376.4375
@@ -357,7 +357,7 @@ steps:
           - wgs_evaluation_interval_list
     out:
       - id: output
-    run: ../../tools/picard_collectgvcfcallingmetrics.cwl
+    run: ../tools/picard_collectgvcfcallingmetrics.cwl
     label: picard-collectgvcfcallingmetrics
     'sbg:x': 1466.3223876953125
     'sbg:y': 556.148193359375
@@ -368,7 +368,7 @@ steps:
           - samtools_split/bam_files
     out:
       - id: output
-    run: ../../tools/picard_collectqualityyieldmetrics.cwl
+    run: ../tools/picard_collectqualityyieldmetrics.cwl
     label: picard-collectqualityyieldmetrics
     scatter:
       - input_bam
@@ -385,7 +385,7 @@ steps:
     out:
       - id: output1
       - id: output2
-    run: ../../tools/picard_collectreadgroupbamqualitymetrics.cwl
+    run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
     label: picard-collectreadgroupbamqualitymetrics
     'sbg:x': 1967.8353271484375
     'sbg:y': 255.625
@@ -397,7 +397,7 @@ steps:
     out:
       - id: output1
       - id: output2
-    run: ../../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
+    run: ../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
     label: picard-collectunsortedreadgroupbamqualitymetrics
     scatter:
       - input_bam
@@ -416,7 +416,7 @@ steps:
           - indexed_reference_fasta
     out:
       - id: output
-    run: ../../tools/picard_collectwgsmetrics.cwl
+    run: ../tools/picard_collectwgsmetrics.cwl
     label: picard-collectwgsmetrics
     'sbg:x': 1967.8353271484375
     'sbg:y': 127.8125
@@ -427,7 +427,7 @@ steps:
           - wgs_calling_interval_list
     out:
       - id: output
-    run: ../../tools/picard_intervallisttools.cwl
+    run: ../tools/picard_intervallisttools.cwl
     label: picard-intervallisttools
     'sbg:x': 268.2514390609516
     'sbg:y': 484.66152655682265
@@ -441,7 +441,7 @@ steps:
           - getbasename/file_basename
     out:
       - id: output
-    run: ../../tools/picard_mergevcfs.cwl
+    run: ../tools/picard_mergevcfs.cwl
     label: picard-mergevcfs
     'sbg:x': 2300.08544921875
     'sbg:y': 176.8125
@@ -455,7 +455,7 @@ steps:
           - indexed_reference_fasta
     out:
       - id: output
-    run: ../../tools/samtools_covert_to_cram.cwl
+    run: ../tools/samtools_covert_to_cram.cwl
     label: samtools-coverttocram
     'sbg:x': 1967.8353271484375
     'sbg:y': 0
@@ -478,7 +478,7 @@ steps:
           - indexed_reference_fasta
     out:
       - id: output
-    run: ../../tools/verifybamid.cwl
+    run: ../tools/verifybamid.cwl
     label: verifybamid
     'sbg:x': 1228.4080724558287
     'sbg:y': 228.86266323391195
@@ -491,7 +491,7 @@ steps:
         default: 36
     out:
       - id: bam_files
-    run: ../../tools/samtools_split.cwl
+    run: ../tools/samtools_split.cwl
     label: Samtools split
     'sbg:x': 265.33909501488614
     'sbg:y': 365.3142842238705
@@ -509,7 +509,7 @@ steps:
         default: aligned.duplicates_marked.sorted.bam
     out:
       - id: merged_bam
-    run: ../../tools/sambamba_merge.cwl
+    run: ../tools/sambamba_merge.cwl
     label: Sambamba Merge
     'sbg:x': 659.7952743985788
     'sbg:y': 331.5312208260948
@@ -522,7 +522,7 @@ steps:
         default: 36
     out:
       - id: indexed_bam
-    run: ../../tools/sambamba_index.cwl
+    run: ../tools/sambamba_index.cwl
     label: Sambamba Index
     'sbg:x': 1006.7514476552177
     'sbg:y': 77.86111931975942
@@ -540,7 +540,7 @@ steps:
         default: aligned.duplicates_marked.sorted.bam
     out:
       - id: indexed_bam
-    run: ../../tools/sambamba_sort.cwl
+    run: ../tools/sambamba_sort.cwl
     label: Sambamba Sort
     'sbg:x': 831.9805831013398
     'sbg:y': 194.03217930237457
@@ -554,7 +554,7 @@ steps:
           - getbasename/file_basename
     out:
       - id: output
-    run: ../../tools/picard_gatherbamfiles.cwl
+    run: ../tools/picard_gatherbamfiles.cwl
     label: picard-gatherbamfiles
     'sbg:x': 1573.0633544921875
     'sbg:y': -268.5864562988281
@@ -570,7 +570,7 @@ steps:
           - indexed_reference_fasta
     out:
       - id: bam_file
-    run: ../../tools/samtools_cram2bam.cwl
+    run: ../tools/samtools_cram2bam.cwl
     label: Samtools Cram2Bam
     'sbg:x': 145.66845703125
     'sbg:y': 390.7940673828125
