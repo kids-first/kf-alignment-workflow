@@ -12,6 +12,5 @@ label: get_bwa_threads
 requirements:
   - class: InlineJavascriptRequirement
 expression: >-
-  ${if (inputs.input_files.length == 1) {thr = 36} else if
-  (inputs.input_files.length == 2) {thr = 18} else {thr = 9}; return
+  ${if (inputs.input_files.length == 1) {thr = 36} else {thr = 18}; return
   {'threads':thr};}
