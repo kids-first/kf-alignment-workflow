@@ -576,7 +576,7 @@ steps:
     'sbg:y': 390.7940673828125
 hints:
   - class: 'sbg:AWSInstanceType'
-    value: c4.8xlarge;ebs-gp2;1024
+    value: c5.9xlarge;ebs-gp2;768
   - class: 'sbg:maxNumberOfParallelInstances'
     value: 4
 requirements:
