@@ -184,7 +184,8 @@ steps:
         source:
           - samtools_split/bam_files
       - id: threads
-        default: 18
+        source:
+          - get_bwa_threads/threads
     out:
       - id: output
       - id: rg
@@ -194,6 +195,17 @@ steps:
       - input_bam
     'sbg:x': 499.08453369140625
     'sbg:y': 545.1781600291748
+  - id: get_bwa_threads
+    in:
+      - id: input_files
+        source:
+          - samtools_split/bam_files
+    out:
+      - id: threads
+    run: ../../tools/get_bwa_threads.cwl
+    label: get_bwa_threads
+    'sbg:x': 386.3835754394531
+    'sbg:y': 829.1324462890625
   - id: checkcontamination
     in:
       - id: verifybamid_selfsm
