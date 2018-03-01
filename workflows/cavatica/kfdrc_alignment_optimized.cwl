@@ -488,7 +488,7 @@ steps:
         source:
           - samtools_cram2bam/bam_file
       - id: threads
-        default: 34
+        default: 36
     out:
       - id: bam_files
     run: ../../tools/samtools_split.cwl
@@ -564,7 +564,7 @@ steps:
         source:
           - input_bam
       - id: threads
-        default: 34
+        default: 36
       - id: reference
         source:
           - indexed_reference_fasta
