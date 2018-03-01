@@ -53,10 +53,6 @@ inputs:
     type: File
     'sbg:x': 0
     'sbg:y': 664.46875
-  - id: sequence_grouping_tsv
-    type: File
-    'sbg:x': 0
-    'sbg:y': 557.65625
   - id: wgs_calling_interval_list
     type: File
     'sbg:x': 0
@@ -82,18 +78,6 @@ outputs:
     type: File
     'sbg:x': 2300.08544921875
     'sbg:y': 931.5
-  - id: collect_collect_aggregation_metrics
-    outputSource:
-      - picard_collectaggregationmetrics/output1
-    type: 'File[]'
-    'sbg:x': 2300.08544921875
-    'sbg:y': 824.6875
-  - id: collect_collect_aggregation_pdf
-    outputSource:
-      - picard_collectaggregationmetrics/output2
-    type: 'File[]'
-    'sbg:x': 2300.08544921875
-    'sbg:y': 717.875
   - id: collect_quality_yield_metrics
     outputSource:
       - picard_collectqualityyieldmetrics/output
@@ -217,17 +201,6 @@ steps:
     label: checkcontamination
     'sbg:x': 1660.0421142578125
     'sbg:y': 806.375
-  - id: createsequencegrouping
-    in:
-      - id: sequence_grouping_tsv
-        source:
-          - sequence_grouping_tsv
-    out:
-      - id: sequence_grouping_array
-    run: ../tools/expression_createsequencegrouping.cwl
-    label: createsequencegrouping
-    'sbg:x': 275.37452031301615
-    'sbg:y': 723.2173109390484
   - id: gatk_applybqsr
     in:
       - id: bqsr_report
@@ -241,7 +214,7 @@ steps:
           - indexed_reference_fasta
       - id: sequence_interval
         source:
-          - createsequencegrouping/sequence_grouping_array
+          - python_createsequencegroups/out_intervals
     out:
       - id: recalibrated_bam
     run: ../tools/gatk_applybqsr.cwl
@@ -263,7 +236,7 @@ steps:
           - indexed_reference_fasta
       - id: sequence_interval
         source:
-          - createsequencegrouping/sequence_grouping_array
+          - python_createsequencegroups/out_intervals
     out:
       - id: output
     run: ../tools/gatk_baserecalibrator.cwl
@@ -574,6 +547,17 @@ steps:
     label: Samtools Cram2Bam
     'sbg:x': 145.66845703125
     'sbg:y': 390.7940673828125
+  - id: python_createsequencegroups
+    in:
+      - id: ref_dict
+        source:
+          - reference_dict
+    out:
+      - id: out_intervals
+    run: >-
+      /Users/bgavrilovic/Documents/kf-alignment-optimization/kf-alignment-workflow/tools/python_createsequencegroups.cwl
+    'sbg:x': 392.7905578613281
+    'sbg:y': 1064.882568359375
 hints:
   - class: 'sbg:AWSInstanceType'
     value: c5.9xlarge;ebs-gp2;768

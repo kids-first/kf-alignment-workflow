@@ -25,6 +25,7 @@ arguments:
       -I $(inputs.input_bam.path)
       --useOriginalQualities
       -O $(inputs.input_bam.nameroot).recal_data.csv
+      -L $(inputs.sequence_interval.path)
 inputs:
   reference:
     type: File
@@ -42,16 +43,9 @@ inputs:
       position: 1
     secondaryFiles: [.tbi]
   sequence_interval:
-    type:
-      type: array
-      items: string
-      inputBinding:
-        prefix: -L
-    inputBinding:
-      position: 2
+    type: File
 outputs:
   output:
     type: File
     outputBinding:
       glob: '*.recal_data.csv'
-
