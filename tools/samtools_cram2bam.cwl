@@ -1,6 +1,6 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang/kf-alignment-wf-optimization/samtools-cram2bam/3
+id: bogdang_kf_alignment_wf_optimization_samtools_cram2bam_3
 baseCommand: []
 inputs:
   - format: BAM
@@ -44,7 +44,7 @@ arguments:
     valueFrom: |-
       ${
           if (inputs.input_reads.nameext == '.cram')
-           return "/opt/samtools-1.7/samtools view -b "
+           return "/opt/samtools-1.5/samtools view -b "
           else return "echo"
       }
 requirements:
