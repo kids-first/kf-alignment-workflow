@@ -11,7 +11,6 @@ inputs:
   contamination_sites_mu: File
   contamination_sites_bed: File
   knownsites: File[]
-  sequence_grouping_tsv: File
   wgs_coverage_interval_list: File
   wgs_calling_interval_list: File
   reference_dict: File
@@ -139,10 +138,10 @@ steps:
     out: [output]
 
   createsequencegrouping:
-    run: ../tools/expression_createsequencegrouping.cwl
+    run: ../tools/python_createsequencegroups.cwl
     in:
-      sequence_grouping_tsv: sequence_grouping_tsv
-    out: [sequence_grouping_array]
+      ref_dict: reference_dict
+    out: [out_intervals]
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
@@ -150,7 +149,7 @@ steps:
       input_bam: picard_sortsam/output_sorted_bam
       knownsites: knownsites
       reference: indexed_reference_fasta
-      sequence_interval: createsequencegrouping/sequence_grouping_array
+      sequence_interval: createsequencegrouping/out_intervals
     scatter: [sequence_interval]
     out: [output]
 
@@ -166,7 +165,7 @@ steps:
       reference: indexed_reference_fasta
       input_bam: picard_sortsam/output_sorted_bam
       bqsr_report: gatk_gatherbqsrreports/output
-      sequence_interval: createsequencegrouping/sequence_grouping_array
+      sequence_interval: createsequencegrouping/out_intervals
     scatter: [sequence_interval]
     out: [recalibrated_bam]
 
