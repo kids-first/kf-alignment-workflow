@@ -37,7 +37,6 @@ outputs:
 label: bwa-mem
 arguments:
   - position: 0
-    prefix: ''
     shellQuote: false
     valueFrom: |-
       ${ 

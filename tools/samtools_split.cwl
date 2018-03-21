@@ -27,7 +27,6 @@ outputs:
 label: Samtools split
 arguments:
   - position: 0
-    prefix: ''
     shellQuote: false
     valueFrom: /opt/samtools-1.7/samtools split -f '%!.bam'
 requirements:

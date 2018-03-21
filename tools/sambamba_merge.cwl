@@ -56,7 +56,6 @@ doc: >-
 label: Sambamba Merge
 arguments:
   - position: 0
-    prefix: ''
     separate: false
     shellQuote: false
     valueFrom: |-
@@ -136,7 +135,6 @@ arguments:
           return comm
       }
   - position: 6
-    prefix: ''
     shellQuote: false
     valueFrom: |-
       ${

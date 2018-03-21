@@ -49,7 +49,6 @@ outputs:
 label: Sambamba Sort
 arguments:
   - position: 0
-    prefix: ''
     shellQuote: false
     valueFrom: '-o $(inputs.base_file_name).$(inputs.suffix)'
 requirements:

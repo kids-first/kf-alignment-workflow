@@ -35,7 +35,6 @@ outputs:
 label: Sambamba Index
 arguments:
   - position: 7
-    prefix: ''
     shellQuote: false
     valueFrom: >-
       mv $(inputs.bam.path) . && /opt/sambamba_v0.6.4 index -t
