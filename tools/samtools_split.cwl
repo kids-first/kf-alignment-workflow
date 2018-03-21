@@ -1,6 +1,6 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang/kf-alignment-wf-optimization/samtools-split/8
+id: bogdang_kf_alignment_wf_optimization_samtools_split_8
 baseCommand: []
 inputs:
   - format: BAM
@@ -27,12 +27,13 @@ outputs:
 label: Samtools split
 arguments:
   - position: 0
+    prefix: ''
     shellQuote: false
-    valueFrom: /opt/samtools-1.7/samtools split -f '%!.bam'
+    valueFrom: samtools split -f '%!.bam'
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/bogdang/samtools:1.7'
+    dockerPull: 'images.sbgenomics.com/bogdang/samtools:1.7-11-g041220d'
   - class: InlineJavascriptRequirement
     expressionLib:
       - |-

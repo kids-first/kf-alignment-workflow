@@ -49,7 +49,7 @@ arguments:
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/bogdang/samtools:1.7'
+    dockerPull: 'images.sbgenomics.com/bogdang/samtools:1.7-11-g041220d'
   - class: InlineJavascriptRequirement
     expressionLib:
       - |-
