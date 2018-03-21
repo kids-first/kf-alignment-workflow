@@ -188,8 +188,8 @@ steps:
       - id: threads
     run: ../tools/get_bwa_threads.cwl
     label: get_bwa_threads
-    'sbg:x': 386.3835754394531
-    'sbg:y': 829.1324462890625
+    'sbg:x': 391.53173828125
+    'sbg:y': 389.2275695800781
   - id: checkcontamination
     in:
       - id: verifybamid_selfsm
@@ -537,7 +537,7 @@ steps:
         source:
           - input_bam
       - id: threads
-        default: 36
+        default: 33
       - id: reference
         source:
           - indexed_reference_fasta

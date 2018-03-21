@@ -44,7 +44,7 @@ arguments:
     valueFrom: |-
       ${
           if (inputs.input_reads.nameext == '.cram')
-           return "/opt/samtools-1.5/samtools view -b "
+           return "samtools view -b "
           else return "echo"
       }
 requirements:
