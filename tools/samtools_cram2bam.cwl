@@ -39,7 +39,6 @@ outputs:
 label: Samtools Cram2Bam
 arguments:
   - position: 0
-    prefix: ''
     shellQuote: false
     valueFrom: |-
       ${
