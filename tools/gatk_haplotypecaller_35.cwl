@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 15000
+    ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.1-3.5'
 baseCommand: [/gatk-launch, --javaOptions, -Xms2000m]

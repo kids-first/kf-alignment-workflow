@@ -49,4 +49,3 @@ outputs:
     type: File
     outputBinding:
       glob: '*.recal_data.csv'
-

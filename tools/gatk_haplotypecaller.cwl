@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 15000
+    ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
 baseCommand: [/usr/bin/java, -Xms2000m, -jar, /GenomeAnalysisTK.jar]
