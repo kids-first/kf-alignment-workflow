@@ -1,146 +1,6 @@
-class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang_kf_alignment_wf_optimization_sambamba_merge_10
-baseCommand: []
-inputs:
-  - format: BAM
-    id: bams
-    type: 'File[]'
-    inputBinding:
-      position: 6
-      shellQuote: false
-    label: BAM files
-    doc: Input BAM files.
-  - id: compression_level
-    type: int?
-    label: Compression level
-    doc: 'Level of compression for merged BAM file, number from 0 to 9.'
-  - id: mem_mb
-    type: int?
-    label: Memory in MB
-    doc: Memory in MB.
-  - id: num_of_threads
-    type: int?
-    label: Number of threads to use
-    doc: Number of threads to use for compression/decompression.
-  - id: reserved_threads
-    type: int?
-    label: Number of threads reserved on the instance
-    doc: >-
-      Number of threads reserved on the instance passed to the scheduler (number
-      of jobs).
-  - id: base_file_name
-    type: string
-  - id: suffix
-    type: string
-outputs:
-  - id: merged_bam
-    doc: Merged bam.
-    label: Merged bam
-    type: File?
-    outputBinding:
-      glob: '*.bam'
-      outputEval: |-
-        ${
-            return inheritMetadata(self, inputs.bams)
-
-        }
-    secondaryFiles:
-      - .bai
-      - ^.bai
-    format: BAM
-doc: >-
-  Sambamba Merge is used for merging several sorted BAM files into one. The
-  sorting order of all the files must be the same, and it is maintained in the
-  output file.
-label: Sambamba Merge
-arguments:
-  - position: 0
-    separate: false
-    shellQuote: false
-    valueFrom: |-
-      ${
-          if (inputs.bams instanceof Array) { // VK
-              if (inputs.bams[0] instanceof Array) {
-
-                  // Support for input received as list of one-element-lists 
-                  in_var = []
-                  for (i = 0; i < inputs.bams.length; i++)
-                      in_var = in_var.concat(inputs.bams[i]);
-
-              } else {
-                  in_var = [].concat(inputs.bams)
-              }
-
-
-          } else {
-              in_var = [].concat(inputs.bams)
-          }
-          comm = ''
-          if (in_var instanceof Array) // Always true
-          {
-              if (in_var.length == 1) {
-                  comm += 'cp '
-
-              } else if (in_var.length > 1) {
-
-                  comm += '/opt/sambamba_0.6.3/sambamba_v0.6.3 merge '
-                  if (inputs.num_of_threads) {
-                      comm += ' -t '
-                      comm += inputs.num_of_threads
-                  }
-                  if (inputs.compression_level) {
-                      comm += ' -l '
-                      comm += inputs.compression_level
-                  }
-
-              }
-
-
-
-          }
-          return comm
-      }
-  - position: 11
-    shellQuote: false
-    valueFrom: |-
-      ${
-          if (inputs.bams instanceof Array) { // VK
-              if (inputs.bams[0] instanceof Array) {
-
-                  // Support for input received as list of one-element-lists 
-                  in_var = []
-                  for (i = 0; i < inputs.bams.length; i++)
-                      in_var = in_var.concat(inputs.bams[i]);
-
-              } else {
-                  in_var = [].concat(inputs.bams)
-              }
-
-
-          } else {
-              in_var = [].concat(inputs.bams)
-          }
-
-          comm = ''
-          if (in_var.length == 1) {
-              comm += '. '
-
-              if (in_var[0].secondaryFiles != undefined && in_var[0].secondaryFiles.length > 0) {
-                  comm += '| cp '
-                  comm += in_var[0].secondaryFiles[0].path
-                  comm += ' . '
-              }
-          }
-          return comm
-      }
-  - position: 6
-    shellQuote: false
-    valueFrom: |-
-      ${
-          if(inputs.bams.length == 1) return '' 
-          else return inputs.base_file_name+ '.' + inputs.suffix
-      }
+class: CommandLineTool
+id: sambamba_merge
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
@@ -159,11 +19,7 @@ requirements:
       }
     coresMin: |-
       ${
-          if (inputs.reserved_threads) {
-
-              return inputs.reserved_threads
-
-          } else if (inputs.num_of_threads) {
+          if (inputs.num_of_threads) {
 
               return inputs.num_of_threads
 
@@ -266,6 +122,139 @@ requirements:
             else
                 return files.reverse();
         };
+baseCommand: []
+arguments:
+  - position: 0
+    separate: false
+    shellQuote: false
+    valueFrom: |-
+      ${
+          if (inputs.bams instanceof Array) { // VK
+              if (inputs.bams[0] instanceof Array) {
+
+                  // Support for input received as list of one-element-lists 
+                  in_var = []
+                  for (i = 0; i < inputs.bams.length; i++)
+                      in_var = in_var.concat(inputs.bams[i]);
+
+              } else {
+                  in_var = [].concat(inputs.bams)
+              }
+
+
+          } else {
+              in_var = [].concat(inputs.bams)
+          }
+          comm = ''
+          if (in_var instanceof Array) // Always true
+          {
+              if (in_var.length == 1) {
+                  comm += 'cp '
+
+              } else if (in_var.length > 1) {
+
+                  comm += '/opt/sambamba_0.6.3/sambamba_v0.6.3 merge '
+                  if (inputs.num_of_threads) {
+                      comm += ' -t '
+                      comm += inputs.num_of_threads
+                  }
+                  if (inputs.compression_level) {
+                      comm += ' -l '
+                      comm += inputs.compression_level
+                  }
+
+              }
+
+
+
+          }
+          return comm
+      }
+  - position: 11
+    shellQuote: false
+    valueFrom: |-
+      ${
+          if (inputs.bams instanceof Array) { // VK
+              if (inputs.bams[0] instanceof Array) {
+
+                  // Support for input received as list of one-element-lists 
+                  in_var = []
+                  for (i = 0; i < inputs.bams.length; i++)
+                      in_var = in_var.concat(inputs.bams[i]);
+
+              } else {
+                  in_var = [].concat(inputs.bams)
+              }
+
+
+          } else {
+              in_var = [].concat(inputs.bams)
+          }
+
+          comm = ''
+          if (in_var.length == 1) {
+              comm += '. '
+
+              if (in_var[0].secondaryFiles != undefined && in_var[0].secondaryFiles.length > 0) {
+                  comm += '| cp '
+                  comm += in_var[0].secondaryFiles[0].path
+                  comm += ' . '
+              }
+          }
+          return comm
+      }
+  - position: 6
+    shellQuote: false
+    valueFrom: |-
+      ${
+          if(inputs.bams.length == 1) return '' 
+          else return inputs.base_file_name+ '.' + inputs.suffix
+      }
+inputs:
+  bams:
+    type: 'File[]'
+    inputBinding:
+      position: 6
+      shellQuote: false
+    label: BAM files
+    doc: Input BAM files.
+  compression_level:
+    type: int?
+    label: Compression level
+    doc: 'Level of compression for merged BAM file, number from 0 to 9.'
+  mem_mb:
+    type: int?
+    label: Memory in MB
+    doc: Memory in MB.
+  num_of_threads:
+    type: int?
+    label: Number of threads to use
+    doc: Number of threads to use for compression/decompression.
+  base_file_name:
+    type: string
+  suffix:
+    type: string
+outputs:
+  merged_bam:
+    doc: Merged bam.
+    label: Merged bam
+    type: File?
+    outputBinding:
+      glob: '*.bam'
+      outputEval: |-
+        ${
+            return inheritMetadata(self, inputs.bams)
+
+        }
+    secondaryFiles:
+      - .bai
+      - ^.bai
+    format: BAM
+doc: >-
+  Sambamba Merge is used for merging several sorted BAM files into one. The
+  sorting order of all the files must be the same, and it is maintained in the
+  output file.
+label: Sambamba Merge
 'sbg:categories':
   - SAM/BAM-Processing
 'sbg:license': GNU General Public License v2.0 only

@@ -1,67 +1,12 @@
-class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang_kf_alignment_wf_optimization_sambamba_index_10
-baseCommand: []
-inputs:
-  - format: BAM
-    'sbg:category': Merge
-    id: bam
-    type: File
-    label: BAM files
-    doc: Input BAM files.
-  - 'sbg:category': Merge
-    id: num_of_threads
-    type: int
-    label: Number of threads to use
-    doc: Number of threads to use for compression/decompression.
-  - 'sbg:category': Execution
-    'sbg:toolDefaultValue': '1'
-    id: reserved_threads
-    type: int?
-    label: Number of threads reserved on the instance
-    doc: >-
-      Number of threads reserved on the instance passed to the scheduler (number
-      of jobs).
-outputs:
-  - id: indexed_bam
-    doc: Merged bam.
-    label: Merged bam
-    type: File?
-    outputBinding:
-      glob: '*.bam'
-    secondaryFiles:
-      - ^.bai
-    format: BAM
-label: Sambamba Index
-arguments:
-  - position: 7
-    shellQuote: false
-    valueFrom: >-
-      mv $(inputs.bam.path) . && /opt/sambamba_0.6.3/sambamba_v0.6.3 index -t
-      $(inputs.num_of_threads) $(inputs.bam.basename) $(inputs.bam.nameroot).bai
+class: CommandLineTool
+id: sambamba_index
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: |-
-      ${
-          if (inputs.mem_mb) {
-
-              return inputs.mem_mb
-
-          } else {
-
-              return 1024
-
-          }
-
-      }
     coresMin: |-
       ${
-          if (inputs.reserved_threads) {
-
-              return inputs.reserved_threads
-
-          } else if (inputs.num_of_threads) {
+          if (inputs.num_of_threads) {
 
               return inputs.num_of_threads
 
@@ -164,6 +109,31 @@ requirements:
             else
                 return files.reverse();
         };
+baseCommand: []
+arguments:
+  - position: 7
+    shellQuote: false
+    valueFrom: >-
+      mv $(inputs.bam.path) . && /opt/sambamba_0.6.3/sambamba_v0.6.3 index -t
+      $(inputs.num_of_threads) $(inputs.bam.basename) $(inputs.bam.nameroot).bai
+inputs:
+  bam:
+    type: File
+    label: BAM files
+    doc: Input BAM files.
+  num_of_threads:
+    type: int
+    label: Number of threads to use
+    doc: Number of threads to use for compression/decompression.
+outputs:
+  indexed_bam:
+    doc: Indexed bam.
+    type: File?
+    outputBinding:
+      glob: '*.bam'
+    secondaryFiles:
+      - ^.bai
+label: Sambamba Index
 'sbg:categories':
   - SAM/BAM-Processing
 'sbg:license': GNU General Public License v2.0 only

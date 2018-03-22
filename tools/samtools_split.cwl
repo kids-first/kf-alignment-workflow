@@ -1,34 +1,6 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang_kf_alignment_wf_optimization_samtools_split_8
-baseCommand: []
-inputs:
-  - format: BAM
-    id: input_bam
-    type: File
-    inputBinding:
-      position: 2
-    label: Input file
-    doc: Input BAM file.
-  - id: threads
-    type: int?
-    inputBinding:
-      position: 1
-      prefix: '-@'
-      shellQuote: false
-outputs:
-  - id: bam_files
-    doc: Output BAM files.
-    label: Output BAM files
-    type: 'File[]?'
-    outputBinding:
-      glob: '*.bam'
-    format: DICT
-label: Samtools split
-arguments:
-  - position: 0
-    shellQuote: false
-    valueFrom: samtools split -f '%!.bam'
+id: samtools_split
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -122,6 +94,32 @@ requirements:
             else
                 return files.reverse();
         };
+baseCommand: []
+arguments:
+  - position: 0
+    shellQuote: false
+    valueFrom: samtools split -f '%!.bam'
+inputs:
+  input_bam:
+    type: File
+    inputBinding:
+      position: 2
+    label: Input file
+    doc: Input BAM file.
+  threads:
+    type: int?
+    inputBinding:
+      position: 1
+      prefix: '-@'
+      shellQuote: false
+outputs:
+  bam_files:
+    doc: Output BAM files.
+    label: Output BAM files
+    type: 'File[]?'
+    outputBinding:
+      glob: '*.bam'
+label: Samtools split
 'sbg:appVersion':
   - v1.0
 'sbg:categories':

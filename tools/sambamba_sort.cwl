@@ -1,56 +1,6 @@
-class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang_kf_alignment_wf_optimization_sambamba_sort_2
-baseCommand:
-  - /opt/sambamba_0.6.3/sambamba_v0.6.3
-  - sort
-inputs:
-  - format: BAM
-    'sbg:category': Merge
-    id: bam
-    type: File
-    inputBinding:
-      position: 6
-      shellQuote: false
-    label: BAM files
-    doc: Input BAM files.
-  - 'sbg:category': Merge
-    id: num_of_threads
-    type: int?
-    inputBinding:
-      position: 1
-      prefix: '-t'
-      shellQuote: false
-    label: Number of threads to use
-    doc: Number of threads to use for compression/decompression.
-  - 'sbg:category': Execution
-    'sbg:toolDefaultValue': '1'
-    id: reserved_threads
-    type: int?
-    label: Number of threads reserved on the instance
-    doc: >-
-      Number of threads reserved on the instance passed to the scheduler (number
-      of jobs).
-  - id: base_file_name
-    type: string
-  - id: suffix
-    type: string
-outputs:
-  - id: indexed_bam
-    doc: Merged bam.
-    label: Merged bam
-    type: File?
-    outputBinding:
-      glob: '*.bam'
-    secondaryFiles:
-      - .bai
-      - ^.bai
-    format: BAM
-label: Sambamba Sort
-arguments:
-  - position: 0
-    shellQuote: false
-    valueFrom: '-o $(inputs.base_file_name).$(inputs.suffix)'
+class: CommandLineTool
+id: sambamba_sort
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
@@ -69,11 +19,7 @@ requirements:
       }
     coresMin: |-
       ${
-          if (inputs.reserved_threads) {
-
-              return inputs.reserved_threads
-
-          } else if (inputs.num_of_threads) {
+          if (inputs.num_of_threads) {
 
               return inputs.num_of_threads
 
@@ -176,6 +122,45 @@ requirements:
             else
                 return files.reverse();
         };
+baseCommand:
+  - /opt/sambamba_0.6.3/sambamba_v0.6.3
+  - sort
+arguments:
+  - position: 0
+    shellQuote: false
+    valueFrom: '-o $(inputs.base_file_name).$(inputs.suffix)'
+inputs:
+  bam:
+    type: File
+    inputBinding:
+      position: 6
+      shellQuote: false
+    label: BAM files
+    doc: Input BAM files.
+  num_of_threads:
+    type: int?
+    inputBinding:
+      position: 1
+      prefix: '-t'
+      shellQuote: false
+    label: Number of threads to use
+    doc: Number of threads to use for compression/decompression.
+  base_file_name:
+    type: string
+  suffix:
+    type: string
+outputs:
+  sorted_bam:
+    doc: Sorted bam.
+    label: Sorted bam
+    type: File?
+    outputBinding:
+      glob: '*.bam'
+    secondaryFiles:
+      - .bai
+      - ^.bai
+    format: BAM
+label: Sambamba Sort
 'sbg:categories':
   - SAM/BAM-Processing
 'sbg:license': GNU General Public License v2.0 only
