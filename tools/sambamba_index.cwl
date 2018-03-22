@@ -1,6 +1,6 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang/kf-alignment-wf-optimization/sambamba-index/10
+id: bogdang_kf_alignment_wf_optimization_sambamba_index_10
 baseCommand: []
 inputs:
   - format: BAM
@@ -37,7 +37,7 @@ arguments:
   - position: 7
     shellQuote: false
     valueFrom: >-
-      mv $(inputs.bam.path) . && /opt/sambamba_v0.6.4 index -t
+      mv $(inputs.bam.path) . && /opt/sambamba_0.6.3/sambamba_v0.6.3 index -t
       $(inputs.num_of_threads) $(inputs.bam.basename) $(inputs.bam.nameroot).bai
 requirements:
   - class: ShellCommandRequirement
@@ -72,7 +72,7 @@ requirements:
 
       }
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/stefanristeski/sambamba:0.6.4'
+    dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
   - class: InitialWorkDirRequirement
     listing: []
   - class: InlineJavascriptRequirement
@@ -180,4 +180,4 @@ requirements:
     label: Publication
 'sbg:toolAuthor': Artem Tarasov
 'sbg:toolkit': Sambamba
-'sbg:toolkitVersion': 0.6.4
+'sbg:toolkitVersion': 0.6.3

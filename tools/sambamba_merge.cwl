@@ -84,7 +84,7 @@ arguments:
 
               } else if (in_var.length > 1) {
 
-                  comm += '/opt/sambamba_v0.6.4 merge '
+                  comm += '/opt/sambamba_0.6.3/sambamba_v0.6.3 merge '
                   if (inputs.num_of_threads) {
                       comm += ' -t '
                       comm += inputs.num_of_threads
@@ -174,7 +174,7 @@ requirements:
 
       }
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/stefanristeski/sambamba:0.6.4'
+    dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
   - class: InitialWorkDirRequirement
     listing: []
   - class: InlineJavascriptRequirement
@@ -282,4 +282,4 @@ requirements:
     label: Publication
 'sbg:toolAuthor': Artem Tarasov
 'sbg:toolkit': Sambamba
-'sbg:toolkitVersion': 0.6.4
+'sbg:toolkitVersion': 0.6.3

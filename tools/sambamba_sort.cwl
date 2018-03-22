@@ -1,8 +1,8 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bogdang/kf-alignment-wf-optimization/sambamba-sort/2
+id: bogdang_kf_alignment_wf_optimization_sambamba_sort_2
 baseCommand:
-  - /opt/sambamba_v0.6.4
+  - /opt/sambamba_0.6.3/sambamba_v0.6.3
   - sort
 inputs:
   - format: BAM
@@ -84,7 +84,7 @@ requirements:
 
       }
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/stefanristeski/sambamba:0.6.4'
+    dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
   - class: InitialWorkDirRequirement
     listing: []
   - class: InlineJavascriptRequirement
@@ -192,4 +192,4 @@ requirements:
     label: Publication
 'sbg:toolAuthor': Artem Tarasov
 'sbg:toolkit': Sambamba
-'sbg:toolkitVersion': 0.6.4
+'sbg:toolkitVersion': 0.6.3
