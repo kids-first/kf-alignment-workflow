@@ -274,8 +274,4 @@ steps:
       wgs_calling_interval_list: picard_intervallisttools/output
       dbsnp_vcf: dbsnp_vcf
     scatter: [wgs_calling_interval_list]
-<<<<<<< HEAD
     out: []
-=======
-    out: []
->>>>>>> d3abb61b6973e8f4b4f5cd72e40e535cca79717d
