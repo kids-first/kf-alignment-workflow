@@ -5,11 +5,11 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/verifybamid:1.0.1'
+    dockerPull: 'kfdrc/verifybamid:1.0.2'
   - class: ResourceRequirement
     ramMin: 5000
     coresMin: 4
-baseCommand: [VerifyBamID]
+baseCommand: [/bin/VerifyBamID]
 arguments:
   - position: 1
     shellQuote: false
@@ -30,12 +30,9 @@ inputs:
   ref_fasta:
     type: File
     secondaryFiles: [.fai]
-  contamination_sites_ud:
-    type: File
-  contamination_sites_mu:
-    type: File
-  contamination_sites_bed:
-    type: File
+  contamination_sites_ud: File
+  contamination_sites_mu: File
+  contamination_sites_bed: File
 outputs:
   - id: output
     type: File
