@@ -533,7 +533,7 @@ steps:
           - reference_dict
     out: [out_intervals]
     run: >-
-      /Users/bgavrilovic/Documents/kf-alignment-optimization/kf-alignment-workflow/tools/python_createsequencegroups.cwl
+      ../tools/python_createsequencegroups.cwl
     'sbg:x': 392.7905578613281
     'sbg:y': 1064.882568359375
 label: kf-alignment-optimized
