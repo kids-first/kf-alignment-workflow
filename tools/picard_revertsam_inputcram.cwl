@@ -27,11 +27,8 @@ arguments:
       REMOVE_DUPLICATE_INFORMATION=true
       REMOVE_ALIGNMENT_INFORMATION=true
 inputs:
-  input_cram:
-    type: File
-  reference:
-    type: File
-    secondaryFiles: [.fai]
+  input_cram: File
+  reference: {type: File, secondaryFiles: [.fai]}
 outputs:
   output:
     type: File[]

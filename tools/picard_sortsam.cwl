@@ -20,8 +20,7 @@ arguments:
       CREATE_MD5_FILE=true
       MAX_RECORDS_IN_RAM=300000
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
   base_file_name: string
 outputs:
   output_sorted_bam:

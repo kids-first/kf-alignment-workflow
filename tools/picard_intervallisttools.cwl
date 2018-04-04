@@ -20,8 +20,7 @@ arguments:
       INPUT=$(inputs.interval_list.path)
       OUTPUT=$(runtime.outdir)
 inputs:
-  interval_list:
-    type: File
+  interval_list: File
 outputs:
   output:
     type: File[]

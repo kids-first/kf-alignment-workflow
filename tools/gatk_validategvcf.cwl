@@ -21,15 +21,8 @@ arguments:
       --validationTypeToExclude ALLELES
       --dbsnp $(inputs.dbsnp_vcf.path)
 inputs:
-  input_vcf:
-    type: File
-    secondaryFiles: .tbi
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
-  wgs_calling_interval_list:
-    type: File
-  dbsnp_vcf:
-    type: File
-    secondaryFiles: .idx
+  input_vcf: {type: File, secondaryFiles: .tbi}
+  reference: {type: File, secondaryFiles: [^.dict, .fai]}
+  wgs_calling_interval_list: File
+  dbsnp_vcf: {type: File, secondaryFiles: .idx}
 outputs: []

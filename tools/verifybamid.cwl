@@ -24,12 +24,8 @@ arguments:
       --BedPath $(inputs.contamination_sites_bed.path)
       1>/dev/null
 inputs:
-  input_bam:
-    type: File
-    secondaryFiles: [^.bai]
-  ref_fasta:
-    type: File
-    secondaryFiles: [.fai]
+  input_bam: {type: File, secondaryFiles: [^.bai]}
+  ref_fasta: {type: File, secondaryFiles: [.fai]}
   contamination_sites_ud: File
   contamination_sites_mu: File
   contamination_sites_bed: File

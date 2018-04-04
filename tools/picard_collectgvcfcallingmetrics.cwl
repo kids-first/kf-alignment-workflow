@@ -22,18 +22,11 @@ arguments:
       GVCF_INPUT=true
       THREAD_COUNT=16
 inputs:
-  input_vcf:
-    type: File
-    secondaryFiles: [.tbi]
-  reference_dict:
-    type: File
-  final_gvcf_base_name:
-    type: string
-  dbsnp_vcf:
-    type: File
-    secondaryFiles: [.idx]
-  wgs_evaluation_interval_list:
-    type: File
+  input_vcf: {type: File, secondaryFiles: [.tbi]}
+  reference_dict: File
+  final_gvcf_base_name: string
+  dbsnp_vcf: {type: File, secondaryFiles: [.idx]}
+  wgs_evaluation_interval_list: File
 outputs:
   output:
     type: File[]

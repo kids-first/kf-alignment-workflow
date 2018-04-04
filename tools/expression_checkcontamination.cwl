@@ -11,8 +11,7 @@ inputs:
       loadContents: true
 
 outputs:
-  contamination:
-    type: float
+  contamination: float
 
 expression:
   "${

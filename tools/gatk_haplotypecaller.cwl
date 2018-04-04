@@ -32,16 +32,10 @@ arguments:
       -contamination $(inputs.contamination)
       --read_filter OverclippedRead
 inputs:
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
-  input_bam:
-    type: File
-    secondaryFiles: [^.bai]
-  interval_list:
-    type: File
-  contamination:
-    type: float
+  reference: {type: File, {secondaryFiles: [^.dict, .fai]}
+  input_bam: {type: File, {secondaryFiles: [^.bai]}
+  interval_list: File
+  contamination: float
 outputs:
   output:
     type: File

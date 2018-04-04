@@ -25,8 +25,7 @@ inputs:
         prefix: INPUT=
         separate: false
     secondaryFiles: [^.bai]
-  output_bam_basename:
-    type: string
+  output_bam_basename: string
 outputs:
   output:
     type: File

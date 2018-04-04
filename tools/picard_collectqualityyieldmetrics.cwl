@@ -17,8 +17,7 @@ arguments:
       OQ=true
       OUTPUT=$(inputs.input_bam.nameroot).unmapped.quality_yield_metrics
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
 outputs:
   - id: output
     type: File

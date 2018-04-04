@@ -24,14 +24,9 @@ arguments:
       METRIC_ACCUMULATION_LEVEL="null" 
       METRIC_ACCUMULATION_LEVEL="ALL_READS"
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
 outputs:
-  output1:
+  output:
     type: File[]
     outputBinding:
-      glob: '*_metrics'
-  output2:
-    type: File[]
-    outputBinding:
-      glob: '*.pdf'
+      glob: ['*_metrics', '*.pdf']

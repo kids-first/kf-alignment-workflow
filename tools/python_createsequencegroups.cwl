@@ -46,8 +46,7 @@ arguments:
           main()
 
 inputs:
-  ref_dict:
-    type: File
+  ref_dict: File
 
 outputs:
   out_intervals:

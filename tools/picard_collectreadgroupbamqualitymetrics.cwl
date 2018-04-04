@@ -23,12 +23,8 @@ arguments:
       METRIC_ACCUMULATION_LEVEL="null" 
       METRIC_ACCUMULATION_LEVEL="READ_GROUP"
 inputs:
-  input_bam:
-    type: File
-    secondaryFiles: ['^.bai']
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
+  input_bam: {type: File, secondaryFiles: ['^.bai']}
+  reference: {type: File, secondaryFiles: [^.dict, .fai]}
 outputs:
   output:
     type: File[]
