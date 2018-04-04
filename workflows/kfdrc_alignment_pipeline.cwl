@@ -18,59 +18,17 @@ inputs:
   dbsnp_vcf: File
 
 outputs:
-  bqsr_report:
-    type: File
-    outputSource: gatk_gatherbqsrreports/output
-  final_bam:
-    type: File
-    outputSource: picard_gatherbamfiles/output
-  gvcf:
-    type: File
-    outputSource: picard_mergevcfs/output
-  cram:
-    type: File
-    outputSource: samtools_coverttocram/output
-  verifybamid_output:
-    type: File
-    outputSource: verifybamid/output
-  collect_quality_yield_metrics:
-    type: File[]
-    outputSource: picard_collectqualityyieldmetrics/output
-  collect_unsortedreadgroup_bam_quality_metrics:
-    type: 
-      type: array
-      items:
-        type: array
-        items: File
-    outputSource: picard_collectunsortedreadgroupbamqualitymetrics/output1
-  collect_unsortedreadgroup_bam_quality_metrics_pdf:
-    type:
-      type: array
-      items:
-        type: array
-        items: File
-    outputSource: picard_collectunsortedreadgroupbamqualitymetrics/output2
-  collect_collect_aggregation_metrics:
-    type: File[]
-    outputSource: picard_collectaggregationmetrics/output1
-  collect_collect_aggregation_pdf:
-    type: File[]
-    outputSource: picard_collectaggregationmetrics/output2
-  collect_wgs_metrics:
-    type: File
-    outputSource: picard_collectwgsmetrics/output
-  calculate_readgroup_checksum:
-    type: File
-    outputSource: picard_calculatereadgroupchecksum/output
-  collect_readgroupbam_quality_metrics:
-    type: File[]
-    outputSource: picard_collectreadgroupbamqualitymetrics/output1
-  collect_readgroupbam_quality_pdf:
-    type: File[]
-    outputSource: picard_collectreadgroupbamqualitymetrics/output2
-  picard_collect_gvcf_calling_metrics:
-    type: File[]
-    outputSource: picard_collectgvcfcallingmetrics/output
+  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
+  final_bam: {type: File, outputSource: picard_gatherbamfiles/output}
+  gvcf: {type: File, outputSource: picard_mergevcfs/output}
+  cram: {type: File, outputSource: samtools_coverttocram/output}
+  verifybamid_output: {type: File, outputSource: verifybamid/output}
+  collect_quality_yield_metrics: {type: 'File[]', outputSource: picard_collectqualityyieldmetrics/output}
+  collect_collect_aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
+  collect_wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
+  calculate_readgroup_checksum: {type: File, outputSource: picard_calculatereadgroupchecksum/output}
+  collect_readgroupbam_quality_metrics: {type: 'File[]', outputSource: picard_collectreadgroupbamqualitymetrics/output}
+  picard_collect_gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
 
 steps:
   getbasename:
@@ -99,13 +57,6 @@ steps:
       input_bam: picard_revertsam/output
     scatter: [input_bam]
     out: [output]
-
-  picard_collectunsortedreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
-    in:
-      input_bam: bwa_mem/output
-    scatter: [input_bam]
-    out: [output1, output2]
 
   picard_markduplicates:
     run: ../tools/picard_markduplicates.cwl
@@ -175,14 +126,14 @@ steps:
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
-    out: [output1, output2]
+    out: [output]
 
   picard_collectreadgroupbamqualitymetrics:
     run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
-    out: [output1, output2]
+    out: [output]
 
   picard_collectwgsmetrics:
     run: ../tools/picard_collectwgsmetrics.cwl
