@@ -11,4 +11,4 @@ outputs:
   file_basename: string
 
 expression:
-  "${return {file_basename: inputs.input_file.nameroot};}"  
+  "${return {file_basename: inputs.input_file.nameroot};}"

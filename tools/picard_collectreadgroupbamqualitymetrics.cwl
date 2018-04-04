@@ -29,4 +29,4 @@ outputs:
   output:
     type: File[]
     outputBinding:
-      glob: ['*_metrics', '*.pdf']
+      glob: $(inputs.input_bam.nameroot).*
