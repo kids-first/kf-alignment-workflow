@@ -6,6 +6,7 @@ requirements:
   - class: MultipleInputFeatureRequirement
 inputs:
   input_bam: File
+  output_basename: string
   indexed_reference_fasta: File
   contamination_sites_ud: File
   contamination_sites_mu: File
