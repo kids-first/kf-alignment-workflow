@@ -408,3 +408,10 @@ steps:
       ../tools/python_createsequencegroups.cwl
 label: kf-alignment-optimized
 
+$namespaces:
+  sbg: https://sevenbridges.com
+hints:
+  - class: 'sbg:AWSInstanceType'
+    value: c5.9xlarge;ebs-gp2;768
+  - class: 'sbg:maxNumberOfParallelInstances'
+    value: 4
