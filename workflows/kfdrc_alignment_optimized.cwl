@@ -10,51 +10,17 @@ hints:
   - class: 'sbg:maxNumberOfParallelInstances'
     value: 4
 inputs:
-  contamination_sites_bed:
-    type: File
-  contamination_sites_mu:
-    type: File
-  contamination_sites_ud:
-    type: File
-  dbsnp_vcf:
-    type: File
-    secondaryFiles:
-      - .idx
-  indexed_reference_fasta:
-    type: File
-    secondaryFiles:
-      - .64.amb
-      - .64.ann
-      - .64.bwt
-      - .64.pac
-      - .64.sa
-      - .64.alt
-      - ^.dict
-      - .amb
-      - .ann
-      - .bwt
-      - .pac
-      - .sa
-      - .fai
-  input_bam:
-    type: File
-  knownsites:
-    type: 'File[]'
-    'sbg:x': 0
-    secondaryFiles:
-      - .tbi
-  reference_dict:
-    type: File
-    'sbg:x': 0
-  wgs_calling_interval_list:
-    type: File
-    'sbg:x': 0
-  wgs_coverage_interval_list:
-    type: File
-    'sbg:x': 0
-  wgs_evaluation_interval_list:
-    type: File
-    'sbg:x': 0
+  contamination_sites_bed: File
+  contamination_sites_mu: File
+  contamination_sites_ud: File
+  dbsnp_vcf: File
+  indexed_reference_fasta: File
+  input_bam: File
+  knownsites: File[]
+  reference_dict: File
+  wgs_calling_interval_list: File
+  wgs_coverage_interval_list: File
+  wgs_evaluation_interval_list: File
 outputs:
   bqsr_report:
     outputSource:
