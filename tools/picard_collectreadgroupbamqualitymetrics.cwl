@@ -25,15 +25,12 @@ arguments:
 inputs:
   input_bam:
     type: File
+    secondaryFiles: ['^.bai']
   reference:
     type: File
     secondaryFiles: [^.dict, .fai]
 outputs:
-  output1:
+  output:
     type: File[]
     outputBinding:
-      glob: '*_metrics'
-  output2:
-    type: File[]
-    outputBinding:
-      glob: '*.pdf'
+      glob: ['*_metrics', '*.pdf']
