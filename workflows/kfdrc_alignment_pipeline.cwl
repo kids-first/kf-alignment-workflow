@@ -3,7 +3,7 @@ class: Workflow
 id: kfdrc_alignment_pipeline
 requirements:
   - class: ScatterFeatureRequirement
-
+  - class: MultipleInputFeatureRequirement
 inputs:
   input_bam: File
   indexed_reference_fasta: File
@@ -18,12 +18,6 @@ inputs:
   dbsnp_vcf: File
 
 outputs:
-  duplicates_marked_bam:
-    type: File
-    outputSource: picard_markduplicates/output_markduplicates_bam
-  sorted_bam:
-    type: File
-    outputSource: picard_sortsam/output_sorted_bam
   bqsr_report:
     type: File
     outputSource: gatk_gatherbqsrreports/output
@@ -259,3 +253,11 @@ steps:
       wgs_calling_interval_list: wgs_calling_interval_list
       dbsnp_vcf: dbsnp_vcf
     out: []
+
+$namespaces:
+  sbg: https://sevenbridges.com
+hints:
+  - class: 'sbg:AWSInstanceType'
+    value: c5.9xlarge;ebs-gp2;768
+  - class: 'sbg:maxNumberOfParallelInstances'
+    value: 4
