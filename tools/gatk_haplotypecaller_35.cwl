@@ -33,8 +33,8 @@ arguments:
 inputs:
   reference: {type: File, secondaryFiles: [^.dict, .fai]}
   input_bam: {type: File, secondaryFiles: [^.bai]}
-  interval_list: type: File
-  contamination: type: float
+  interval_list: File
+  contamination: float
 outputs:
   output:
     type: File
