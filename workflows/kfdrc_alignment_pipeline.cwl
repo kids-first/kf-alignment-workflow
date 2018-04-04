@@ -32,12 +32,6 @@ outputs:
   picard_collect_gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
 
 steps:
-  getbasename:
-    run: ../tools/expression_getbasename.cwl
-    in:
-      input_file: input_bam
-    out: [file_basename]
-
   picard_revertsam:
     run: ../tools/picard_revertsam.cwl
     in:
@@ -48,6 +42,7 @@ steps:
     run: ../tools/picard_collectqualityyieldmetrics.cwl
     in:
       input_bam: picard_revertsam/output
+      output_basename: output_basename
     scatter: [input_bam]
     out: [output]
 
@@ -62,14 +57,14 @@ steps:
   picard_markduplicates:
     run: ../tools/picard_markduplicates.cwl
     in:
-      base_file_name: getbasename/file_basename
+      base_file_name: output_basename
       input_bams: bwa_mem/output
     out: [output_markduplicates_bam]
 
   picard_sortsam:
     run: ../tools/picard_sortsam.cwl
     in:
-      base_file_name: getbasename/file_basename
+      base_file_name: output_basename
       input_bam: picard_markduplicates/output_markduplicates_bam
     out: [output_sorted_bam]
 
@@ -81,6 +76,7 @@ steps:
       contamination_sites_ud: contamination_sites_ud
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_bed: contamination_sites_bed
+      output_basename: output_basename
     out: [output]
 
   createsequencegrouping:
@@ -103,6 +99,7 @@ steps:
     run: ../tools/gatk_gatherbqsrreports.cwl
     in:
       input_brsq_reports: gatk_baserecalibrator/output
+      output_basename: output_basename
     out: [output]
 
   gatk_applybqsr:
@@ -119,7 +116,7 @@ steps:
     run: ../tools/picard_gatherbamfiles.cwl
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
-      output_bam_basename: getbasename/file_basename
+      output_bam_basename: output_basename
     out: [output]
 
   picard_collectaggregationmetrics:
@@ -183,7 +180,7 @@ steps:
     run: ../tools/picard_mergevcfs.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
-      output_vcf_basename: getbasename/file_basename
+      output_vcf_basename: output_basename
     out:
       [output]
 
@@ -192,7 +189,7 @@ steps:
     in:
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict
-      final_gvcf_base_name: getbasename/file_basename
+      final_gvcf_base_name: output_basename
       dbsnp_vcf: dbsnp_vcf
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]

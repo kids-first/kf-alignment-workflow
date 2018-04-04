@@ -16,7 +16,7 @@ arguments:
     valueFrom: >-
       --Verbose
       --NumPC 4
-      --Output $(inputs.input_bam.nameroot)
+      --Output $(inputs.output_basename)
       --BamFile $(inputs.input_bam.path)
       --Reference $(inputs.ref_fasta.path)
       --UDPath $(inputs.contamination_sites_ud.path)
@@ -29,6 +29,7 @@ inputs:
   contamination_sites_ud: File
   contamination_sites_mu: File
   contamination_sites_bed: File
+  output_basename: string
 outputs:
   - id: output
     type: File

@@ -29,4 +29,4 @@ outputs:
   - id: output
     type: File
     outputBinding:
-      glob: '*_metrics'
+      glob: $(inputs.input_bam.nameroot).wgs_metrics
