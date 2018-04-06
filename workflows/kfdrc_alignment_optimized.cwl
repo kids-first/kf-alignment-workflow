@@ -20,17 +20,17 @@ inputs:
   wgs_evaluation_interval_list: File
 
 outputs:
+  indexed_bam: {type: File, outputSource: picard_gatherbamfiles/output}
+  cram: {type: File, outputSource: samtools_coverttocram/output}
+  gvcf: {type: File, outputSource: picard_mergevcfs/output}
+  verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
+  picard_collect_gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
   calculate_readgroup_checksum: {type: File, outputSource: picard_calculatereadgroupchecksum/output}
   collect_quality_yield_metrics: {type: 'File[]', outputSource: picard_collectqualityyieldmetrics/output}
   collect_readgroupbam_quality_metrics: {type: 'File[]', outputSource: picard_collectreadgroupbamqualitymetrics/output}
+  collect_collect_aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
   collect_wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
-  cram: {type: File, outputSource: samtools_coverttocram/output}
-  gvcf: {type: File, outputSource: picard_mergevcfs/output}
-  picard_collect_gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
-  verifybamid_output: {type: File, outputSource: verifybamid/output}
-  indexed_bam: {type: File, outputSource: sambamba_index/indexed_bam}
-  indexed_bam_1: {type: File, outputSource: picard_gatherbamfiles/output}
 
 steps:
   samtools_cram2bam:
