@@ -33,6 +33,29 @@ outputs:
   indexed_bam_1: {type: File, outputSource: picard_gatherbamfiles/output}
 
 steps:
+  samtools_cram2bam:
+    run: ../tools/samtools_cram2bam.cwl
+    in:
+      input_reads: input_bam
+      reference: indexed_reference_fasta
+      threads: {default: 33}
+    out: [bam_file]
+
+  samtools_split:
+    run: ../tools/samtools_split.cwl
+    in:
+      input_bam: samtools_cram2bam/bam_file
+      threads: {default: 36}
+    out: [bam_files]
+
+  picard_collectqualityyieldmetrics:
+    run: ../tools/picard_collectqualityyieldmetrics.cwl
+    in:
+      input_bam: samtools_split/bam_files
+      output_basename: output_basename
+    scatter: [input_bam]
+    out: [output]
+
   get_bwa_threads:
     run: ../tools/get_bwa_threads.cwl
     in:
@@ -48,21 +71,36 @@ steps:
     scatter: [input_bam]
     out: [output, rg]
 
-  checkcontamination:
-    run: ../tools/expression_checkcontamination.cwl
+  sambamba_merge:
+    run: ../tools/sambamba_merge.cwl
     in:
-      verifybamid_selfsm: verifybamid/output
-    out: [contamination]
-    
-  gatk_applybqsr:
-    run: ../tools/gatk_applybqsr.cwl
+      bams: bwa_mem/output
+      base_file_name: output_basename
+      num_of_threads: {default: 36}
+      suffix: {default: aligned.duplicates_marked.sorted.bam}
+    out: [merged_bam]
+
+  sambamba_sort:
+    run: ../tools/sambamba_sort.cwl
     in:
-      bqsr_report: gatk_gatherbqsrreports/output
-      input_bam: sambamba_index/indexed_bam
-      reference: indexed_reference_fasta
-      sequence_interval: python_createsequencegroups/out_intervals
-    scatter: [sequence_interval]
-    out: [recalibrated_bam]
+      bam: sambamba_merge/merged_bam
+      base_file_name: output_basename
+      num_of_threads: {default: 36}
+      suffix: {default: aligned.duplicates_marked.sorted.bam}
+    out: [sorted_bam]
+
+  sambamba_index:
+    run: ../tools/sambamba_index.cwl
+    in:
+      bam: sambamba_sort/sorted_bam
+      num_of_threads: {default: 36}
+    out: [indexed_bam]
+
+  python_createsequencegroups:
+    run: ../tools/python_createsequencegroups.cwl
+    in:
+      ref_dict: reference_dict
+    out: [out_intervals]
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
@@ -80,47 +118,43 @@ steps:
       input_brsq_reports: gatk_baserecalibrator/output
       output_basename: output_basename
     out: [output]
-  gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller_35.cwl
+
+  gatk_applybqsr:
+    run: ../tools/gatk_applybqsr.cwl
     in:
-      contamination: checkcontamination/contamination
-      input_bam: picard_gatherbamfiles/output
-      interval_list: picard_intervallisttools/output
+      bqsr_report: gatk_gatherbqsrreports/output
+      input_bam: sambamba_index/indexed_bam
       reference: indexed_reference_fasta
-    scatter: [interval_list]
+      sequence_interval: python_createsequencegroups/out_intervals
+    scatter: [sequence_interval]
+    out: [recalibrated_bam]
+
+  picard_gatherbamfiles:
+    run: ../tools/picard_gatherbamfiles.cwl
+    in:
+      input_bam: gatk_applybqsr/recalibrated_bam
+      output_bam_basename: output_basename
     out: [output]
+
   picard_calculatereadgroupchecksum:
     run: ../tools/picard_calculatereadgroupchecksum.cwl
     in:
       input_bam: picard_gatherbamfiles/output
     out: [output]
+
   picard_collectaggregationmetrics:
     run: ../tools/picard_calculatereadgroupchecksum.cwl
     in:
       input_bam: picard_gatherbamfiles/output
     out: [output]
-  picard_collectgvcfcallingmetrics:
-    run: ../tools/picard_collectgvcfcallingmetrics.cwl
-    in:
-      dbsnp_vcf: dbsnp_vcf
-      final_gvcf_base_name: output_basename
-      input_vcf: picard_mergevcfs/output
-      reference_dict: reference_dict
-      wgs_evaluation_interval_list: wgs_evaluation_interval_list
-    out: [output]
-  picard_collectqualityyieldmetrics:
-    run: ../tools/picard_collectqualityyieldmetrics.cwl
-    in:
-      input_bam: samtools_split/bam_files
-      output_basename: output_basename
-    scatter: [input_bam]
-    out: [output]
+
   picard_collectreadgroupbamqualitymetrics:
     run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
     out: [output]
+
   picard_collectwgsmetrics:
     run: ../tools/picard_collectwgsmetrics.cwl
     in:
@@ -128,23 +162,13 @@ steps:
       intervals: wgs_coverage_interval_list
       reference: indexed_reference_fasta
     out: [output]
+
   picard_intervallisttools:
     run: ../tools/picard_intervallisttools.cwl
     in:
       interval_list: wgs_calling_interval_list
     out: [output]
-  picard_mergevcfs:
-    run: ../tools/picard_mergevcfs.cwl
-    in:
-      input_vcf: gatk_haplotypecaller/output
-      output_vcf_basename: output_basename
-    out: [output]
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
-    in:
-      input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
-    out: [output]
+
   verifybamid:
     run: ../tools/verifybamid.cwl
     in:
@@ -155,59 +179,46 @@ steps:
       ref_fasta: indexed_reference_fasta
       output_basename: output_basename
     out: [output]
-  samtools_split:
-    run: ../tools/samtools_split.cwl
+
+  checkcontamination:
+    run: ../tools/expression_checkcontamination.cwl
     in:
-      input_bam: samtools_cram2bam/bam_file
-      threads:
-        default: 36
-    out: [bam_files]
-  sambamba_merge:
-    run: ../tools/sambamba_merge.cwl
+      verifybamid_selfsm: verifybamid/output
+    out: [contamination]
+
+  gatk_haplotypecaller:
+    run: ../tools/gatk_haplotypecaller_35.cwl
     in:
-      bams: bwa_mem/output
-      base_file_name: output_basename
-      num_of_threads:
-        default: 36
-      suffix:
-        default: aligned.duplicates_marked.sorted.bam
-    out: [merged_bam]
-  sambamba_index:
-    run: ../tools/sambamba_index.cwl
-    in:
-      bam: sambamba_sort/sorted_bam
-      num_of_threads:
-        default: 36
-    out: [indexed_bam]
-  sambamba_sort:
-    run: ../tools/sambamba_sort.cwl
-    in:
-      bam: sambamba_merge/merged_bam
-      base_file_name: output_basename
-      num_of_threads:
-        default: 36
-      suffix:
-        default: aligned.duplicates_marked.sorted.bam
-    out: [sorted_bam]
-  picard_gatherbamfiles:
-    run: ../tools/picard_gatherbamfiles.cwl
-    in:
-      input_bam: gatk_applybqsr/recalibrated_bam
-      output_bam_basename: output_basename
-    out: [output]
-  samtools_cram2bam:
-    run: ../tools/samtools_cram2bam.cwl
-    in:
-      input_reads: input_bam
+      contamination: checkcontamination/contamination
+      input_bam: picard_gatherbamfiles/output
+      interval_list: picard_intervallisttools/output
       reference: indexed_reference_fasta
-      threads:
-        default: 33
-    out: [bam_file]
-  python_createsequencegroups:
-    run: ../tools/python_createsequencegroups.cwl
+    scatter: [interval_list]
+    out: [output]
+
+  picard_mergevcfs:
+    run: ../tools/picard_mergevcfs.cwl
     in:
-      ref_dict: reference_dict
-    out: [out_intervals]
+      input_vcf: gatk_haplotypecaller/output
+      output_vcf_basename: output_basename
+    out: [output]
+
+  picard_collectgvcfcallingmetrics:
+    run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    in:
+      dbsnp_vcf: dbsnp_vcf
+      final_gvcf_base_name: output_basename
+      input_vcf: picard_mergevcfs/output
+      reference_dict: reference_dict
+      wgs_evaluation_interval_list: wgs_evaluation_interval_list
+    out: [output]
+
+  samtools_coverttocram:
+    run: ../tools/samtools_covert_to_cram.cwl
+    in:
+      input_bam: picard_gatherbamfiles/output
+      reference: indexed_reference_fasta
+    out: [output]
 
 $namespaces:
   sbg: https://sevenbridges.com
