@@ -19,8 +19,7 @@ arguments:
       INTERLEAVE=true
       NON_PF=true
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
 outputs:
   output:
     type: File

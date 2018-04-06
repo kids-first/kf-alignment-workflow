@@ -3,9 +3,10 @@ class: Workflow
 id: kfdrc_alignment_pipeline
 requirements:
   - class: ScatterFeatureRequirement
-
+  - class: MultipleInputFeatureRequirement
 inputs:
   input_bam: File
+  output_basename: string
   indexed_reference_fasta: File
   contamination_sites_ud: File
   contamination_sites_mu: File
@@ -18,73 +19,19 @@ inputs:
   dbsnp_vcf: File
 
 outputs:
-  duplicates_marked_bam:
-    type: File
-    outputSource: picard_markduplicates/output_markduplicates_bam
-  sorted_bam:
-    type: File
-    outputSource: picard_sortsam/output_sorted_bam
-  bqsr_report:
-    type: File
-    outputSource: gatk_gatherbqsrreports/output
-  final_bam:
-    type: File
-    outputSource: picard_gatherbamfiles/output
-  gvcf:
-    type: File
-    outputSource: picard_mergevcfs/output
-  cram:
-    type: File
-    outputSource: samtools_coverttocram/output
-  verifybamid_output:
-    type: File
-    outputSource: verifybamid/output
-  collect_quality_yield_metrics:
-    type: File[]
-    outputSource: picard_collectqualityyieldmetrics/output
-  collect_unsortedreadgroup_bam_quality_metrics:
-    type: 
-      type: array
-      items:
-        type: array
-        items: File
-    outputSource: picard_collectunsortedreadgroupbamqualitymetrics/output1
-  collect_unsortedreadgroup_bam_quality_metrics_pdf:
-    type:
-      type: array
-      items:
-        type: array
-        items: File
-    outputSource: picard_collectunsortedreadgroupbamqualitymetrics/output2
-  collect_collect_aggregation_metrics:
-    type: File[]
-    outputSource: picard_collectaggregationmetrics/output1
-  collect_collect_aggregation_pdf:
-    type: File[]
-    outputSource: picard_collectaggregationmetrics/output2
-  collect_wgs_metrics:
-    type: File
-    outputSource: picard_collectwgsmetrics/output
-  calculate_readgroup_checksum:
-    type: File
-    outputSource: picard_calculatereadgroupchecksum/output
-  collect_readgroupbam_quality_metrics:
-    type: File[]
-    outputSource: picard_collectreadgroupbamqualitymetrics/output1
-  collect_readgroupbam_quality_pdf:
-    type: File[]
-    outputSource: picard_collectreadgroupbamqualitymetrics/output2
-  picard_collect_gvcf_calling_metrics:
-    type: File[]
-    outputSource: picard_collectgvcfcallingmetrics/output
+  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
+  final_bam: {type: File, outputSource: picard_gatherbamfiles/output}
+  gvcf: {type: File, outputSource: picard_mergevcfs/output}
+  cram: {type: File, outputSource: samtools_coverttocram/output}
+  verifybamid_output: {type: File, outputSource: verifybamid/output}
+  collect_quality_yield_metrics: {type: 'File[]', outputSource: picard_collectqualityyieldmetrics/output}
+  collect_collect_aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
+  collect_wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
+  calculate_readgroup_checksum: {type: File, outputSource: picard_calculatereadgroupchecksum/output}
+  collect_readgroupbam_quality_metrics: {type: 'File[]', outputSource: picard_collectreadgroupbamqualitymetrics/output}
+  picard_collect_gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
 
 steps:
-  getbasename:
-    run: ../tools/expression_getbasename.cwl
-    in:
-      input_file: input_bam
-    out: [file_basename]
-
   picard_revertsam:
     run: ../tools/picard_revertsam.cwl
     in:
@@ -95,6 +42,7 @@ steps:
     run: ../tools/picard_collectqualityyieldmetrics.cwl
     in:
       input_bam: picard_revertsam/output
+      output_basename: output_basename
     scatter: [input_bam]
     out: [output]
 
@@ -106,24 +54,17 @@ steps:
     scatter: [input_bam]
     out: [output]
 
-  picard_collectunsortedreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectunsortedreadgroupbamqualitymetrics.cwl
-    in:
-      input_bam: bwa_mem/output
-    scatter: [input_bam]
-    out: [output1, output2]
-
   picard_markduplicates:
     run: ../tools/picard_markduplicates.cwl
     in:
-      base_file_name: getbasename/file_basename
+      base_file_name: output_basename
       input_bams: bwa_mem/output
     out: [output_markduplicates_bam]
 
   picard_sortsam:
     run: ../tools/picard_sortsam.cwl
     in:
-      base_file_name: getbasename/file_basename
+      base_file_name: output_basename
       input_bam: picard_markduplicates/output_markduplicates_bam
     out: [output_sorted_bam]
 
@@ -135,6 +76,7 @@ steps:
       contamination_sites_ud: contamination_sites_ud
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_bed: contamination_sites_bed
+      output_basename: output_basename
     out: [output]
 
   createsequencegrouping:
@@ -157,6 +99,7 @@ steps:
     run: ../tools/gatk_gatherbqsrreports.cwl
     in:
       input_brsq_reports: gatk_baserecalibrator/output
+      output_basename: output_basename
     out: [output]
 
   gatk_applybqsr:
@@ -173,7 +116,7 @@ steps:
     run: ../tools/picard_gatherbamfiles.cwl
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
-      output_bam_basename: getbasename/file_basename
+      output_bam_basename: output_basename
     out: [output]
 
   picard_collectaggregationmetrics:
@@ -181,14 +124,14 @@ steps:
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
-    out: [output1, output2]
+    out: [output]
 
   picard_collectreadgroupbamqualitymetrics:
     run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
-    out: [output1, output2]
+    out: [output]
 
   picard_collectwgsmetrics:
     run: ../tools/picard_collectwgsmetrics.cwl
@@ -237,7 +180,7 @@ steps:
     run: ../tools/picard_mergevcfs.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
-      output_vcf_basename: getbasename/file_basename
+      output_vcf_basename: output_basename
     out:
       [output]
 
@@ -246,7 +189,7 @@ steps:
     in:
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict
-      final_gvcf_base_name: getbasename/file_basename
+      final_gvcf_base_name: output_basename
       dbsnp_vcf: dbsnp_vcf
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
@@ -259,3 +202,11 @@ steps:
       wgs_calling_interval_list: wgs_calling_interval_list
       dbsnp_vcf: dbsnp_vcf
     out: []
+
+$namespaces:
+  sbg: https://sevenbridges.com
+hints:
+  - class: 'sbg:AWSInstanceType'
+    value: c5.9xlarge;ebs-gp2;768
+  - class: 'sbg:maxNumberOfParallelInstances'
+    value: 4

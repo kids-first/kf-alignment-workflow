@@ -23,17 +23,10 @@ arguments:
       METRIC_ACCUMULATION_LEVEL="null" 
       METRIC_ACCUMULATION_LEVEL="READ_GROUP"
 inputs:
-  input_bam:
-    type: File
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
+  input_bam: {type: File, secondaryFiles: ['^.bai']}
+  reference: {type: File, secondaryFiles: [^.dict, .fai]}
 outputs:
-  output1:
+  output:
     type: File[]
     outputBinding:
-      glob: '*_metrics'
-  output2:
-    type: File[]
-    outputBinding:
-      glob: '*.pdf'
+      glob: $(inputs.input_bam.nameroot).*

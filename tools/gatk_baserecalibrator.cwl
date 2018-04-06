@@ -27,12 +27,8 @@ arguments:
       -O $(inputs.input_bam.nameroot).recal_data.csv
       -L $(inputs.sequence_interval.path)
 inputs:
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
-  input_bam:
-    type: File
-    secondaryFiles: [^.bai]
+  reference: {type: File, secondaryFiles: [^.dict, .fai]}
+  input_bam: {type: File, secondaryFiles: [^.bai]}
   knownsites:
     type:
       type: array
@@ -42,8 +38,7 @@ inputs:
     inputBinding:
       position: 1
     secondaryFiles: [.tbi]
-  sequence_interval:
-    type: File
+  sequence_interval: File
 outputs:
   output:
     type: File

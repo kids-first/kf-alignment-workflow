@@ -21,12 +21,8 @@ arguments:
       MODE=VERBOSE 
       IS_BISULFITE_SEQUENCED=false
 inputs:
-  input_bam:
-    type: File
-    secondaryFiles: [.crai]
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
+  input_bam: {type: File, secondaryFiles: [.crai]}
+  reference: {type: File, secondaryFiles: [^.dict, .fai]}
 outputs:
   - id: output
     type: File

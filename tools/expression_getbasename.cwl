@@ -5,12 +5,10 @@ requirements:
   - class: InlineJavascriptRequirement
 
 inputs:
-  input_file:
-    type: File
+  input_file: File
 
 outputs:
-  file_basename:
-    type: string
+  file_basename: string
 
 expression:
-  "${return {file_basename: inputs.input_file.nameroot};}"  
+  "${return {file_basename: inputs.input_file.nameroot};}"

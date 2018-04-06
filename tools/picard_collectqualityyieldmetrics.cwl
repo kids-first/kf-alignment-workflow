@@ -15,12 +15,12 @@ arguments:
     valueFrom: >-
       INPUT=$(inputs.input_bam.path)
       OQ=true
-      OUTPUT=$(inputs.input_bam.nameroot).unmapped.quality_yield_metrics
+      OUTPUT=$(inputs.output_basename).$(inputs.input_bam.nameroot).unmapped.quality_yield_metrics
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
+  output_basename: string
 outputs:
   - id: output
     type: File
     outputBinding:
-      glob: '*_metrics'
+      glob: $(inputs.output_basename).$(inputs.input_bam.nameroot).unmapped.quality_yield_metrics

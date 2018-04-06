@@ -47,8 +47,7 @@ arguments:
       ALIGNER_PROPER_PAIR_FLAGS=true UNMAP_CONTAMINANT_READS=true
       UNMAPPED_READ_STRATEGY=COPY_TO_TAG
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
   indexed_reference_fasta:
     type: File
     secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa, .64.alt,

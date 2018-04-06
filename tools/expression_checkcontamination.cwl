@@ -11,8 +11,7 @@ inputs:
       loadContents: true
 
 outputs:
-  contamination:
-    type: float
+  contamination: float
 
 expression:
   "${
@@ -20,6 +19,6 @@ expression:
       for (var i=1; i<lines.length; i++){
         var fields=lines[i].split('\\t');
         if (fields.length != 19) {continue;}
-        return {contamination: (1-fields[6])/0.75};
+        return {contamination: fields[6]/0.75};
       }
   }"  

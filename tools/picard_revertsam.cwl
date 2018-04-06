@@ -25,8 +25,7 @@ arguments:
       REMOVE_ALIGNMENT_INFORMATION=true
       OUTPUT_BY_READGROUP=true
 inputs:
-  input_bam:
-    type: File
+  input_bam: File
 outputs:
   output:
     type: File[]

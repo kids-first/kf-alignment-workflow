@@ -14,7 +14,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       --javaOptions "-Xms3000m"
-      -O GatherBqsrReports.recal_data.csv
+      -O $(inputs.output_basename).GatherBqsrReports.recal_data.csv
 inputs:
   input_brsq_reports:
     type:
@@ -23,6 +23,7 @@ inputs:
       inputBinding:
         prefix: -I
         separate: true
+  output_basename: string
 outputs:
   - id: output
     type: File

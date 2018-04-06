@@ -31,16 +31,10 @@ arguments:
       -SQQ 10 -SQQ 20 -SQQ 30
       -L $(inputs.sequence_interval.path)
 inputs:
-  reference:
-    type: File
-    secondaryFiles: [^.dict, .fai]
-  input_bam:
-    type: File
-    secondaryFiles: [^.bai]
-  bqsr_report:
-    type: File
-  sequence_interval:
-    type: File
+  reference: {type: File, secondaryFiles: [^.dict, .fai]}
+  input_bam: {type: File, secondaryFiles: [^.bai]}
+  bqsr_report: File
+  sequence_interval: File
 outputs:
   recalibrated_bam:
     type: File

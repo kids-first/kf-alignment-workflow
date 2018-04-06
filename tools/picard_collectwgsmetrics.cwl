@@ -22,18 +22,11 @@ arguments:
       USE_FAST_ALGORITHM=true
       READ_LENGTH=250
 inputs:
-  input_bam:
-    type: File
-    secondaryFiles:
-      - ^.bai
-  reference:
-    type: File
-    secondaryFiles:
-      - .fai
-  intervals:
-    type: File
+  input_bam: {type: File, secondaryFiles: [^.bai]}
+  reference: {type: File, secondaryFiles: [.fai]}
+  intervals: File
 outputs:
   - id: output
     type: File
     outputBinding:
-      glob: '*_metrics'
+      glob: $(inputs.input_bam.nameroot).wgs_metrics
