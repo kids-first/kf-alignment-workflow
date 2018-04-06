@@ -116,31 +116,6 @@ outputs:
   bam_files:
     doc: Output BAM files.
     label: Output BAM files
-    type: 'File[]?'
+    type: 'File[]'
     outputBinding:
       glob: '*.bam'
-label: Samtools split
-'sbg:appVersion':
-  - v1.0
-'sbg:categories':
-  - SAM/BAM-Processing
-'sbg:license': 'BSD License, MIT License'
-'sbg:links':
-  - id: 'http://www.htslib.org'
-    label: Homepage
-  - id: 'https://github.com/samtools/'
-    label: Source code
-  - id: 'https://sourceforge.net/projects/samtools/files/samtools/'
-    label: Download
-  - id: 'http://www.ncbi.nlm.nih.gov/pubmed/19505943'
-    label: Publication
-  - id: 'http://www.htslib.org/doc/samtools.html'
-    label: Documentation
-  - id: 'http://www.htslib.org/doc/samtools.html'
-    label: Wiki
-'sbg:toolAuthor': >-
-  Heng Li/Sanger Institute,  Bob Handsaker/Broad Institute, James
-  Bonfield/Sanger Institute,
-'sbg:toolkit': SAMtools
-'sbg:toolkitVersion': v1.7
-'sbg:validationErrors': []

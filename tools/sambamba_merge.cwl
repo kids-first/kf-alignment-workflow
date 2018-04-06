@@ -238,7 +238,7 @@ outputs:
   merged_bam:
     doc: Merged bam.
     label: Merged bam
-    type: File?
+    type: File
     outputBinding:
       glob: '*.bam'
       outputEval: |-
@@ -254,21 +254,4 @@ doc: >-
   Sambamba Merge is used for merging several sorted BAM files into one. The
   sorting order of all the files must be the same, and it is maintained in the
   output file.
-label: Sambamba Merge
-'sbg:categories':
-  - SAM/BAM-Processing
-'sbg:license': GNU General Public License v2.0 only
-'sbg:links':
-  - id: 'http://lomereiter.github.io/sambamba/docs/sambamba-view.html'
-    label: Homepage
-  - id: 'https://github.com/lomereiter/sambamba'
-    label: Source code
-  - id: 'https://github.com/lomereiter/sambamba/wiki'
-    label: Wiki
-  - id: 'https://github.com/lomereiter/sambamba/releases/tag/v0.5.9'
-    label: Download
-  - id: 'http://lomereiter.github.io/sambamba/docs/sambamba-view.html'
-    label: Publication
-'sbg:toolAuthor': Artem Tarasov
-'sbg:toolkit': Sambamba
-'sbg:toolkitVersion': 0.6.3
+

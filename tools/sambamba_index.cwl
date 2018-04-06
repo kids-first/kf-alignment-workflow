@@ -128,26 +128,9 @@ inputs:
 outputs:
   indexed_bam:
     doc: Indexed bam.
-    type: File?
+    type: File
     outputBinding:
       glob: '*.bam'
     secondaryFiles:
       - ^.bai
-label: Sambamba Index
-'sbg:categories':
-  - SAM/BAM-Processing
-'sbg:license': GNU General Public License v2.0 only
-'sbg:links':
-  - id: 'http://lomereiter.github.io/sambamba/docs/sambamba-view.html'
-    label: Homepage
-  - id: 'https://github.com/lomereiter/sambamba'
-    label: Source code
-  - id: 'https://github.com/lomereiter/sambamba/wiki'
-    label: Wiki
-  - id: 'https://github.com/lomereiter/sambamba/releases/tag/v0.5.9'
-    label: Download
-  - id: 'http://lomereiter.github.io/sambamba/docs/sambamba-view.html'
-    label: Publication
-'sbg:toolAuthor': Artem Tarasov
-'sbg:toolkit': Sambamba
-'sbg:toolkitVersion': 0.6.3
+
