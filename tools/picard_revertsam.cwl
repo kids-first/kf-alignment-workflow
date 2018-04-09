@@ -11,8 +11,10 @@ arguments:
     shellQuote: false
     valueFrom: >-
       RevertSam
+      REFERENCE_SEQUENCE=$(inputs.reference.path)
       INPUT=$(inputs.input_bam.path)
       OUTPUT=$(runtime.outdir)
+      OUTPUT_BY_READGROUP_FILE_FORMAT=bam
       SANITIZE=true
       MAX_DISCARD_FRACTION=0.005
       ATTRIBUTE_TO_CLEAR=XT
