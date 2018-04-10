@@ -3,11 +3,8 @@ class: CommandLineTool
 id: picard_revertsam
 requirements:
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.8.3'
+    dockerPull: 'kfdrc/picard:2.17.4'
   - class: ShellCommandRequirement
-  - class: ResourceRequirement
-    ramMin: 8000
-  - class: InlineJavascriptRequirement
 baseCommand: [java, -Xms8000m, -jar, /picard.jar]
 arguments:
   - position: 0
@@ -31,6 +28,7 @@ arguments:
       OUTPUT_BY_READGROUP=true
 inputs:
   input_bam: File
+  reference: {type: File, secondaryFiles: [.fai]}
 outputs:
   output:
     type: File[]
