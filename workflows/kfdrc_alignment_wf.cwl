@@ -153,7 +153,7 @@ steps:
     out: [contamination]
 
   gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller_35.cwl
+    run: ../tools/gatk_haplotypecaller.cwl
     in:
       contamination: checkcontamination/contamination
       input_bam: picard_gatherbamfiles/output
