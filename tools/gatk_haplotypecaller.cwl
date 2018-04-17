@@ -7,18 +7,17 @@ requirements:
   - class: ResourceRequirement
     ramMin: 8000
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
-baseCommand: [/usr/bin/java, -Xms2000m, -jar, /GenomeAnalysisTK.jar]
+    dockerPull: 'kfdrc/gatk:4.beta.1-3.5'
+baseCommand: [/gatk-launch, --javaOptions, -Xms2000m]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -T PrintReads
+      PrintReads
       -I $(inputs.input_bam.path)
-      -R $(inputs.reference.path)
       --interval_padding 500
       -L $(inputs.interval_list.path)
-      -o local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
+      -O local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
       -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
       -R $(inputs.reference.path)
