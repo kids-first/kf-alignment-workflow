@@ -15,22 +15,15 @@ arguments:
     valueFrom: |-
       samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
       sed -i 's/\s/\\t/g' rg.txt # works for rabix, use \\ for cwltool
-      ${
-          if (inputs.input_bam.size > inputs.max_unit_byte) {
-              var cmd = "";
-              cmd += "bamtofastq tryoq=1 filename=" + inputs.input_bam.path;
-              cmd += " | split -dl 1000 - reads- &&"
-              cmd += " ls reads-* | xargs -i mv {} {}.fq";
-              return cmd
-          } else {
-              return ""
-          }
-      }
+      if [ $(inputs.input_bam.size) -gt $(inputs.max_siz) ]; then
+        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 500000000 - reads-
+        ls reads-* | xargs -i mv {} {}.fq
+      fi
 inputs:
   input_bam: File
-  max_unit_byte:
+  max_siz:
     type: int
-    default: 50
+    default: 15000000000
 outputs:
   output:
     type: File[]
@@ -38,12 +31,10 @@ outputs:
       glob: '*.fq'
       outputEval: >-
         ${
-          if( inputs.input_bam.size < inputs.max_unit_byte )
-              return [inputs.input_bam]
+          if( inputs.input_bam.size < inputs.max_siz ) return [inputs.input_bam]
           else return self
         }
   rg:
     type: File
     outputBinding:
       glob: rg.txt
-

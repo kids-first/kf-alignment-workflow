@@ -21,16 +21,13 @@ inputs:
   wgs_evaluation_interval_list: File
 
 outputs:
-  indexed_bam: {type: File, outputSource: picard_gatherbamfiles/output}
   cram: {type: File, outputSource: samtools_coverttocram/output}
   gvcf: {type: File, outputSource: picard_mergevcfs/output}
   verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
-  picard_collect_gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
-  calculate_readgroup_checksum: {type: File, outputSource: picard_calculatereadgroupchecksum/output}
-  collect_readgroupbam_quality_metrics: {type: 'File[]', outputSource: picard_collectreadgroupbamqualitymetrics/output}
-  collect_collect_aggregation_metrics: {type: File, outputSource: picard_collectaggregationmetrics/output}
-  collect_wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
+  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
+  aggregation_metrics: {type: File, outputSource: picard_collectaggregationmetrics/output}
+  wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
 
 steps:
   samtools_split:
@@ -102,20 +99,8 @@ steps:
       output_bam_basename: output_basename
     out: [output]
 
-  picard_calculatereadgroupchecksum:
-    run: ../tools/picard_calculatereadgroupchecksum.cwl
-    in:
-      input_bam: picard_gatherbamfiles/output
-    out: [output]
-
   picard_collectaggregationmetrics:
-    run: ../tools/picard_calculatereadgroupchecksum.cwl
-    in:
-      input_bam: picard_gatherbamfiles/output
-    out: [output]
-
-  picard_collectreadgroupbamqualitymetrics:
-    run: ../tools/picard_collectreadgroupbamqualitymetrics.cwl
+    run: ../tools/picard_collectaggregationmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
