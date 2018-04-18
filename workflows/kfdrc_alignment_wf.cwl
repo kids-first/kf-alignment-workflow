@@ -26,7 +26,7 @@ outputs:
   verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
   gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
-  aggregation_metrics: {type: File, outputSource: picard_collectaggregationmetrics/output}
+  aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
   wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
 
 steps:
