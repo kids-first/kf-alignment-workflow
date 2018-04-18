@@ -116,7 +116,19 @@ arguments:
     shellQuote: false
     valueFrom: |-
       ${
-          if(inputs.bams.length == 1) return '' 
+          var in_var = []
+          if (inputs.bams instanceof Array) { // VK
+              if (inputs.bams[0] instanceof Array) {
+                  // Support for input received as list of one-element-lists 
+                  for (var i = 0; i < inputs.bams.length; i++)
+                      in_var = in_var.concat(inputs.bams[i]);
+              } else {
+                  in_var = [].concat(inputs.bams)
+              }
+          } else {
+              in_var = [].concat(inputs.bams)
+          }
+          if(in_var.length == 1) return '' 
           else return inputs.base_file_name + '.' + inputs.suffix
       }
 inputs:

@@ -13,22 +13,20 @@ baseCommand: []
 arguments:
   - position: 0
     shellQuote: false
-    valueFrom: |-
-      ${
-          var cmd = "";
-          if (inputs.reads.nameext == ".bam") {
-              cmd += "bamtofastq tryoq=1 filename=" + inputs.reads.path;
-          } else {
-              cmd += "cat " + inputs.reads.path;
-          }
-          cmd += " | bwa mem -K 100000000 -p -v 3 -t 16 -Y " + inputs.ref.path;
-          cmd += " -R '" + inputs.rg.contents.split('\n')[0] + "' -";
-          cmd += " | samblaster -i /dev/stdin -o /dev/stdout";
-          cmd += " | sambamba view -t 16 -f bam -l 0 -S /dev/stdin";
-          cmd += " | sambamba sort -t 16 --natural-sort -m 5GiB --tmpdir ./";
-          cmd += " -o " + inputs.reads.nameroot + ".unsorted.bam -l 5 /dev/stdin";
-          return cmd;
-      }
+    valueFrom: >-
+      if [ $(inputs.reads.nameext) = ".bam"]; then
+        CMD='bamtofastq tryoq=1 filename=$(inputs.reads.path)'
+      else
+        CMD='cat $(inputs.reads.path)'
+      fi
+
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 16
+      -Y $(inputs.ref.path)
+      -R '$(inputs.rg.contents.split('\n')[0])' -
+      | samblaster -i /dev/stdin -o /dev/stdout
+      | sambamba view -t 16 -f bam -l 0 -S /dev/stdin
+      | sambamba sort -t 16 --natural-sort -m 5GiB --tmpdir ./
+      -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
 inputs:
   ref:
     type: File
