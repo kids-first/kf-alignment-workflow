@@ -14,7 +14,7 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      if [ $(inputs.reads.nameext) = ".bam"]; then
+      if [ $(inputs.reads.nameext) = ".bam" ]; then
         CMD='bamtofastq tryoq=1 filename=$(inputs.reads.path)'
       else
         CMD='cat $(inputs.reads.path)'
