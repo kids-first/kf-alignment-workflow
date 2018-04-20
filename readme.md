@@ -6,7 +6,7 @@
 - tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
 - tested with
-  - rabix-v1.0.1: https://github.com/rabix/bunny/releases/tag/v1.0.1
+  - rabix-v1.0.5: https://github.com/rabix/bunny/releases/tag/v1.0.5
   - cwltool: https://github.com/common-workflow-language/cwltool/releases/tag/1.0.20171107133715
 
 ## references:
