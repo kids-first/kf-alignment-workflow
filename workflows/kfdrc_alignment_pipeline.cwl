@@ -36,6 +36,7 @@ steps:
     run: ../tools/picard_revertsam.cwl
     in:
       input_bam: input_bam
+      reference: indexed_reference_fasta
     out: [output]
 
   picard_collectqualityyieldmetrics:
