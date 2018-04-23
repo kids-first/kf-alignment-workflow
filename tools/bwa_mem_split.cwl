@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 14000
-    coresMin: 16
+    coresMin: 8
   - class: DockerRequirement
     dockerPull: 'zhangb1/kf-bwa-bundle'
   - class: InlineJavascriptRequirement
