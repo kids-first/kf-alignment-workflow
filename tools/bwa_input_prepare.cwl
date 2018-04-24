@@ -14,7 +14,6 @@ arguments:
     shellQuote: false
     valueFrom: |-
       samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
-      sed -i 's/\s/\\t/g' rg.txt # works for rabix, use \\ for cwltool
       if [ $(inputs.input_bam.size) -gt $(inputs.max_siz) ]; then
         bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 500000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
