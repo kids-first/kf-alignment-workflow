@@ -7,6 +7,7 @@ requirements:
 inputs:
   input_reads: File
   indexed_reference_fasta: File
+  base_name: string
 
 outputs:
   aligned_bams:
@@ -19,6 +20,13 @@ steps:
     in:
       input_bam: input_reads
     out: [output, rg]
+
+  expression_updatergsample:
+    run: ../tools/expression_preparerg.cwl
+    in:
+      rg: bwa_input_prepare/rg
+      sample: base_name
+    out: [rg_str]
 
   bwa_mem_split:
     run: ../tools/bwa_mem_split.cwl

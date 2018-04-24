@@ -22,7 +22,7 @@ arguments:
 
       $CMD | bwa mem -K 100000000 -p -v 3 -t 8
       -Y $(inputs.ref.path)
-      -R '$(inputs.rg.contents.split('\n')[0])' -
+      -R '$(inputs.rg)' -
       | samblaster -i /dev/stdin -o /dev/stdout
       | sambamba view -t 8 -f bam -l 0 -S /dev/stdin
       | sambamba sort -t 8 --natural-sort -m 5GiB --tmpdir ./

@@ -42,6 +42,7 @@ steps:
     in:
       input_reads: samtools_split/bam_files
       indexed_reference_fasta: indexed_reference_fasta
+      base_name: output_basename
     scatter: [input_reads]
     out: [aligned_bams]
 
