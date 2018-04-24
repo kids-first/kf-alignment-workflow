@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 14000
-    coresMin: 16
+    coresMin: 8
   - class: DockerRequirement
     dockerPull: 'zhangb1/kf-bwa-bundle'
   - class: InlineJavascriptRequirement
@@ -20,12 +20,12 @@ arguments:
         CMD='cat $(inputs.reads.path)'
       fi
 
-      $CMD | bwa mem -K 100000000 -p -v 3 -t 16
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 8
       -Y $(inputs.ref.path)
-      -R '$(inputs.rg.contents.split('\n')[0])' -
+      -R '$(inputs.rg)' -
       | samblaster -i /dev/stdin -o /dev/stdout
-      | sambamba view -t 16 -f bam -l 0 -S /dev/stdin
-      | sambamba sort -t 16 --natural-sort -m 5GiB --tmpdir ./
+      | sambamba view -t 8 -f bam -l 0 -S /dev/stdin
+      | sambamba sort -t 8 --natural-sort -m 5GiB --tmpdir ./
       -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
 inputs:
   ref:
