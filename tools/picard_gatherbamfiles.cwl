@@ -13,7 +13,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      OUTPUT=$(inputs.output_bam_basename).kfdrc.bam
+      OUTPUT=$(inputs.output_bam_basename).bam
       CREATE_INDEX=true
       CREATE_MD5_FILE=true
 inputs:

@@ -15,14 +15,14 @@ arguments:
     valueFrom: |-
       samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
       if [ $(inputs.input_bam.size) -gt $(inputs.max_siz) ]; then
-        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 500000000 - reads-
+        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 680000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
       fi
 inputs:
   input_bam: File
   max_siz:
     type: int
-    default: 15000000000
+    default: 20000000000
 outputs:
   output:
     type: File[]
