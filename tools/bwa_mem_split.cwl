@@ -33,7 +33,7 @@ inputs:
     secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac,
       .64.sa, .64.alt, ^.dict, .amb, .ann, .bwt, .pac, .sa]
   reads: File
-  rg: { type: File, inputBinding: { loadContents: true } }
+  rg: string
 
 outputs:
   output: { type: File, outputBinding: { glob: '*.bam' } }
