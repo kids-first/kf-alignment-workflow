@@ -7,14 +7,14 @@ requirements:
     ramMin: 1024
     coresMin: 36
   - class: DockerRequirement
-    dockerPull: 'kfdrc/sambamba:v0.6.7-dev'
+    dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      sambamba sort -o $(inputs.base_file_name).$(inputs.suffix).bam -t 36
+      /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -o $(inputs.base_file_name).$(inputs.suffix).bam -t 36
       $(inputs.bam.path)
 
       mv $(inputs.base_file_name).$(inputs.suffix).bam.bai $(inputs.base_file_name).$(inputs.suffix).bai
