@@ -4,8 +4,8 @@ id: bwa_mem_split
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 50000
-    coresMin: 18
+    ramMin: 25000
+    coresMin: 17
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
@@ -20,12 +20,12 @@ arguments:
         CMD='cat $(inputs.reads.path)'
       fi
 
-      $CMD | bwa mem -K 100000000 -p -v 3 -t 18
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 15
       -Y $(inputs.ref.path)
       -R '$(inputs.rg)' -
       | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
-      | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 18 -f bam -l 0 -S /dev/stdin
-      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 18 --natural-sort -m 35GiB --tmpdir ./
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 17 -f bam -l 0 -S /dev/stdin
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 17 --natural-sort -m 15GiB --tmpdir ./
       -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
 inputs:
   ref:
