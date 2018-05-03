@@ -27,6 +27,8 @@ arguments:
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 17 -f bam -l 0 -S /dev/stdin
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 17 --natural-sort -m 15GiB --tmpdir ./
       -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
+
+      rm $(inputs.reads.path)
 inputs:
   ref:
     type: File
