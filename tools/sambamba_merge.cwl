@@ -72,11 +72,7 @@ arguments:
               if (in_var.length == 1) {
                   comm += 'cp '
               } else if (in_var.length > 1) {
-                  comm += '/opt/sambamba_0.6.3/sambamba_v0.6.3 merge '
-                  if (inputs.num_of_threads) {
-                      comm += ' -t '
-                      comm += inputs.num_of_threads
-                  }
+                  comm += '/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 '
                   if (inputs.compression_level) {
                       comm += ' -l '
                       comm += inputs.compression_level

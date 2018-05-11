@@ -6,7 +6,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: 36
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
+    dockerPull: 'kfdrc/sambamba:v0.6.7-dev'
   - class: InitialWorkDirRequirement
     listing: []
   - class: InlineJavascriptRequirement
@@ -15,7 +15,7 @@ arguments:
   - position: 7
     shellQuote: false
     valueFrom: >-
-      mv $(inputs.bam.path) . && /opt/sambamba_0.6.3/sambamba_v0.6.3 index -t 36
+      mv $(inputs.bam.path) . && sambamba index -t 36
       $(inputs.bam.basename) $(inputs.bam.nameroot).bai
 inputs:
   bam: File

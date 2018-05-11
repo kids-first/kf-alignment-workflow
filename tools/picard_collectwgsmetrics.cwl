@@ -7,7 +7,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 4500
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.15.0'
+    dockerPull: 'kfdrc/picard:2.18.2-dev'
 baseCommand: [ java, -Xms2000m, -jar, /picard.jar, CollectWgsMetrics]
 arguments:
   - position: 1

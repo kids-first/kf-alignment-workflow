@@ -7,7 +7,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 4000
   - class: DockerRequirement
-    dockerPull: 'kfdrc/samtools:1.3.1'
+    dockerPull: 'kfdrc/samtools:1.8-dev'
 baseCommand: [samtools, view]
 arguments:
   - position: 1

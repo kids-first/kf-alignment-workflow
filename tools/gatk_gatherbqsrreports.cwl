@@ -5,15 +5,15 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.beta.1'
+    dockerPull: 'kfdrc/gatk:4.0.3.0'
   - class: ResourceRequirement
     ramMin: 8000
-baseCommand: [/gatk-launch, GatherBQSRReports]
+baseCommand: [/gatk, GatherBQSRReports]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms3000m"
+      --java-options "-Xms3000m"
       -O $(inputs.output_basename).GatherBqsrReports.recal_data.csv
 inputs:
   input_brsq_reports:

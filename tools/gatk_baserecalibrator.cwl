@@ -5,15 +5,15 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.beta.1'
+    dockerPull: 'kfdrc/gatk:4.0.3.0'
   - class: ResourceRequirement
     ramMin: 8000
-baseCommand: [/gatk-launch, BaseRecalibrator]
+baseCommand: [/gatk, BaseRecalibrator]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      --javaOptions "-Xms4000m
+      --java-options "-Xms4000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10
       -XX:+PrintFlagsFinal
@@ -23,7 +23,7 @@ arguments:
       -Xloggc:gc_log.log"
       -R $(inputs.reference.path)
       -I $(inputs.input_bam.path)
-      --useOriginalQualities
+      --use-original-qualities
       -O $(inputs.input_bam.nameroot).recal_data.csv
       -L $(inputs.sequence_interval.path)
 inputs:
@@ -34,7 +34,7 @@ inputs:
       type: array
       items: File
       inputBinding:
-        prefix: -knownSites
+        prefix: --known-sites
     inputBinding:
       position: 1
     secondaryFiles: [.tbi]

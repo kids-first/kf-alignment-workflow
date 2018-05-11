@@ -33,6 +33,6 @@ steps:
     in:
       ref: indexed_reference_fasta
       reads: bwa_input_prepare/output
-      rg: bwa_input_prepare/rg
+      rg: expression_updatergsample/rg_str
     scatter: [reads]
     out: [output]

@@ -5,20 +5,21 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:3.6-0-g89b7209'
+    dockerPull: 'kfdrc/gatk:4.0.3.0'
   - class: ResourceRequirement
     ramMin: 30000
-baseCommand: [/usr/bin/java, -Xms2000m, -jar, /GenomeAnalysisTK.jar]
+baseCommand: [/gatk]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -T ValidateVariants
+      --java-options "-Xms2000m"
+      ValidateVariants
       -V $(inputs.input_vcf.path)
       -R $(inputs.reference.path)
       -L $(inputs.wgs_calling_interval_list.path)
       -gvcf
-      --validationTypeToExclude ALLELES
+      --validation-type-to-exclude ALLELES
       --dbsnp $(inputs.dbsnp_vcf.path)
 inputs:
   input_vcf: {type: File, secondaryFiles: .tbi}

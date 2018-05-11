@@ -3,7 +3,7 @@ class: CommandLineTool
 id: bwa_mem
 requirements:
   - class: DockerRequirement
-    dockerPull: 'kfdrc/bwa-picard:broad'
+    dockerPull: 'kfdrc/bwa-picard:latest-dev'
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
