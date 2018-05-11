@@ -14,6 +14,7 @@ arguments:
       RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
         samtools split -f '%!.bam' -@ 36 --reference $(inputs.reference.path) $(inputs.input_bam.path)
+        rm $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: File
