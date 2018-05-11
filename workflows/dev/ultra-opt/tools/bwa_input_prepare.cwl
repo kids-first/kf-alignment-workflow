@@ -17,6 +17,7 @@ arguments:
       if [ $(inputs.input_bam.size) -gt $(inputs.max_siz) ]; then
         bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 500000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
+        rm $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: File
