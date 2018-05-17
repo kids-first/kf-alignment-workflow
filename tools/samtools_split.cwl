@@ -4,7 +4,7 @@ id: samtools_split
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/bogdang/samtools:1.7-11-g041220d'
+    dockerPull: 'kfdrc/samtools:1.8-dev'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:
@@ -14,6 +14,7 @@ arguments:
       RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
         samtools split -f '%!.bam' -@ 36 --reference $(inputs.reference.path) $(inputs.input_bam.path)
+        rm $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: File

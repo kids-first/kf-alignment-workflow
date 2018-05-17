@@ -6,7 +6,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 1000
   - class: DockerRequirement
-    dockerPull: 'zhangb1/kf-bwa-bundle'
+    dockerPull: 'kfdrc/bwa-bundle:dev'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:
@@ -17,6 +17,7 @@ arguments:
       if [ $(inputs.input_bam.size) -gt $(inputs.max_siz) ]; then
         bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 680000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
+        rm $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: File

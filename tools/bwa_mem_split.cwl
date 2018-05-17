@@ -4,10 +4,10 @@ id: bwa_mem_split
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 14000
-    coresMin: 8
+    ramMin: 25000
+    coresMin: 17
   - class: DockerRequirement
-    dockerPull: 'zhangb1/kf-bwa-bundle'
+    dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:
@@ -15,18 +15,20 @@ arguments:
     shellQuote: false
     valueFrom: >-
       if [ $(inputs.reads.nameext) = ".bam" ]; then
-        CMD='bamtofastq tryoq=1 filename=$(inputs.reads.path)'
+        CMD='/opt/biobambam2/2.0.87-release-20180301132713/x86_64-etch-linux-gnu/bin/bamtofastq tryoq=1 filename=$(inputs.reads.path)'
       else
         CMD='cat $(inputs.reads.path)'
       fi
 
-      $CMD | bwa mem -K 100000000 -p -v 3 -t 8
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 15
       -Y $(inputs.ref.path)
       -R '$(inputs.rg)' -
-      | samblaster -i /dev/stdin -o /dev/stdout
-      | sambamba view -t 8 -f bam -l 0 -S /dev/stdin
-      | sambamba sort -t 8 --natural-sort -m 5GiB --tmpdir ./
+      | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 17 -f bam -l 0 -S /dev/stdin
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 17 --natural-sort -m 15GiB --tmpdir ./
       -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
+
+      rm $(inputs.reads.path)
 inputs:
   ref:
     type: File
