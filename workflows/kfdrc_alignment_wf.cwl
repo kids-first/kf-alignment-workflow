@@ -8,14 +8,15 @@ requirements:
 
 inputs:
   input_reads: File
+  biospecimen_name: string
   output_basename: string
+  indexed_reference_fasta: File
+  dbsnp_vcf: File
+  knownsites: File[]
+  reference_dict: File
   contamination_sites_bed: File
   contamination_sites_mu: File
   contamination_sites_ud: File
-  dbsnp_vcf: File
-  indexed_reference_fasta: File
-  knownsites: File[]
-  reference_dict: File
   wgs_calling_interval_list: File
   wgs_coverage_interval_list: File
   wgs_evaluation_interval_list: File
@@ -42,7 +43,7 @@ steps:
     in:
       input_reads: samtools_split/bam_files
       indexed_reference_fasta: indexed_reference_fasta
-      base_name: output_basename
+      sample_name: biospecimen_name
     scatter: [input_reads]
     out: [aligned_bams]
 

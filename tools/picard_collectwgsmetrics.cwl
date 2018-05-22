@@ -5,7 +5,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 4500
+    ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.18.2-dev'
 baseCommand: [ java, -Xms2000m, -jar, /picard.jar, CollectWgsMetrics]
