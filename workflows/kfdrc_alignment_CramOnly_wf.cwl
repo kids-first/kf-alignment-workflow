@@ -13,15 +13,11 @@ inputs:
   indexed_reference_fasta: File
   knownsites: File[]
   reference_dict: File
-  # contamination_sites_bed: File
-  # contamination_sites_mu: File
-  # contamination_sites_ud: File
   wgs_coverage_interval_list: File
   wgs_evaluation_interval_list: File
 
 outputs:
   cram: {type: File, outputSource: samtools_coverttocram/output}
-  # verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
   aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
   wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
@@ -111,17 +107,6 @@ steps:
       intervals: wgs_coverage_interval_list
       reference: indexed_reference_fasta
     out: [output]
-
-  # verifybamid:
-  #   run: ../tools/verifybamid.cwl
-  #   in:
-  #     contamination_sites_bed: contamination_sites_bed
-  #     contamination_sites_mu: contamination_sites_mu
-  #     contamination_sites_ud: contamination_sites_ud
-  #     input_bam: sambamba_sort/sorted_bam
-  #     ref_fasta: indexed_reference_fasta
-  #     output_basename: output_basename
-  #   out: [output]
 
   samtools_coverttocram:
     run: ../tools/samtools_covert_to_cram.cwl
