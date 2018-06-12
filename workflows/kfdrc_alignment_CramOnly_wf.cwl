@@ -14,7 +14,6 @@ inputs:
   knownsites: File[]
   reference_dict: File
   wgs_coverage_interval_list: File
-  wgs_evaluation_interval_list: File
 
 outputs:
   cram: {type: File, outputSource: samtools_coverttocram/output}
