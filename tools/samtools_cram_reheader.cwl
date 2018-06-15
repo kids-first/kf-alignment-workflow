@@ -14,11 +14,12 @@ arguments:
     shellQuote: false
     valueFrom: >-
       -b -T $(inputs.reference.path) -@ 35 $(inputs.input_cram.path) > tmp &&
-      samtools view -H tmp | sed  "/^@RG/s/SM:\S\+/SM:$(inputs.base_file_name)/g" | samtools reheader -P - tmp > $(inputs.input_cram.nameroot).reheader.bam
-      && samtools index -@ 35 $(inputs.input_cram.nameroot).reheader.bam $(inputs.input_cram.nameroot).reheader.bai
+      samtools view -H tmp | sed  "/^@RG/s/SM:\S\+/SM:$(inputs.base_file_name)/g" | samtools reheader -P - tmp > $(inputs.output_basename).bam
+      && samtools index -@ 35 $(inputs.output_basename).bam $(inputs.output_basename).bai
 inputs:
   input_cram: File
   base_file_name: string
+  output_basename: string
   reference: {type: File, secondaryFiles: [.fai]}
 outputs:
   output:
