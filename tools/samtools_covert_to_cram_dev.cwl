@@ -13,11 +13,12 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -C -T $(inputs.reference.path) -@ 35 -o $(inputs.input_bam.nameroot).cram $(inputs.input_bam.path)
-      && samtools index -@ 35 $(inputs.input_bam.nameroot).cram
+      -C -T $(inputs.reference.path) -@ 35 -o $(inputs.output_basename).cram $(inputs.input_bam.path)
+      && samtools index -@ 35 $(inputs.output_basename).cram
 inputs:
   reference: {type: File, secondaryFiles: [.fai]}
   input_bam: {type: File, secondaryFiles: [^.bai]}
+  output_basename: string
 outputs:
   output:
     type: File
