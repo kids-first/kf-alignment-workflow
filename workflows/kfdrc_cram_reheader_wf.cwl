@@ -33,6 +33,7 @@ steps:
     in:
       input_cram: input_cram
       base_file_name: biospecimen_name
+      output_basename: output_basename
       reference: indexed_reference_fasta
     out: [output]
  
@@ -41,6 +42,7 @@ steps:
     in:
       input_bam: samtools_cram_reheader/output
       reference: indexed_reference_fasta
+      output_basename: output_basename
     out: [output]
 
   picard_collectaggregationmetrics:
