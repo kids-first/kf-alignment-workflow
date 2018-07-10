@@ -18,7 +18,6 @@ inputs:
   wgs_evaluation_interval_list: File
 
 outputs:
-  gvcf: {type: File, outputSource: picard_mergevcfs/output}
   gvcf_renamed: {type: File, outputSource: picard_renamesample/output}
   gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
 
