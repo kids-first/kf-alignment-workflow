@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_cram_to_gvcf
+id: kf-cram2gvcf-custom
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -18,7 +18,7 @@ inputs:
   wgs_evaluation_interval_list: File
 
 outputs:
-  gvcf_renamed: {type: File, outputSource: picard_renamesample/output}
+  gvcf: {type: File, outputSource: picard_mergevcfs_python_renamesample/output}
   gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
 
 steps:
@@ -38,27 +38,20 @@ steps:
     scatter: [interval_list]
     out: [output]
 
-  picard_mergevcfs:
-    run: ../tools/picard_mergevcfs.cwl
+  picard_mergevcfs_python_renamesample:
+    run: ../tools/picard_mergevcfs_python_renamesample.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
       output_vcf_basename: output_basename
-    out: [output]
-
-  picard_renamesample:
-    run: ../tools/picard_renamesample.cwl
-    in:
-      gvcf: picard_mergevcfs/output
       biospecimen_name: biospecimen_name
-    out:
-      [output]
+    out: [output]
 
   picard_collectgvcfcallingmetrics:
     run: ../tools/picard_collectgvcfcallingmetrics.cwl
     in:
       dbsnp_vcf: dbsnp_vcf
       final_gvcf_base_name: output_basename
-      input_vcf: picard_renamesample/output
+      input_vcf: picard_mergevcfs_python_renamesample/output
       reference_dict: reference_dict
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
