@@ -19,14 +19,14 @@ arguments:
       -I $(inputs.input_cram.path)
       --interval-padding 500
       -L $(inputs.interval_list.path)
-      -O local.sharded.cram && /gatk
+      -O local.sharded.bam && /gatk
       --java-options "-Xms8000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10"
       HaplotypeCaller
       -R $(inputs.reference.path)
       -O $(inputs.input_cram.nameroot).vcf.gz
-      -I local.sharded.cram
+      -I local.sharded.bam
       -L $(inputs.interval_list.path)
       -ERC GVCF
       --max-alternate-alleles 3
