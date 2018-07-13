@@ -13,21 +13,15 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --java-options "-Xms2000m"
-      PrintReads
-      -R $(inputs.reference.path)
-      -I $(inputs.input_cram.path)
-      --interval-padding 500
-      -L $(inputs.interval_list.path)
-      -O local.sharded.bam && /gatk
       --java-options "-Xms8000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10"
       HaplotypeCaller
       -R $(inputs.reference.path)
       -O $(inputs.input_cram.nameroot).vcf.gz
-      -I local.sharded.bam
+      -I $(inputs.input_cram.path)
       -L $(inputs.interval_list.path)
+      --interval-padding 500
       -ERC GVCF
       --max-alternate-alleles 3
       -contamination $(inputs.contamination)
