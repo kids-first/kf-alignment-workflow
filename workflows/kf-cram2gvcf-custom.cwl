@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf-cram-to-gvcf-v2
+id: kf-cram-to-gvcf-v3
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement

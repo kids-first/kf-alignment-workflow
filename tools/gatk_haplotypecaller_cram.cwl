@@ -21,7 +21,6 @@ arguments:
       -O $(inputs.input_cram.nameroot).vcf.gz
       -I $(inputs.input_cram.path)
       -L $(inputs.interval_list.path)
-      --interval-padding 500
       -ERC GVCF
       --max-alternate-alleles 3
       -contamination $(inputs.contamination)
