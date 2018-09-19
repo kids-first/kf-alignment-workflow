@@ -11,7 +11,6 @@ inputs:
   indexed_reference_fasta: File
   dbsnp_vcf: File
   reference_dict: File
-  threads: int
   contamination_sites_bed: File
   contamination_sites_mu: File
   contamination_sites_ud: File
@@ -25,11 +24,11 @@ outputs:
 
 steps:
   samtools_cram2bam:
-    run: ../tools/samtools_cram2bam.cwl
+    run: ../tools/samtools_cram_to_bam.cwl
     in:
-      input_reads: input_cram
-      threads: threads
+      input_cram: input_cram
       reference: indexed_reference_fasta
+      output_basename: output_basename
     out:
       [output]
 
@@ -45,7 +44,7 @@ steps:
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
-      input_bam: samtools_cram2bam/bam_file
+      input_bam: samtools_cram2bam/output
       ref_fasta: indexed_reference_fasta
       output_basename: output_basename
     out: [output]
@@ -60,7 +59,7 @@ steps:
     run: ../tools/gatk_haplotypecaller.cwl
     in:
       contamination: checkcontamination/contamination
-      input_bam: samtools_cram2bam/bam_file
+      input_bam: samtools_cram2bam/output
       interval_list: picard_intervallisttools/output
       reference: indexed_reference_fasta
     scatter: [interval_list]
