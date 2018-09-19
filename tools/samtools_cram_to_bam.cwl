@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: samtools_cram_reheader
+id: samtools_cram2bam_w_index
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
