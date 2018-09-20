@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_cram_reheader
+id: kf-cram2gvcf_calc_contam
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
