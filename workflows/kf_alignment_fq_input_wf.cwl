@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_fq_input_wf
+id: kf_alignment_fq_input_wf_maris
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
