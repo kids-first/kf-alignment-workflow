@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 25000
-    coresMin: 17
+    coresMin: 30
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
