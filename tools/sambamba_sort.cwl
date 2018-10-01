@@ -15,7 +15,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       /opt/sambamba_0.6.3/sambamba_v0.6.3 sort
-      -t 36 -m 10G
+      -t 36 -m 48G
       -o $(inputs.base_file_name).$(inputs.suffix).bam
       $(inputs.bam.path)
 
