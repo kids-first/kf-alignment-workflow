@@ -7,28 +7,28 @@ requirements:
   - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_reads: File
-  biospecimen_name: string
-  output_basename: string
-  indexed_reference_fasta: File
-  dbsnp_vcf: File
-  knownsites: File[]
-  reference_dict: File
-  contamination_sites_bed: File
-  contamination_sites_mu: File
-  contamination_sites_ud: File
-  wgs_calling_interval_list: File
-  wgs_coverage_interval_list: File
-  wgs_evaluation_interval_list: File
+  input_reads: {type: File, doc: 'input bam file with aligned or unaligned reads'}
+  biospecimen_name: {type: string, doc: 'biospecimen ID'}
+  output_basename: {type: string, doc: 'output file base name all outputs'}
+  indexed_reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta'}
+  dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf'}
+  knownsites: {type: File[], doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}
+  reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict'}
+  contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed'}
+  contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu'}
+  contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD'}
+  wgs_calling_interval_list: {type: File, doc: 'wgs_calling_regions.hg38.interval_list'}
+  wgs_coverage_interval_list: {type: File, doc: 'wgs_coverage_regions.hg38.interval_list'}
+  wgs_evaluation_interval_list: {type: File, doc: 'wgs_evaluation_regions.hg38.interval_list'}
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
-  gvcf: {type: File, outputSource: picard_mergevcfs/output}
-  verifybamid_output: {type: File, outputSource: verifybamid/output}
-  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
-  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
-  aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
-  wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
+  cram: {type: File, outputSource: samtools_coverttocram/output, doc: 'Final aligned cram file output'}
+  gvcf: {type: File, outputSource: picard_mergevcfs/output, doc: 'Final haplotype-called gVCF output'}
+  verifybamid_output: {type: File, outputSource: verifybamid/output, doc: 'contamination check results'}
+  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: 'base quality score recalibration reports'}
+  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output, doc: 'snp and indel metrics in gVCF'}
+  aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output, doc: 'picard metric outputs from CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, CollectSequencingArtifactMetrics, CollectGcBiasMetrics, QualityScoreDistribution'}
+  wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output, doc: 'detailed whole genome sequencing metrics including read counts, depth, insert size, pcr duplication, etc'}
 
 steps:
   samtools_split:
