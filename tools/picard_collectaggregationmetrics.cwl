@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_collectaggregationmetrics
+label: Picard multi-metrics
+doc: 'Collect metrics using picard tools: CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, CollectSequencingArtifactMetrics, CollectGcBiasMetrics, QualityScoreDistribution'
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement

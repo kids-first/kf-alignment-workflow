@@ -61,7 +61,7 @@ steps:
       input_bam: gather_input_bam
     out: [output]
   samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+    run: ../tools/samtools_convert_to_cram.cwl
     in:
       input_bam: gather_input_bam
       reference: indexed_reference_fasta

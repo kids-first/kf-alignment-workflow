@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: verifybamid
+label: Verify Bam
+doc: Calculate contamination metrics measuring sample purity to help guide HC
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement

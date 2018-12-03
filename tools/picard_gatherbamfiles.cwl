@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_gatherbamfiles
+label: Picard gather bam
+doc: Merge BQSR recalibrated bams
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement

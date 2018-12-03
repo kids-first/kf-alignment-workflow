@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: samtools_convert_to_cram
+label: Samtools bam2cram
+doc: Converts final resultant bam to cram format
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement

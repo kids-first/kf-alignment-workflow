@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_collectwgsmetrics
+label: Picard WGS metrics
+doc: Picard tool get whole genome sequencing metrics
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement

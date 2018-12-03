@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: python_createsequencegroups
+label: Create intervals
+doc: Create interval files to parallelize BQSR
 requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/python:2.7.13'

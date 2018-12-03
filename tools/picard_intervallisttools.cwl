@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_intervallisttools
+label: Picard interval list
+doc: Create separate interval list files for WGS haplotype calling (HC)
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement

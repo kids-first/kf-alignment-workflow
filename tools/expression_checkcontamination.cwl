@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: ExpressionTool
 id: expression_checkcontamination
+label: Check contamination
+doc: Calculate contamination constant for HC
 requirements:
   - class: InlineJavascriptRequirement
 

@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_alignment_bam2cram2gvcf
-label: kfdrc-alignment-bam2cram2gvcf
+id: kfdrc-alignment-bam2cram2gvcf
+label: Kids First Data Resource Center Alignment Workflow (bam2cram2gVCF)
 doc: 'This pipeline follows Broad best practices outlined here: https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165.  It uses bam input and aligns/re-aligns to a reference fasta.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated a gVCF is created using GATK Haplotype caller. Inputs from this can be used later on for further anaylsis in joint trio genotyping and subsequent refinement and deNovo variant anaylsis.'
 requirements:
   - class: ScatterFeatureRequirement
@@ -24,7 +24,7 @@ inputs:
   wgs_evaluation_interval_list: {type: File, doc: 'wgs_evaluation_regions.hg38.interval_list'}
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output, doc: 'Final aligned cram file output'}
+  cram: {type: File, outputSource: samtools_converttocram/output, doc: 'Final aligned cram file output'}
   gvcf: {type: File, outputSource: picard_mergevcfs/output, doc: 'Final haplotype-called gVCF output'}
   verifybamid_output: {type: File, outputSource: verifybamid/output, doc: 'contamination check results'}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: 'base quality score recalibration reports'}
@@ -192,8 +192,8 @@ steps:
 
   picard_collectgvcfcallingmetrics:
     run: ../tools/picard_collectgvcfcallingmetrics.cwl
-    label: 'Picard HC VCF metrics'
-    doc: 'Calculate gVCF calling metrics'
+    label: Picard HC VCF metrics
+    doc: Calculate gVCF calling metrics
     in:
       dbsnp_vcf: dbsnp_vcf
       final_gvcf_base_name: output_basename
@@ -202,10 +202,10 @@ steps:
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
 
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_converttocram:
+    run: ../tools/samtools_convert_to_cram.cwl
     label: Samtools bam2cram
-    doc: 'Converts final resultant bam to cram format'
+    doc: Converts final resultant bam to cram format
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta

@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_gatherbqsrreports
+label: GATK gather BQSR
+doc: Combine scattered BQSR reports
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement

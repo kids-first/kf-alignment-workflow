@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: sambamba_sort
+label: Sambamba sort bam
+doc: Coordinate sort bam
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement

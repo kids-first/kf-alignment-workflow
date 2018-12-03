@@ -74,7 +74,7 @@ steps:
     out: [output]
 
   samtools_coverttocram:
-    run: ../tools_withsrc/samtools_covert_to_cram.cwl
+    run: ../tools_withsrc/samtools_convert_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles_output
       reference: indexed_reference_fasta

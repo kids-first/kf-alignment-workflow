@@ -149,7 +149,7 @@ steps:
     out: [output]
 
   samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+    run: ../tools/samtools_convert_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta

@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatkv4_baserecalibrator
+label: GATK BQSR
+doc: Create base score recalibrator score reports
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement

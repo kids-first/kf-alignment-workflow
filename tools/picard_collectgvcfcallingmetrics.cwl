@@ -1,6 +1,9 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_collectgvcfcallingmetrics
+label: Picard HC VCF metrics
+doc: Calculate gVCF calling metrics
+
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement

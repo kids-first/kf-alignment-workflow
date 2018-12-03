@@ -16,7 +16,7 @@ inputs:
   wgs_coverage_interval_list: File
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
+  cram: {type: File, outputSource: samtools_converttocram/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
   aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
   wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
@@ -107,8 +107,8 @@ steps:
       reference: indexed_reference_fasta
     out: [output]
 
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_converttocram:
+    run: ../tools/samtools_convert_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta

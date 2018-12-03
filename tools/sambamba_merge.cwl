@@ -1,6 +1,8 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: sambamba_merge
+label: Sambamba merge bams
+doc: Merge aligned split bams and mark duplicates
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
