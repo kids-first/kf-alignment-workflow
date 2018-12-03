@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_optimized_wf
-label: kfdrc-align-bam2cram2gvcf
+id: kfdrc_alignment_bam2cram2gvcf
+label: kfdrc-alignment-bam2cram2gvcf
 doc: 'This pipeline follows Broad best practices outlined here: https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165.  It uses bam input and aligns/re-aligns to a reference fasta.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated a gVCF is created using GATK Haplotype caller. Inputs from this can be used later on for further anaylsis in joint trio genotyping and subsequent refinement and deNovo variant anaylsis.'
 requirements:
   - class: ScatterFeatureRequirement
@@ -14,7 +14,7 @@ inputs:
   output_basename: {type: string, doc: 'output file base name all outputs'}
   indexed_reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta'}
   dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf'}
-  knownsites: {type: File[], doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}
+  knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}
   reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict'}
   contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed'}
   contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu'}
