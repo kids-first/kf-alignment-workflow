@@ -35,8 +35,8 @@ outputs:
 steps:
   samtools_split:
     run: ../tools/samtools_split.cwl
-    label: 'Samtools split bam'
-    doc: 'Use samtools 1.8 to split bam into smaller alignment jobs'
+    label: Samtools split bam
+    doc: Use samtools 1.8 to split bam into smaller alignment jobs
     in:
       input_bam: input_reads
       reference: indexed_reference_fasta
@@ -44,8 +44,8 @@ steps:
 
   bwa_mem:
     run: ../workflows/kfdrc_bwamem_subwf.cwl
-    label: 'bwa-mem sub wf'
-    doc: 'Run bwa-mem and create custom RG info on temporarily split input reads'
+    label: bwa-mem sub wf
+    doc: Run bwa-mem and create custom RG info on temporarily split input reads
     in:
       input_reads: samtools_split/bam_files
       indexed_reference_fasta: indexed_reference_fasta
@@ -55,8 +55,8 @@ steps:
 
   sambamba_merge:
     run: ../tools/sambamba_merge.cwl
-    label: 'Sambamba merge bams'
-    doc: 'Merge aligned split bams and mark duplicates'
+    label: Sambamba merge bams
+    doc: Merge aligned split bams and mark duplicates
     in:
       bams: bwa_mem/aligned_bams
       base_file_name: output_basename
@@ -64,8 +64,8 @@ steps:
 
   sambamba_sort:
     run: ../tools/sambamba_sort.cwl
-    label: 'Sambamba sort bam'
-    doc: 'Coordinate sort bam'
+    label: Sambamba sort bam
+    doc: Coordinate sort bam
     in:
       bam: sambamba_merge/merged_bam
       base_file_name: output_basename
@@ -73,16 +73,16 @@ steps:
 
   python_createsequencegroups:
     run: ../tools/python_createsequencegroups.cwl
-    label: 'Create intervals'
-    doc: 'Create interval files to parallelize BQSR'
+    label: Create intervals
+    doc: Create interval files to parallelize BQSR
     in:
       ref_dict: reference_dict
     out: [out_intervals]
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
-    label: 'GATK BQSR'
-    doc: 'Create base score recalibrator score reports'
+    label: GATK BQSR
+    doc: Create base score recalibrator score reports
     in:
       input_bam: sambamba_sort/sorted_bam
       knownsites: knownsites
@@ -93,8 +93,8 @@ steps:
 
   gatk_gatherbqsrreports:
     run: ../tools/gatk_gatherbqsrreports.cwl
-    label: 'GATK gather BQSR'
-    doc: 'Combine scattered BQSR reports'
+    label: GATK gather BQSR
+    doc: Combine scattered BQSR reports
     in:
       input_brsq_reports: gatk_baserecalibrator/output
       output_basename: output_basename
@@ -102,8 +102,8 @@ steps:
 
   gatk_applybqsr:
     run: ../tools/gatk_applybqsr.cwl
-    label: 'GATK apply BQSR'
-    doc: 'Apply BQSR to aligned, merged, and sorted bam'
+    label: GATK apply BQSR
+    doc: Apply BQSR to aligned, merged, and sorted bam
     in:
       bqsr_report: gatk_gatherbqsrreports/output
       input_bam: sambamba_sort/sorted_bam
@@ -114,8 +114,8 @@ steps:
 
   picard_gatherbamfiles:
     run: ../tools/picard_gatherbamfiles.cwl
-    label: 'Picard gather bam'
-    doc: 'Merge BQSR recalibrated bams'
+    label: Picard gather bam
+    doc: Merge BQSR recalibrated bams
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
       output_bam_basename: output_basename
@@ -123,7 +123,7 @@ steps:
 
   picard_collectaggregationmetrics:
     run: ../tools/picard_collectaggregationmetrics.cwl
-    label: 'Picard multi-metrics'
+    label: Picard multi-metrics
     doc: 'Collect metrics using picard tools: CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, CollectSequencingArtifactMetrics, CollectGcBiasMetrics, QualityScoreDistribution'
     in:
       input_bam: picard_gatherbamfiles/output
@@ -132,8 +132,8 @@ steps:
 
   picard_collectwgsmetrics:
     run: ../tools/picard_collectwgsmetrics.cwl
-    label: 'Picard WGS metrics'
-    doc: 'Picard tool get whole genome sequencing metrics'
+    label: Picard WGS metrics
+    doc: Picard tool get whole genome sequencing metrics
     in:
       input_bam: picard_gatherbamfiles/output
       intervals: wgs_coverage_interval_list
@@ -142,16 +142,16 @@ steps:
 
   picard_intervallisttools:
     run: ../tools/picard_intervallisttools.cwl
-    label: 'Picard interval list'
-    doc: 'Create separate interval list files for WGS haplotype calling (HC)'
+    label: Picard interval list
+    doc: Create separate interval list files for WGS haplotype calling (HC)
     in:
       interval_list: wgs_calling_interval_list
     out: [output]
 
   verifybamid:
     run: ../tools/verifybamid.cwl
-    label: 'Verify Bam'
-    doc: 'Calculate contamination metrics measuring sample purity to help guide HC'
+    label: Verify Bam
+    doc: Calculate contamination metrics measuring sample purity to help guide HC
     in:
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
@@ -163,16 +163,16 @@ steps:
 
   checkcontamination:
     run: ../tools/expression_checkcontamination.cwl
-    label: 'Check contamination'
-    doc: 'Calculate contamination constant for HC'
+    label: Check contamination
+    doc: Calculate contamination constant for HC
     in:
       verifybamid_selfsm: verifybamid/output
     out: [contamination]
 
   gatk_haplotypecaller:
     run: ../tools/gatk_haplotypecaller.cwl
-    label: 'GATK HC'
-    doc: 'Run gatk haplotype caller on recalibrated bam'
+    label: GATK HC
+    doc: Run gatk haplotype caller on recalibrated bam
     in:
       contamination: checkcontamination/contamination
       input_bam: picard_gatherbamfiles/output
@@ -183,8 +183,8 @@ steps:
 
   picard_mergevcfs:
     run: ../tools/picard_mergevcfs.cwl
-    label: 'Merge HC VCFs'
-    doc: 'Merge resultant vcfs from HC output'
+    label: Merge HC VCFs
+    doc: Merge resultant vcfs from HC output
     in:
       input_vcf: gatk_haplotypecaller/output
       output_vcf_basename: output_basename
