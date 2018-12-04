@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk4_applybqsr
-label: GATK apply BQSR
+label: GATK apply bqsr
 doc: Apply BQSR to aligned, merged, and sorted bam
 requirements:
   - class: ShellCommandRequirement

@@ -1,18 +1,18 @@
 cwlVersion: v1.0
 class: Workflow
 id: kfdrc-alignment-bam2cram2gvcf
-label: Kids First Data Resource Center Alignment Workflow (bam2cram2gVCF)
-doc: 'This pipeline follows Broad best practices outlined here: https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165.  It uses bam input and aligns/re-aligns to a reference fasta.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated a gVCF is created using GATK Haplotype caller. Inputs from this can be used later on for further anaylsis in joint trio genotyping and subsequent refinement and deNovo variant anaylsis.'
+label: Kids First DRC Alignment Workflow
+doc: Bam-to-cram-to-gVCF. This pipeline follows Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)  It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated and a gVCF is created using GATK Haplotype caller. Inputs from this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant anaylsis.
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
   - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_reads: {type: File, doc: 'input bam file with aligned or unaligned reads'}
+  input_bam: {type: File, doc: 'input bam file with aligned or unaligned reads'}
   biospecimen_name: {type: string, doc: 'biospecimen ID'}
   output_basename: {type: string, doc: 'output file base name all outputs'}
-  indexed_reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta'}
+  indexed_reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta and bwa-related index files'}
   dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf'}
   knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}
   reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict'}
@@ -38,13 +38,13 @@ steps:
     label: Samtools split bam
     doc: Use samtools 1.8 to split bam into smaller alignment jobs
     in:
-      input_bam: input_reads
+      input_bam: input_bam
       reference: indexed_reference_fasta
     out: [bam_files]
 
   bwa_mem:
     run: ../workflows/kfdrc_bwamem_subwf.cwl
-    label: bwa-mem sub wf
+    label: BWA-MEM
     doc: Run bwa-mem and create custom RG info on temporarily split input reads
     in:
       input_reads: samtools_split/bam_files
@@ -81,7 +81,7 @@ steps:
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
-    label: GATK BQSR
+    label: GATK bqsr
     doc: Create base score recalibrator score reports
     in:
       input_bam: sambamba_sort/sorted_bam
@@ -93,7 +93,7 @@ steps:
 
   gatk_gatherbqsrreports:
     run: ../tools/gatk_gatherbqsrreports.cwl
-    label: GATK gather BQSR
+    label: GATK gather bqsr
     doc: Combine scattered BQSR reports
     in:
       input_brsq_reports: gatk_baserecalibrator/output
@@ -102,7 +102,7 @@ steps:
 
   gatk_applybqsr:
     run: ../tools/gatk_applybqsr.cwl
-    label: GATK apply BQSR
+    label: GATK apply bqsr
     doc: Apply BQSR to aligned, merged, and sorted bam
     in:
       bqsr_report: gatk_gatherbqsrreports/output
@@ -150,7 +150,7 @@ steps:
 
   verifybamid:
     run: ../tools/verifybamid.cwl
-    label: Verify Bam
+    label: Verify bam
     doc: Calculate contamination metrics measuring sample purity to help guide HC
     in:
       contamination_sites_bed: contamination_sites_bed
@@ -183,7 +183,7 @@ steps:
 
   picard_mergevcfs:
     run: ../tools/picard_mergevcfs.cwl
-    label: Merge HC VCFs
+    label: Merge vcfs
     doc: Merge resultant vcfs from HC output
     in:
       input_vcf: gatk_haplotypecaller/output
@@ -192,7 +192,7 @@ steps:
 
   picard_collectgvcfcallingmetrics:
     run: ../tools/picard_collectgvcfcallingmetrics.cwl
-    label: Picard HC VCF metrics
+    label: Picard gvcf metrics
     doc: Calculate gVCF calling metrics
     in:
       dbsnp_vcf: dbsnp_vcf

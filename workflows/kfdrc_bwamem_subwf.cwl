@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: Workflow
 id: bwa_mem_wf
-label: bwa-mem sub wf
+label: BWA-MEM
 doc: Run bwa-mem and create custom RG info on temporarily split input reads
 requirements:
   - class: ScatterFeatureRequirement

@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_mergevcfs
-label: Merge HC VCFs
+label: Merge vcfs
 doc: Merge resultant vcfs from HC output
 requirements:
   - class: InlineJavascriptRequirement
