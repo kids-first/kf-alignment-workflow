@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_haplotypecaller
-label: GATK HC
+label: GATK haplotype caller
 doc: Run gatk haplotype caller on recalibrated bam
 requirements:
   - class: ShellCommandRequirement
