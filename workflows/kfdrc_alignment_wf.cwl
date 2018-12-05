@@ -2,7 +2,24 @@ cwlVersion: v1.0
 class: Workflow
 id: kfdrc-alignment-bam2cram2gvcf
 label: Kids First DRC Alignment Workflow
-doc: Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)  It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant anaylsis.
+doc: "Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)  It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. Along with the primary references, BE SURE TO  COPY THE FOLLOWING SECONDARY FILES INTO YOUR PROJECT:
+
+```
+      Homo_sapiens_assembly38.dbsnp138.vcf.idx\n
+      1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi\n
+      1000G_omni2.5.hg38.vcf.gz.tbi\n
+      Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi\n
+      Homo_sapiens_assembly38.known_indels.vcf.gz.tbi\n
+      Homo_sapiens_assembly38.fasta.64.bwt\n
+      Homo_sapiens_assembly38.fasta.64.sa\n
+      Homo_sapiens_assembly38.fasta.64.alt\n
+      Homo_sapiens_assembly38.fasta.64.amb\n
+      Homo_sapiens_assembly38.fasta.64.pac\n
+      Homo_sapiens_assembly38.fasta.64.ann\n
+      Homo_sapiens_assembly38.fasta.fai\n
+
+```
+      "
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -13,15 +30,15 @@ inputs:
   biospecimen_name: {type: string, doc: 'biospecimen ID'}
   output_basename: {type: string, doc: 'output file base name all outputs'}
   indexed_reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta and bwa-related index files'}
-  dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf'}
+  dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf', sbg:suggestedValue: {class: "File", name: 'Homo_sapiens_assembly38.dbsnp138.vcf'}}
   knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}
-  reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict'}
-  contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed'}
-  contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu'}
-  contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD'}
-  wgs_calling_interval_list: {type: File, doc: 'wgs_calling_regions.hg38.interval_list'}
-  wgs_coverage_interval_list: {type: File, doc: 'wgs_coverage_regions.hg38.interval_list'}
-  wgs_evaluation_interval_list: {type: File, doc: 'wgs_evaluation_regions.hg38.interval_list'}
+  reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict', sbg:suggestedValue: {class: "File", name: 'Homo_sapiens_assembly38.dict'}}
+  contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed', sbg:suggestedValue: {class: "File", name: 'Homo_sapiens_assembly38.contam.bed'}}
+  contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu', sbg:suggestedValue: {class: "File", name: 'Homo_sapiens_assembly38.contam.mu'}}
+  contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD', sbg:suggestedValue: {class: "File", name: 'Homo_sapiens_assembly38.contam.UD'}}
+  wgs_calling_interval_list: {type: File, doc: 'wgs_calling_regions.hg38.interval_list', sbg:suggestedValue: {class: "File", name: 'wgs_calling_regions.hg38.interval_list'}}
+  wgs_coverage_interval_list: {type: File, doc: 'wgs_coverage_regions.hg38.interval_list', sbg:suggestedValue: {class: "File", name: 'wgs_coverage_regions.hg38.interval_list'}}
+  wgs_evaluation_interval_list: {type: File, doc: 'wgs_evaluation_regions.hg38.interval_list', sbg:suggestedValue: {class: "File", name: 'wgs_evaluation_regions.hg38.interval_list'}}
 
 outputs:
   cram: {type: File, outputSource: samtools_converttocram/output, doc: 'Final aligned cram file output'}
