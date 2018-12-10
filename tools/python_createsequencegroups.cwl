@@ -12,7 +12,7 @@ arguments:
   - position: 0
     valueFrom: >-
       def main():
-          with open("$(inputs.ref_dict.path)", "r") as ref_dict_file:
+          with open("$(inputs.reference_dict.path)", "r") as ref_dict_file:
               sequence_tuple_list = []
               longest_sequence = 0
               for line in ref_dict_file:
@@ -48,7 +48,7 @@ arguments:
           main()
 
 inputs:
-  ref_dict: File
+  reference_dict: File
 
 outputs:
   out_intervals:

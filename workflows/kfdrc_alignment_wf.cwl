@@ -83,7 +83,7 @@ steps:
     label: Create intervals
     doc: Create interval files to parallelize BQSR
     in:
-      ref_dict: reference_dict
+      reference_dict: reference_dict
     out: [out_intervals]
 
   gatk_baserecalibrator:
