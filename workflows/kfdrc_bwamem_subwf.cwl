@@ -22,6 +22,7 @@ steps:
     run: ../tools/bwa_input_prepare.cwl
     in:
       input_bam: input_reads
+      index_prefix: $(inputs.reference_fasta.basename)
     out: [output, rg, bwa_index]
 
   expression_updatergsample:
