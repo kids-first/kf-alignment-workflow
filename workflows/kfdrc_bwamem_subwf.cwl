@@ -22,6 +22,7 @@ steps:
     run: ../tools/bwa_input_prepare.cwl
     in:
       input_bam: input_reads
+      bwa_index_tar: bwa_index_tar
       reference_fasta: reference_fasta
     out: [output, rg, bwa_index]
 
