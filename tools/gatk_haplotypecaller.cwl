@@ -33,7 +33,9 @@ arguments:
       -contamination $(inputs.contamination)
       --read_filter OverclippedRead
 inputs:
-  reference: {type: File, secondaryFiles: [^.dict, .fai]}
+  reference_fasta: File
+  reference_dict: File
+  reference_fai: File
   input_bam: {type: File, secondaryFiles: [^.bai]}
   interval_list: File
   contamination: float

@@ -29,8 +29,10 @@ arguments:
       METRIC_ACCUMULATION_LEVEL="SAMPLE" 
       METRIC_ACCUMULATION_LEVEL="LIBRARY"
 inputs:
-  input_bam: {type: File, secondaryFiles: [^.bai]}
-  reference: {type: File, secondaryFiles: [^.dict, .fai]}
+  input_bam: File
+  reference_fasta: File
+  reference_dict: File
+  reference_fai: File
 outputs:
   output:
     type: File[]

@@ -2,13 +2,14 @@ cwlVersion: v1.0
 class: Workflow
 id: bwa_mem_wf
 label: BWA-MEM
-doc: Run bwa-mem and create custom RG info on temporarily split input reads
+doc: Run bwa-mem v0.7.17 and create custom RG info on temporarily split input reads
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
 inputs:
   input_reads: File
-  indexed_reference_fasta: File
+  reference_fasta: File
+  bwa_index_tar: File
   sample_name: string
 
 outputs:
@@ -21,7 +22,7 @@ steps:
     run: ../tools/bwa_input_prepare.cwl
     in:
       input_bam: input_reads
-    out: [output, rg]
+    out: [output, rg, bwa_index]
 
   expression_updatergsample:
     run: ../tools/expression_preparerg.cwl
@@ -33,8 +34,9 @@ steps:
   bwa_mem_split:
     run: ../tools/bwa_mem_split.cwl
     in:
-      ref: indexed_reference_fasta
+      ref: reference_fasta
       reads: bwa_input_prepare/output
+      bwa_index: bwa_input_prepare/bwa_index
       rg: expression_updatergsample/rg_str
     scatter: [reads]
     out: [output]

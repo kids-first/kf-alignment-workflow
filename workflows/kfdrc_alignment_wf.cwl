@@ -2,24 +2,7 @@ cwlVersion: v1.0
 class: Workflow
 id: kfdrc-alignment-bam2cram2gvcf
 label: Kids First DRC Alignment Workflow
-doc: "Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)  It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. Along with the primary references, BE SURE TO  COPY THE FOLLOWING SECONDARY FILES INTO YOUR PROJECT:
-
-```
-      Homo_sapiens_assembly38.dbsnp138.vcf.idx\n
-      1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi\n
-      1000G_omni2.5.hg38.vcf.gz.tbi\n
-      Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi\n
-      Homo_sapiens_assembly38.known_indels.vcf.gz.tbi\n
-      Homo_sapiens_assembly38.fasta.64.bwt\n
-      Homo_sapiens_assembly38.fasta.64.sa\n
-      Homo_sapiens_assembly38.fasta.64.alt\n
-      Homo_sapiens_assembly38.fasta.64.amb\n
-      Homo_sapiens_assembly38.fasta.64.pac\n
-      Homo_sapiens_assembly38.fasta.64.ann\n
-      Homo_sapiens_assembly38.fasta.fai\n
-
-```
-      "
+doc: "Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)  It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis."
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -29,7 +12,8 @@ inputs:
   input_bam: {type: File, doc: 'input bam file with aligned or unaligned reads'}
   biospecimen_name: {type: string, doc: 'biospecimen ID'}
   output_basename: {type: string, doc: 'output file base name all outputs'}
-  indexed_reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta and bwa-related index files', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434794', name: 'Homo_sapiens_assembly38.fasta'}}
+  reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta, human genome reference file', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434794', name: 'Homo_sapiens_assembly38.fasta'}}
+  bwa_index_tar: {type: File, doc: 'bwa-generated index files created from `reference_fasta`', sbg:suggestedValue: {class: 'File', path: '5c0e94a5e4b06d3a6d1fd1ed', name: 'Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar'}}
   dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434791', name: 'Homo_sapiens_assembly38.dbsnp138.vcf'}}
   knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz',
               sbg:suggestedValue: [{class: 'File', path: '5c07faefe4b0625cc24347b7', name: '1000G_omni2.5.hg38.vcf.gz'},
@@ -37,6 +21,7 @@ inputs:
                                    {class: 'File', path: '5c07faefe4b0625cc243479e', name: 'Homo_sapiens_assembly38.known_indels.vcf.gz'},
                                    {class: 'File', path: '5c07faefe4b0625cc24347a4', name: 'Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}]}
   reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347a9', name: 'Homo_sapiens_assembly38.dict'}}
+  reference_fai: {type: File, doc: 'Homo_sapiens_assembly38.fasta.fai, fasta index file', suggestedValue: {class: 'File', path: '5c07faefe4b0625cc243478b', name: 'Homo_sapiens_assembly38.fai'}}
   contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434797', name: 'Homo_sapiens_assembly38.contam.bed'}}
   contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434789', name: 'Homo_sapiens_assembly38.contam.mu'}}
   contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347b5', name: 'Homo_sapiens_assembly38.contam.UD'}}
@@ -60,16 +45,17 @@ steps:
     doc: Use samtools 1.8 to split bam into smaller alignment jobs
     in:
       input_bam: input_bam
-      reference: indexed_reference_fasta
+      reference: reference_fasta
     out: [bam_files]
 
   bwa_mem:
     run: ../workflows/kfdrc_bwamem_subwf.cwl
     label: BWA-MEM
-    doc: Run bwa-mem and create custom RG info on temporarily split input reads
+    doc: Run bwa-mem v0.7.17 and create custom RG info on temporarily split input reads
     in:
       input_reads: samtools_split/bam_files
-      indexed_reference_fasta: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      bwa_index_tar: bwa_index_tar
       sample_name: biospecimen_name
     scatter: [input_reads]
     out: [aligned_bams]
@@ -107,7 +93,9 @@ steps:
     in:
       input_bam: sambamba_sort/sorted_bam
       knownsites: knownsites
-      reference: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_dict: reference_dict
+      reference_fai: reference_fai
       sequence_interval: python_createsequencegroups/out_intervals
     scatter: [sequence_interval]
     out: [output]
@@ -128,7 +116,9 @@ steps:
     in:
       bqsr_report: gatk_gatherbqsrreports/output
       input_bam: sambamba_sort/sorted_bam
-      reference: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_dict: reference_dict
+      reference_fai: reference_fai
       sequence_interval: python_createsequencegroups/out_intervals
     scatter: [sequence_interval]
     out: [recalibrated_bam]
@@ -148,7 +138,9 @@ steps:
     doc: 'Collect metrics using picard tools: CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, CollectSequencingArtifactMetrics, CollectGcBiasMetrics, QualityScoreDistribution'
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_dict: reference_dict
+      reference_fai: reference_fai
     out: [output]
 
   picard_collectwgsmetrics:
@@ -158,7 +150,8 @@ steps:
     in:
       input_bam: picard_gatherbamfiles/output
       intervals: wgs_coverage_interval_list
-      reference: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_fai: reference_fai
     out: [output]
 
   picard_intervallisttools:
@@ -178,7 +171,8 @@ steps:
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
       input_bam: sambamba_sort/sorted_bam
-      ref_fasta: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_fai: reference_fai
       output_basename: output_basename
     out: [output]
 
@@ -198,7 +192,9 @@ steps:
       contamination: checkcontamination/contamination
       input_bam: picard_gatherbamfiles/output
       interval_list: picard_intervallisttools/output
-      reference: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_dict: reference_dict
+      reference_fai: reference_fai
     scatter: [interval_list]
     out: [output]
 
@@ -229,7 +225,8 @@ steps:
     doc: Converts final resultant bam to cram format
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference_fasta: reference_fasta
+      reference_fai: reference_fai
     out: [output]
 
 $namespaces:

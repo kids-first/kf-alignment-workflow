@@ -27,7 +27,8 @@ arguments:
       1>/dev/null
 inputs:
   input_bam: {type: File, secondaryFiles: [^.bai]}
-  ref_fasta: {type: File, secondaryFiles: [.fai]}
+  reference_fasta: File
+  reference_fai: File
   contamination_sites_ud: File
   contamination_sites_mu: File
   contamination_sites_bed: File

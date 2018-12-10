@@ -33,7 +33,10 @@ arguments:
       --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30
       -L $(inputs.sequence_interval.path)
 inputs:
-  reference: {type: File, secondaryFiles: [^.dict, .fai]}
+  reference_fasta: File
+  reference_dict: File
+  reference_fai: File
+
   input_bam: {type: File, secondaryFiles: [^.bai]}
   bqsr_report: File
   sequence_interval: File

@@ -18,7 +18,8 @@ arguments:
       -C -T $(inputs.reference.path) -o $(inputs.input_bam.nameroot).cram $(inputs.input_bam.path)
       && samtools index $(inputs.input_bam.nameroot).cram
 inputs:
-  reference: {type: File, secondaryFiles: [.fai]}
+  reference_fasta: File
+  reference_fai: File
   input_bam: {type: File, secondaryFiles: [^.bai]}
 outputs:
   output:
