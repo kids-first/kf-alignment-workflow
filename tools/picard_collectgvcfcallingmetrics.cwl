@@ -28,7 +28,7 @@ inputs:
   input_vcf: {type: File, secondaryFiles: [.tbi]}
   reference_dict: File
   final_gvcf_base_name: string
-  dbsnp_vcf: {type: File, secondaryFiles: [.idx]}
+  dbsnp_vcf: File
   wgs_evaluation_interval_list: File
 outputs:
   output:
