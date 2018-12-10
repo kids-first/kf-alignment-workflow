@@ -45,5 +45,5 @@ outputs:
     outputBinding:
       outputEval: >-
       ${
-        return inputs.reference_fasta.basename + ".*";
+        return (inputs.reference_fasta.basename + ".*")
       }
