@@ -44,4 +44,6 @@ outputs:
     type: File[]
     outputBinding:
       outputEval: >-
-      $(inputs.reference_fasta.basename).*
+      ${
+        return inputs.reference_fasta.basename + ".*";
+      }
