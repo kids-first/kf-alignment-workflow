@@ -21,7 +21,7 @@ arguments:
       fi
 inputs:
   input_bam: File
-  index_prefix: string
+  reference_fasta: reference_fasta
   bwa_index_tar: File
   max_siz:
     type: int
@@ -43,4 +43,4 @@ outputs:
   bwa_index:
     type: File
     outputBinding:
-      $(inputs.index_prefix).*
+      $(inputs.reference_fasta.basename).*
