@@ -43,4 +43,4 @@ outputs:
   bwa_index:
     type: File
     outputBinding:
-      $(inputs.reference_fasta.basename).*
+      glob: $(inputs.reference_fasta.basename).*
