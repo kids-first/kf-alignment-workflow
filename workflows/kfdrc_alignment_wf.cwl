@@ -21,7 +21,7 @@ inputs:
                                    {class: 'File', path: '5c07faefe4b0625cc243479e', name: 'Homo_sapiens_assembly38.known_indels.vcf.gz'},
                                    {class: 'File', path: '5c07faefe4b0625cc24347a4', name: 'Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}]}
   reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347a9', name: 'Homo_sapiens_assembly38.dict'}}
-  reference_fai: {type: File, doc: 'Homo_sapiens_assembly38.fasta.fai, fasta index file', suggestedValue: {class: 'File', path: '5c07faefe4b0625cc243478b', name: 'Homo_sapiens_assembly38.fai'}}
+  reference_fai: {type: File, doc: 'Homo_sapiens_assembly38.fasta.fai, fasta index file', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc243478b', name: 'Homo_sapiens_assembly38.fai'}}
   contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434797', name: 'Homo_sapiens_assembly38.contam.bed'}}
   contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434789', name: 'Homo_sapiens_assembly38.contam.mu'}}
   contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347b5', name: 'Homo_sapiens_assembly38.contam.UD'}}
