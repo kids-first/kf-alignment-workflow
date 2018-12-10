@@ -33,7 +33,7 @@ outputs:
       glob: '*.fq'
       outputEval: >-
         ${
-          if( inputs.input_bam.size < inputs.max_size ) return [inputs.input_bam]
+          if( inputs.input_bam.size < inputs.max_siz ) return [inputs.input_bam]
           else return self
         }
   rg:
@@ -41,6 +41,6 @@ outputs:
     outputBinding:
       glob: rg.txt
   bwa_index:
-    type: File
+    type: File[]
     outputBinding:
       glob: $(inputs.reference_fasta.basename).*
