@@ -43,7 +43,4 @@ outputs:
   bwa_index:
     type: File[]
     outputBinding:
-      outputEval: >-
-      ${
-        return (inputs.reference_fasta.basename + ".*")
-      }
+      glob: $(inputs.reference_fasta.basename).*
