@@ -23,13 +23,7 @@ inputs:
   input_bam: File
   reference_fasta: File
   bwa_index_tar: File
-  max_siz:
-    type: int
-    valueFrom:
-      ${
-       var d_val = 20000000000;
-       return d_Val
-      }
+
 outputs:
   output:
     type: File[]
@@ -37,7 +31,7 @@ outputs:
       glob: '*.fq'
       outputEval: >-
         ${
-          if( inputs.input_bam.size < inputs.max_siz ) return [inputs.input_bam]
+          if( inputs.input_bam.size < 20000000000 ) return [inputs.input_bam]
           else return self
         }
   rg:
