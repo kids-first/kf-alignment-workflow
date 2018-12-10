@@ -18,7 +18,7 @@ arguments:
       ${
         var cmd_pre = "/gatk --QUIET true --verbosity WARNING -F ";
         var index_cmd = "";
-        for (fn in inputs.knownsites){
+        for (var fn in inputs.knownsites){
           index_cmd += cmd_pre + fn.path + "\n";
         }
         return index_cmd
