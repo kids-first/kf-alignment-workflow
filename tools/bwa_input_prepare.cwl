@@ -25,7 +25,11 @@ inputs:
   bwa_index_tar: File
   max_siz:
     type: int
-    default: 20000000000
+    valueFrom:
+      ${
+       var d_val = 20000000000;
+       return d_Val
+      }
 outputs:
   output:
     type: File[]
