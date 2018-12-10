@@ -21,7 +21,7 @@ arguments:
       fi
 inputs:
   input_bam: File
-  reference_fasta: reference_fasta
+  reference_fasta: File
   bwa_index_tar: File
   max_siz:
     type: int
