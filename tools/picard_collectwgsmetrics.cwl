@@ -25,7 +25,8 @@ arguments:
       READ_LENGTH=250
 inputs:
   input_bam: {type: File, secondaryFiles: [^.bai]}
-  reference: {type: File, secondaryFiles: [.fai]}
+  reference_fasta: File
+  reference_fai: File
   intervals: File
 outputs:
   - id: output
