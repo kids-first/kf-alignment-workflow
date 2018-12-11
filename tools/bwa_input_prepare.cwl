@@ -13,15 +13,14 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
-      samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
-      if [ $(inputs.input_bam.size) -gt $(inputs.max_siz) ]; then
+      tar -xf $(inputs.bwa_index_tar.path) && samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
+      if [ $(inputs.input_bam.size) -gt 20000000000 ]; then
         bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 680000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
         rm $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: File
-  reference_fasta: File
   bwa_index_tar: File
 
 outputs:
@@ -38,3 +37,7 @@ outputs:
     type: File
     outputBinding:
       glob: rg.txt
+  bwa_index:
+    type: File[]
+    outputBinding:
+      glob: '*fasta*'

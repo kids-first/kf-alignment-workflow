@@ -22,8 +22,8 @@ steps:
     run: ../tools/bwa_input_prepare.cwl
     in:
       input_bam: input_reads
-      reference_fasta: reference_fasta
-    out: [output, rg]
+      bwa_index_tar: bwa_index_tar
+    out: [output, rg, bwa_index]
 
   expression_updatergsample:
     run: ../tools/expression_preparerg.cwl
@@ -35,11 +35,8 @@ steps:
   bwa_mem_split:
     run: ../tools/bwa_mem_split.cwl
     in:
-      ref: reference_fasta
-      secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac,
-                       .64.sa, .64.alt, ^.dict, .amb, .ann, .bwt, .pac, .sa]
       reads: bwa_input_prepare/output
-      bwa_index_tar: bwa_index_tar
+      bwa_index: bwa_input_prepare/bwa_index
       rg: expression_updatergsample/rg_str
     scatter: [reads]
     out: [output]
