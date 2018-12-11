@@ -14,6 +14,7 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
+      tar -xf $(inputs.bwa_index_tar.path) &&
       if [ $(inputs.reads.nameext) = ".bam" ]; then
         CMD='/opt/biobambam2/2.0.87-release-20180301132713/x86_64-etch-linux-gnu/bin/bamtofastq tryoq=1 filename=$(inputs.reads.path)'
       else
@@ -32,8 +33,8 @@ arguments:
 inputs:
   ref:
     type: File
-  bwa_index:
-    type: File[]
+  bwa_index_tar:
+    type: File
   reads: File
   rg: string
 
