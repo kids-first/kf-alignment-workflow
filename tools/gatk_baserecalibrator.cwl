@@ -16,15 +16,15 @@ arguments:
     shellQuote: false
     valueFrom: >-
       ${
-        var cmd_pre = "/gatk IndexFeatureFile --QUIET true --verbosity WARNING -F ";
+        var cmd_pre = "/gatk IndexFeatureFile -F ";
         var index_cmd = "";
         var ks_len = inputs.knownsites.length
         for (var i = 0; i < ks_len; i++){
-          index_cmd += cmd_pre + inputs.knownsites.path + " && ";
+          index_cmd += cmd_pre + inputs.knownsites[i].path + " && ";
         }
         return index_cmd
       }
-      && /gatk BaseRecalibrator --java-options "-Xms4000m
+      /gatk BaseRecalibrator --java-options "-Xms4000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10
       -XX:+PrintFlagsFinal
