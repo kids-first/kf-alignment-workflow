@@ -25,7 +25,7 @@ arguments:
       -XX:GCHeapFreeLimit=10"
       --create-output-bam-md5
       --add-output-sam-program-record
-      -R $(inputs.reference.path)
+      -R $(inputs.reference_fasta.path)
       -I $(inputs.input_bam.path)
       --use-original-qualities
       -O $(inputs.input_bam.nameroot).aligned.duplicates_marked.recalibrated.bam

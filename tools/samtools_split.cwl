@@ -13,13 +13,14 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
-      RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
+      tar -xf $(inputs.bwa_index_tar.path) && RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
         samtools split -f '%!.bam' -@ 36 --reference $(inputs.reference.path) $(inputs.input_bam.path)
         rm $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: File
+  bwa_index_tar: File[]
   reference: File
 outputs:
   bam_files:
@@ -31,3 +32,7 @@ outputs:
           if (self.length == 0) return [inputs.input_bam]
           else return self
         }
+  bwa_index:
+    type: File[]
+    outputBinding:
+      glob: '*fasta*'

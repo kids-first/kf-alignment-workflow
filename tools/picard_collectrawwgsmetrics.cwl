@@ -15,7 +15,7 @@ arguments:
     valueFrom: >-
       INPUT=$(inputs.input_bam.path)
       VALIDATION_STRINGENCY=SILENT
-      REFERENCE_SEQUENCE=$(inputs.reference.path)
+      REFERENCE_SEQUENCE=$(inputs.reference_fasta.path)
       INCLUDE_BQ_HISTOGRAM=true
       INTERVALS=$(inputs.intervals.path)
       OUTPUT=$(inputs.input_bam.nameroot).raw_wgs_metrics

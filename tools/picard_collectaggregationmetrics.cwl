@@ -16,7 +16,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       INPUT=$(inputs.input_bam.path)
-      REFERENCE_SEQUENCE=$(inputs.reference.path)
+      REFERENCE_SEQUENCE=$(inputs.reference_fasta.path)
       OUTPUT=$(inputs.input_bam.nameroot)
       ASSUME_SORTED=true
       PROGRAM="null"

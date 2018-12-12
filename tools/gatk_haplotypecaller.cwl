@@ -22,7 +22,7 @@ arguments:
       -O local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
       -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
-      -R $(inputs.reference.path)
+      -R $(inputs.reference_fasta.path)
       -o $(inputs.input_bam.nameroot).vcf.gz
       -I local.sharded.bam
       -L $(inputs.interval_list.path)

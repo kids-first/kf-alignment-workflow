@@ -31,7 +31,7 @@ arguments:
       -XX:+PrintGCDateStamps
       -XX:+PrintGCDetails
       -Xloggc:gc_log.log"
-      -R $(inputs.reference.path)
+      -R $(inputs.reference_fasta.path)
       -I $(inputs.input_bam.path)
       --use-original-qualities
       -O $(inputs.input_bam.nameroot).recal_data.csv

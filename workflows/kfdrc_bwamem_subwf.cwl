@@ -8,7 +8,7 @@ requirements:
   - class: MultipleInputFeatureRequirement
 inputs:
   input_reads: File
-  bwa_index_tar: File
+  bwa_index: File[]
   sample_name: string
 
 outputs:
@@ -21,7 +21,6 @@ steps:
     run: ../tools/bwa_input_prepare.cwl
     in:
       input_bam: input_reads
-      bwa_index_tar: bwa_index_tar
     out: [output, rg, bwa_index]
 
   expression_updatergsample:
@@ -35,7 +34,7 @@ steps:
     run: ../tools/bwa_mem_split.cwl
     in:
       reads: bwa_input_prepare/output
-      bwa_index: bwa_input_prepare/bwa_index
+      bwa_index: bwa_index
       rg: expression_updatergsample/rg_str
     scatter: [reads]
     out: [output]

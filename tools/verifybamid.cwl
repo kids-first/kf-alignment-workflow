@@ -20,7 +20,7 @@ arguments:
       --NumPC 4
       --Output $(inputs.output_basename)
       --BamFile $(inputs.input_bam.path)
-      --Reference $(inputs.ref_fasta.path)
+      --Reference $(inputs.reference_fasta.path)
       --UDPath $(inputs.contamination_sites_ud.path)
       --MeanPath $(inputs.contamination_sites_mu.path)
       --BedPath $(inputs.contamination_sites_bed.path)

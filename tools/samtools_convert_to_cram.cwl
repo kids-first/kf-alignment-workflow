@@ -15,7 +15,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -C -T $(inputs.reference.path) -o $(inputs.input_bam.nameroot).cram $(inputs.input_bam.path)
+      -C -T $(inputs.reference_fasta.path) -o $(inputs.input_bam.nameroot).cram $(inputs.input_bam.path)
       && samtools index $(inputs.input_bam.nameroot).cram
 inputs:
   reference_fasta: File
