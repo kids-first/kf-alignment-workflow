@@ -8,7 +8,6 @@ requirements:
   - class: MultipleInputFeatureRequirement
 inputs:
   input_reads: File
-  reference_fasta: File
   bwa_index_tar: File
   sample_name: string
 

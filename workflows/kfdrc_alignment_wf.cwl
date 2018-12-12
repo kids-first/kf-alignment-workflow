@@ -54,7 +54,6 @@ steps:
     doc: Run bwa-mem v0.7.17 and create custom RG info on temporarily split input reads
     in:
       input_reads: samtools_split/bam_files
-      reference_fasta: reference_fasta
       bwa_index_tar: bwa_index_tar
       sample_name: biospecimen_name
     scatter: [input_reads]
