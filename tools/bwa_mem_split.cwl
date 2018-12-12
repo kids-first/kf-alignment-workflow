@@ -21,7 +21,7 @@ arguments:
       fi
 
       $CMD | bwa mem -K 100000000 -p -v 3 -t 15
-      -Y $(inputs.bwa_index[0])
+      -Y $(inputs.bwa_index[0]['path'])
       -R '$(inputs.rg)' -
       | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 17 -f bam -l 0 -S /dev/stdin
