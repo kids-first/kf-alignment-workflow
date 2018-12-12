@@ -16,10 +16,11 @@ arguments:
     shellQuote: false
     valueFrom: >-
       ${
-        var cmd_pre = "/gatk --QUIET true --verbosity WARNING -F ";
+        var cmd_pre = "/gatk IndexFeatureFile --QUIET true --verbosity WARNING -F ";
         var index_cmd = "";
-        for (var fn in inputs.knownsites){
-          index_cmd += cmd_pre + fn.path + "\n";
+        var ks_len = inputs.knownsites.length
+        for (var i = 0; i < ks_len; i++){
+          index_cmd += cmd_pre + inputs.knownsites.path + " && ";
         }
         return index_cmd
       }
@@ -50,7 +51,6 @@ inputs:
         prefix: --known-sites
     inputBinding:
       position: 1
-    secondaryFiles: [.tbi]
   sequence_interval: File
 outputs:
   output:
