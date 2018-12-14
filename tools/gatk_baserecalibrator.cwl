@@ -7,7 +7,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.0.3.0'
+    dockerPull: 'kfdrc/gatk:4.3.0-tabix'
   - class: ResourceRequirement
     ramMin: 8000
 baseCommand: []
@@ -16,7 +16,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       ${
-        var cmd_pre = "/gatk IndexFeatureFile -F ";
+        var cmd_pre = "tabix ";
         var index_cmd = "";
         var ks_len = inputs.knownsites.length
         for (var i = 0; i < ks_len; i++){
