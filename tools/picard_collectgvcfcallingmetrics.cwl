@@ -29,6 +29,7 @@ inputs:
   reference_dict: File
   final_gvcf_base_name: string
   dbsnp_vcf: File
+  dbsnp_vcf_index: File
   wgs_evaluation_interval_list: File
 outputs:
   output:

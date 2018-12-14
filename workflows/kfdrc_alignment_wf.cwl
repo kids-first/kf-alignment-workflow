@@ -15,6 +15,7 @@ inputs:
   reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta, human genome reference file', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434794', name: 'Homo_sapiens_assembly38.fasta'}}
   bwa_index_tar: {type: File, doc: 'bwa-generated index files created from `reference_fasta`', sbg:suggestedValue: {class: 'File', path: '5c0e94a5e4b06d3a6d1fd1ed', name: 'Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar'}}
   dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434791', name: 'Homo_sapiens_assembly38.dbsnp138.vcf'}}
+  dbsnp_vcf_index: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx', sbg:suggestedValue: {class: 'File', path: '5b0f081bec70d7f4d3fa8bd1', name: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx'}}
   knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz',
               sbg:suggestedValue: [{class: 'File', path: '5c07faefe4b0625cc24347b7', name: '1000G_omni2.5.hg38.vcf.gz'},
                                    {class: 'File', path: '5c07faefe4b0625cc243478a', name: '1000G_phase1.snps.high_confidence.hg38.vcf.gz'},
@@ -213,6 +214,7 @@ steps:
     doc: Calculate gVCF calling metrics
     in:
       dbsnp_vcf: dbsnp_vcf
+      dbsnp_vcf_index: dbsnp_vcf_index
       final_gvcf_base_name: output_basename
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict
