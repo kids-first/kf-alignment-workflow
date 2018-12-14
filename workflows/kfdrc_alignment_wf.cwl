@@ -12,23 +12,22 @@ inputs:
   input_bam: {type: File, doc: 'input bam file with aligned or unaligned reads'}
   biospecimen_name: {type: string, doc: 'biospecimen ID'}
   output_basename: {type: string, doc: 'output file base name all outputs'}
-  reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta, human genome reference file', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434794', name: 'Homo_sapiens_assembly38.fasta'}}
-  bwa_index_tar: {type: File, doc: 'bwa-generated index files created from `reference_fasta`', sbg:suggestedValue: {class: 'File', path: '5c0e94a5e4b06d3a6d1fd1ed', name: 'Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar'}}
-  dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434791', name: 'Homo_sapiens_assembly38.dbsnp138.vcf'}}
-  dbsnp_vcf_index: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx', sbg:suggestedValue: {class: 'File', path: '5b0f081bec70d7f4d3fa8bd1', name: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx'}}
+  reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta, human genome reference file', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145ff', name: 'Homo_sapiens_assembly38.fasta'}}
+  bwa_index_tar: {type: File, doc: 'bwa-generated index files created from `reference_fasta`', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d214600', name: 'Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar'}}
+  dbsnp_vcf_index: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx', sbg:suggestedValue: {class: 'File', path: '5c13d202e4b06d3aabf9cf33', name: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx'}}
   knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz',
-              sbg:suggestedValue: [{class: 'File', path: '5c07faefe4b0625cc24347b7', name: '1000G_omni2.5.hg38.vcf.gz'},
-                                   {class: 'File', path: '5c07faefe4b0625cc243478a', name: '1000G_phase1.snps.high_confidence.hg38.vcf.gz'},
-                                   {class: 'File', path: '5c07faefe4b0625cc243479e', name: 'Homo_sapiens_assembly38.known_indels.vcf.gz'},
-                                   {class: 'File', path: '5c07faefe4b0625cc24347a4', name: 'Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}]}
-  reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347a9', name: 'Homo_sapiens_assembly38.dict'}}
-  reference_fai: {type: File, doc: 'Homo_sapiens_assembly38.fasta.fai, fasta index file', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc243478b', name: 'Homo_sapiens_assembly38.fai'}}
-  contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434797', name: 'Homo_sapiens_assembly38.contam.bed'}}
-  contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434789', name: 'Homo_sapiens_assembly38.contam.mu'}}
-  contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347b5', name: 'Homo_sapiens_assembly38.contam.UD'}}
-  wgs_calling_interval_list: {type: File, doc: 'wgs_calling_regions.hg38.interval_list', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc2434793', name: 'wgs_calling_regions.hg38.interval_list'}}
-  wgs_coverage_interval_list: {type: File, doc: 'wgs_coverage_regions.hg38.interval_list', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347b9', name: 'wgs_coverage_regions.hg38.interval_list'}}
-  wgs_evaluation_interval_list: {type: File, doc: 'wgs_evaluation_regions.hg38.interval_list', sbg:suggestedValue: {class: 'File', path: '5c07faefe4b0625cc24347a3', name: 'wgs_evaluation_regions.hg38.interval_list'}}
+              sbg:suggestedValue: [{class: 'File', path: '5c12d579e4b06d3a6d2145f3', name: '1000G_omni2.5.hg38.vcf.gz'},
+                                   {class: 'File', path: '5c12d579e4b06d3a6d2145fa', name: '1000G_phase1.snps.high_confidence.hg38.vcf.gz'},
+                                   {class: 'File', path: '5c12d579e4b06d3a6d2145ed', name: 'Homo_sapiens_assembly38.known_indels.vcf.gz'},
+                                   {class: 'File', path: '5c12d579e4b06d3a6d2145f9', name: 'Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'}]}
+  reference_dict: {type: File, doc: 'Homo_sapiens_assembly38.dict', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d214604', name: 'Homo_sapiens_assembly38.dict'}}
+  reference_fai: {type: File, doc: 'Homo_sapiens_assembly38.fasta.fai, fasta index file', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145ee', name: 'Homo_sapiens_assembly38.fai'}}
+  contamination_sites_bed: {type: File, doc: 'Homo_sapiens_assembly38.contam.bed', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145fd', name: 'Homo_sapiens_assembly38.contam.bed'}}
+  contamination_sites_mu: {type: File, doc: 'Homo_sapiens_assembly38.contam.mu', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d214603', name: 'Homo_sapiens_assembly38.contam.mu'}}
+  contamination_sites_ud: {type: File, doc: 'Homo_sapiens_assembly38.contam.UD', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145f5', name: 'Homo_sapiens_assembly38.contam.UD'}}
+  wgs_calling_interval_list: {type: File, doc: 'wgs_calling_regions.hg38.interval_list', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145f1', name: 'wgs_calling_regions.hg38.interval_list'}}
+  wgs_coverage_interval_list: {type: File, doc: 'wgs_coverage_regions.hg38.interval_list', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145eb', name: 'wgs_coverage_regions.hg38.interval_list'}}
+  wgs_evaluation_interval_list: {type: File, doc: 'wgs_evaluation_regions.hg38.interval_list', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d214607', name: 'wgs_evaluation_regions.hg38.interval_list'}}
 
 outputs:
   cram: {type: File, outputSource: samtools_converttocram/output, doc: 'Final aligned cram file output'}
