@@ -13,7 +13,8 @@ inputs:
   biospecimen_name: {type: string, doc: 'biospecimen ID'}
   output_basename: {type: string, doc: 'output file base name all outputs'}
   reference_fasta: {type: File, doc: 'Homo_sapiens_assembly38.fasta, human genome reference file', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145ff', name: 'Homo_sapiens_assembly38.fasta'}}
-  bwa_index_tar: {type: File, doc: 'bwa-generated index files created from `reference_fasta`', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d214600', name: 'Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar'}}
+  bwa_index_tar: {type: File, doc: 'bwa-generated index files created from `reference_fasta`', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d2145f6', name: 'Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar'}}
+  dbsnp_vcf: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf', sbg:suggestedValue: {class: 'File', path: '5c12d579e4b06d3a6d214600', name: 'Homo_sapiens_assembly38.dbsnp138.vcf'}}
   dbsnp_vcf_index: {type: File, doc: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx', sbg:suggestedValue: {class: 'File', path: '5c13d202e4b06d3aabf9cf33', name: 'Homo_sapiens_assembly38.dbsnp138.vcf.idx'}}
   knownsites: {type: 'File[]', doc: '1000G_omni2.5.hg38.vcf.gz, 1000G_phase1.snps.high_confidence.hg38.vcf.gz, Homo_sapiens_assembly38.known_indels.vcf.gz, Mills_and_1000G_gold_standard.indels.hg38.vcf.gz',
               sbg:suggestedValue: [{class: 'File', path: '5c12d579e4b06d3a6d2145f3', name: '1000G_omni2.5.hg38.vcf.gz'},
