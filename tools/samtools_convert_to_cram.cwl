@@ -9,7 +9,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 4000
   - class: DockerRequirement
-    dockerPull: 'migbro/samtools:1.9'
+    dockerPull: 'kfdrc/samtools:1.9'
 baseCommand: [samtools, view]
 arguments:
   - position: 1

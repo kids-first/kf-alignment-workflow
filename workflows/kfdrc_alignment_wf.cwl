@@ -43,12 +43,20 @@ steps:
   samtools_split:
     run: ../tools/samtools_split.cwl
     label: Samtools split bam
-    doc: Use samtools 1.9 to split bam into smaller alignment jobs and untar bwa index for next steps
+    doc: Use samtools 1.9 to split bam into smaller alignment jobs
     in:
       input_bam: input_bam
-      bwa_index_tar: bwa_index_tar
       reference: reference_fasta
-    out: [bam_files, bwa_index]
+    out: [bam_files]
+
+  tabix_untar_prep:
+    run: ../tools/tabix_untar_prep.cwl
+    label: Tabix ks bwa prep
+    doc: Index known sites files for bqsr and  and untar bwa index for next steps for alignments jobs
+    in:
+      knownsites: knownsites
+      bwa_index_tar: bwa_index_tar
+    out: [ks_indexed, bwa_index]
 
   bwa_mem:
     run: ../workflows/kfdrc_bwamem_subwf.cwl
@@ -56,7 +64,7 @@ steps:
     doc: Run bwa-mem v0.7.17 and create custom RG info on temporarily split input reads
     in:
       input_reads: samtools_split/bam_files
-      bwa_index: samtools_split/bwa_index
+      bwa_index: tabix_untar_prep/bwa_index
       sample_name: biospecimen_name
     scatter: [input_reads]
     out: [aligned_bams]
@@ -87,21 +95,13 @@ steps:
       reference_dict: reference_dict
     out: [out_intervals]
 
-  tabix_prep_knownsites:
-    run: ../tools/tabix_prep_knownsites.cwl
-    label: Tabix ks prep
-    doc: Index known sites files for bqsr and feed to bqsr tool
-    in:
-      knownsites: knownsites
-    out: [ks_indexed]
-
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     label: GATK bqsr
     doc: Create base score recalibrator score reports
     in:
       input_bam: sambamba_sort/sorted_bam
-      knownsites: tabix_prep_knownsites/ks_indexed
+      knownsites: tabix_untar_prep/ks_indexed
       reference_fasta: reference_fasta
       reference_dict: reference_dict
       reference_fai: reference_fai
