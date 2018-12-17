@@ -2,11 +2,11 @@ class: CommandLineTool
 cwlVersion: v1.0
 id: samtools_split
 label: Samtools split bam
-doc: Use samtools 1.8 to split bam into smaller alignment jobs
+doc: Use samtools 1.9 to split bam into smaller alignment jobs
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/samtools:1.8-dev'
+    dockerPull: 'migbro/samtools:1.9'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:

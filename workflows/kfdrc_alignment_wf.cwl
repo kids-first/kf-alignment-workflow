@@ -43,7 +43,7 @@ steps:
   samtools_split:
     run: ../tools/samtools_split.cwl
     label: Samtools split bam
-    doc: Use samtools 1.8 to split bam into smaller alignment jobs and untar bwa index for next steps
+    doc: Use samtools 1.9 to split bam into smaller alignment jobs and untar bwa index for next steps
     in:
       input_bam: input_bam
       bwa_index_tar: bwa_index_tar
@@ -87,13 +87,21 @@ steps:
       reference_dict: reference_dict
     out: [out_intervals]
 
+  tabix_prep_knownsites:
+    run: ../tools/tabix_prep_knownsites.cwl
+    label: Tabix ks prep
+    doc: Index known sites files for bqsr and feed to bqsr tool
+    in:
+      knownsites: knownsites
+    out: [ks_indexed]
+
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     label: GATK bqsr
     doc: Create base score recalibrator score reports
     in:
       input_bam: sambamba_sort/sorted_bam
-      knownsites: knownsites
+      knownsites: tabix_prep_knownsites/ks_indexed
       reference_fasta: reference_fasta
       reference_dict: reference_dict
       reference_fai: reference_fai

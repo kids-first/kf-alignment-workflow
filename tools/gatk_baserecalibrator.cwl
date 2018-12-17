@@ -7,24 +7,24 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.3.0-tabix'
+    dockerPull: 'kfdrc/gatk:4.0.3.0'
   - class: ResourceRequirement
     ramMin: 8000
-baseCommand: []
+  - class: InitialWorkDirRequirement
+    listing: |
+      ${
+        var listing = inputs.knownsites;
+        listing.push(inputs.reference_fai);
+        listing.push(inputs.reference_fasta);
+        listing.push(inputs.reference_dict);
+        return listing;
+      }
+baseCommand: [/gatk, BaseRecalibrator]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      ${
-        var cmd_pre = "tabix ";
-        var index_cmd = "";
-        var ks_len = inputs.knownsites.length
-        for (var i = 0; i < ks_len; i++){
-          index_cmd += cmd_pre + inputs.knownsites[i].path + " && ";
-        }
-        return index_cmd
-      }
-      /gatk BaseRecalibrator --java-options "-Xms4000m
+      --java-options "-Xms4000m
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10
       -XX:+PrintFlagsFinal
@@ -37,21 +37,26 @@ arguments:
       --use-original-qualities
       -O $(inputs.input_bam.nameroot).recal_data.csv
       -L $(inputs.sequence_interval.path)
+      ${
+        var ks_sites = "";
+        for (var i = 0; i < inputs.knownsites.length; i++){
+          if (inputs.knownsites[i].nameext == '.gz'){
+            ks_sites += " --known-sites " + inputs.knownsites[i].path
+          }
+        }
+      return ks_sites
+      }
 inputs:
   reference_fasta: File
   reference_dict: File
   reference_fai: File
-
   input_bam: {type: File, secondaryFiles: [^.bai]}
   knownsites:
     type:
       type: array
       items: File
-      inputBinding:
-        prefix: --known-sites
-    inputBinding:
-      position: 1
   sequence_interval: File
+
 outputs:
   output:
     type: File

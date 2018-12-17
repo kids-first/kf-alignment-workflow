@@ -21,7 +21,7 @@ steps:
     run: ../tools/bwa_input_prepare.cwl
     in:
       input_bam: input_reads
-    out: [output, rg, bwa_index]
+    out: [output, rg]
 
   expression_updatergsample:
     run: ../tools/expression_preparerg.cwl
