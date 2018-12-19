@@ -1,7 +1,7 @@
 # kfdrc alignment workflow
 ## basic info
 - pipeline flowchart: 
-  - [cwl-viewer](https://view.commonwl.org/workflows/github.com/kids-first/kf-alignment-workflow/blob/master/workflows/kfdrc_alignment_pipeline.cwl) 
+  - [cwl-viewer](https://view.commonwl.org/workflows/github.com/kids-first/kf-alignment-workflow/blob/master/workflows/kfdrc_alignment_wf.cwl) 
   - [draw.io](https://tinyurl.com/y952jek2)
 - tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
