@@ -28,7 +28,7 @@ arguments:
 inputs:
   knownsites:
     type: File[]
-  bwa_index_tar: File[]
+  bwa_index_tar: File
 outputs:
   ks_indexed:
     type: File[]
