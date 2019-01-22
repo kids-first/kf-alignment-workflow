@@ -3,9 +3,29 @@
 	  "class": "File",
 	  "location": "input.bam"
 	},
-	"indexed_reference_fasta": {
+	"reference_fasta": {
 	  "class": "File",
 	  "location": "Homo_sapiens_assembly38.fasta"
+	},
+	"reference_dict": {
+		"class": "File",
+		"location": "Homo_sapiens_assembly38.dict"
+	},
+	"reference_fai": {
+		"class": "File",
+		"location": "Homo_sapiens_assembly38.fai"
+	},
+	"bwa_index_tar": {
+		"class": "File",
+		"location": "Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar"
+	},
+	"dbsnp_vcf": {
+		"class": "File",
+		"location": "Homo_sapiens_assembly38.dbsnp138.vcf"
+	},
+  	"dbsnp_vcf_index": {
+		"class": "File",
+		"location": "Homo_sapiens_assembly38.dbsnp138.vcf.idx"
 	},
 	"contamination_sites_ud": {
 	  "class": "File",
@@ -37,10 +57,6 @@
 		"location": "Mills_and_1000G_gold_standard.indels.hg38.vcf.gz"
 	  }
 	],
-	"sequence_grouping_tsv": {
-	  "class": "File",
-	  "location": "sequence_grouping.txt"
-	},
 	"wgs_coverage_interval_list": {
 	  "class": "File",
 	  "location": "wgs_coverage_regions.hg38.interval_list"
