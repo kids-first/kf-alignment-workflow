@@ -1,7 +1,14 @@
 # kfdrc alignment workflow
+
+Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows
+Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)
+It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and 
+base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from 
+this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis.
+
 ## basic info
 - pipeline flowchart: 
-  - [cwl-viewer](https://view.commonwl.org/workflows/github.com/kids-first/kf-alignment-workflow/blob/master/workflows/kfdrc_alignment_pipeline.cwl) 
+  - [cwl-viewer](https://view.commonwl.org/workflows/github.com/kids-first/kf-alignment-workflow/blob/mb-publish-bam-align/workflows/kfdrc_alignment_wf.cwl) 
   - [draw.io](https://tinyurl.com/y952jek2)
 - tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
