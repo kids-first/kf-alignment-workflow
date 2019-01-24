@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: sambamba_sort
+id: sambamba_mark_dup
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
@@ -14,10 +14,11 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      /opt/sambamba_0.6.3/sambamba_v0.6.3 sort
-      -t 36 -m 10G
-      -o $(inputs.base_file_name).$(inputs.suffix).bam
+      /opt/sambamba_0.6.3/sambamba_v0.6.3 markdup
+      -t 36 --tmpdir MDUP_TMP
       $(inputs.bam.path)
+      $(inputs.base_file_name).$(inputs.suffix).bam
+
 
       mv $(inputs.base_file_name).$(inputs.suffix).bam.bai $(inputs.base_file_name).$(inputs.suffix).bai
 
@@ -27,9 +28,9 @@ inputs:
   base_file_name: string
   suffix:
     type: string
-    default: aligned.sorted
+    default: aligned.duplicates_marked.sorted
 outputs:
-  sorted_bam:
+  mdup_bam:
     type: File
     outputBinding:
       glob: '*.bam'
