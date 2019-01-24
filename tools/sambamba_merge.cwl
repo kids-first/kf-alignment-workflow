@@ -14,26 +14,30 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
-      bams="${
+      ${
         var arr = [];
-        for (var i=0; i<inputs.bams.length; i++)
-          for (var j=0; j<inputs.bams[i].length; j++)
-            arr = arr.concat(inputs.bams[i][j].path)
-        return (arr.join(' '))
-      }"
-      /opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 $(inputs.base_file_name).aligned.duplicates_marked.unsorted.bam $bams && rm $bams
+        if (inputs.bams.length > 1){
+          for (var i=0; i<inputs.bams.length; i++){
+            arr = arr.concat(inputs.bams[i].path)
+          }
+          var bams = arr.join(' ')
+          return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + bams;
+        }
+        else{
+          return "mv " + inputs.bams[0].path + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam";
+        }
+      }
+
 inputs:
   bams:
     type:
       type: array
-      items:
-        type: array
-        items: File
+      items: File
   base_file_name: string
 outputs:
   merged_bam:
     type: File
     outputBinding:
-      glob: '*.bam'
+      glob: '*.aligned.duplicates_marked.unsorted.bam'
     secondaryFiles: [.bai, ^.bai]
     format: BAM

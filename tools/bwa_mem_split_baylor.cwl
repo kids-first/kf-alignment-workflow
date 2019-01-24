@@ -14,15 +14,14 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      date
-      && echo "Start align"
+      >&2 date
+      && >&2 echo "Start align"
       && bwa mem -K 100000000 -p -v 3 -t 18 -Y $(inputs.ref.path) -R '$(inputs.rg)' $(inputs.reads.path) | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 18 -f bam -l 0 -S /dev/stdin > $(inputs.reads.nameroot).bwa.bam
-      && date
-      && echo "Finished align"
+      && >&2 date
+      && >&2 echo "Finished align"
       && /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 18 -m 15GiB --tmpdir ./ -o $(inputs.reads.nameroot).sorted.bam -l 5 $(inputs.reads.nameroot).bwa.bam
-      && date
-      && echo "Finished coord sort"
-      && /opt/sambamba_0.6.3/sambamba_v0.6.3 markdup -t 18 --tmpdir MDUP_TMP $(inputs.reads.nameroot).sorted.bam $(inputs.reads.nameroot).sorted.mdup.bam
+      && >&2 date
+      && >&2 echo "Finished coord sort"
 inputs:
   ref:
     type: File
