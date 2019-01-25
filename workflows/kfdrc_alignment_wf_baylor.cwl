@@ -79,7 +79,8 @@ steps:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: sambamba_mdup/mdup_bam
-      knownsites: knownsites
+      dbsnp_vcf: dbsnp_vcf
+      known_indel_vcf: known_indel_vcf
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
