@@ -9,14 +9,21 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
       >&2 date
       && >&2 echo "Start align"
-      && bwa mem -K 100000000 -p -v 3 -t 18 -Y $(inputs.ref.path) -R '$(inputs.rg)' $(inputs.reads.path) | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 18 -f bam -l 0 -S /dev/stdin > $(inputs.reads.nameroot).bwa.bam
+
+      if [ $(inputs.reads.nameext) = ".bam" ]; then
+        CMD="/opt/biobambam2/2.0.87-release-20180301132713/x86_64-etch-linux-gnu/bin/bamtofastq tryoq=1 filename=$(inputs.reads.path)"
+      else
+        CMD="cat $(inputs.reads.path)"
+      fi
+
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 18 -Y $(inputs.ref.path) -R '$(inputs.rg)' - | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 18 -f bam -l 0 -S /dev/stdin > $(inputs.reads.nameroot).bwa.bam
       && >&2 date
       && >&2 echo "Finished align"
       && /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 18 -m 15GiB --tmpdir ./ -o $(inputs.reads.nameroot).aligned.bam -l 5 $(inputs.reads.nameroot).bwa.bam
