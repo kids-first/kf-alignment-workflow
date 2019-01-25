@@ -28,7 +28,7 @@ inputs:
   base_file_name: string
   suffix:
     type: string
-    default: aligned.duplicates_marked.sorted
+    default: aligned.merged.sorted.duplicates_marked
 outputs:
   mdup_bam:
     type: File

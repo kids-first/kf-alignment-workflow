@@ -16,7 +16,7 @@ arguments:
     valueFrom: |-
       ${
           if (inputs.bams.length != 1)
-           return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.bam"
+           return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.merged.bam"
           else return "echo "
        }
 inputs:
@@ -30,7 +30,7 @@ outputs:
   merged_bam:
     type: File
     outputBinding:
-      glob: '*.bam'
+      glob: '*.aligned.merged.bam'
       outputEval: |-
         ${
             if(inputs.bams.length > 1) return self
