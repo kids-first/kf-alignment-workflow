@@ -16,16 +16,11 @@ arguments:
     valueFrom: |-
       ${
           if (inputs.bams.length != 1)
-           var arr = []
-            for (var i=0; i<inputs.bams.length; i++){
-              arr = arr.concat(inputs.bams[i].path)
-            }
-            var bams = arr.join(' ')
-           return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + bams
+           return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam"
           else return "echo "
        }
 inputs:
-  bams: 
+  bams:
     type: File[]
     inputBinding:
       position: 1
@@ -38,6 +33,6 @@ outputs:
       glob: '*.bam'
       outputEval: |-
         ${
-            if(inputs.bams.length == 1) return inputs.bams.path
-            else return self
+            if(inputs.bams.length > 1) return self
+            else return inputs.bams
         }
