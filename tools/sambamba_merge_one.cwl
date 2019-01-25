@@ -30,7 +30,7 @@ outputs:
   merged_bam:
     type: File
     outputBinding:
-      glob: '*.aligned.merged.bam'
+      glob: '*.bam'
       outputEval: |-
         ${
             if(inputs.bams.length > 1) return self
