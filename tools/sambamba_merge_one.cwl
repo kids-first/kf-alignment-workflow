@@ -16,7 +16,7 @@ arguments:
     valueFrom: |-
       ${
           if (inputs.bams.length != 1)
-           return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam"
+           return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.bam"
           else return "echo "
        }
 inputs:

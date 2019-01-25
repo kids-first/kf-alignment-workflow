@@ -27,7 +27,7 @@ inputs:
   base_file_name: string
   suffix:
     type: string
-    default: aligned.sorted
+    default: aligned
 outputs:
   sorted_bam:
     type: File
