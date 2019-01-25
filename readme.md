@@ -20,12 +20,10 @@
   indexed_reference_fasta: Homo_sapiens_assembly38.fasta
   reference_dict: Homo_sapiens_assembly38.dict
   sequence_grouping_tsv: sequence_grouping.txt
-  knownsites:
-  - 1000G_omni2.5.hg38.vcf.gz
-  - 1000G_phase1.snps.high_confidence.hg38.vcf.gz
+  dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
+  known_indel_vcf:
   - Homo_sapiens_assembly38.known_indels.vcf.gz
   - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
-  dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
   wgs_calling_interval_list: wgs_calling_regions.hg38.interval_list
   wgs_coverage_interval_list: wgs_coverage_regions.hg38.interval_list
   wgs_evaluation_interval_list: wgs_evaluation_regions.hg38.interval_list
