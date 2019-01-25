@@ -48,7 +48,7 @@ steps:
     out: [aligned_bams]
 
   sambamba_merge:
-    run: ../tools/sambamba_merge_one.cwl
+    run: ../tools/sambamba_merge.cwl
     in:
       bams: bwa_mem/aligned_bams
       base_file_name: output_basename
