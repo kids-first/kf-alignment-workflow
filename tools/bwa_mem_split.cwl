@@ -9,20 +9,19 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
-    shellQuote: false
     valueFrom: >-
       if [ $(inputs.reads.nameext) = ".bam" ]; then
-        CMD='/opt/biobambam2/2.0.87-release-20180301132713/x86_64-etch-linux-gnu/bin/bamtofastq tryoq=1 filename=$(inputs.reads.path)'
+        CMD="/opt/biobambam2/2.0.87-release-20180301132713/x86_64-etch-linux-gnu/bin/bamtofastq tryoq=1 filename=$(inputs.reads.path)"
       else
-        CMD='cat $(inputs.reads.path)'
+        CMD="cat $(inputs.reads.path)"
       fi
 
       $CMD | bwa mem -K 100000000 -p -v 3 -t 15
       -Y $(inputs.ref.path)
-      -R '$(inputs.rg)' -
+      -R "$(inputs.rg)" -
       | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 17 -f bam -l 0 -S /dev/stdin
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 17 --natural-sort -m 15GiB --tmpdir ./

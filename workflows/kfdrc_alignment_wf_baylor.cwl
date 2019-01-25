@@ -12,7 +12,7 @@ inputs:
   output_basename: string
   indexed_reference_fasta: File
   dbsnp_vcf: File
-  knownsites: File[]
+  known_indel_vcf: File[]
   reference_dict: File
   contamination_sites_bed: File
   contamination_sites_mu: File
@@ -73,7 +73,7 @@ steps:
     run: ../tools/python_createsequencegroups.cwl
     in:
       ref_dict: reference_dict
-    out: [out_intervals]
+    out: [sequence_intervals, sequence_intervals_with_unmapped]
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
@@ -81,7 +81,7 @@ steps:
       input_bam: sambamba_mdup/mdup_bam
       knownsites: knownsites
       reference: indexed_reference_fasta
-      sequence_interval: python_createsequencegroups/out_intervals
+      sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
     out: [output]
 
@@ -98,7 +98,7 @@ steps:
       bqsr_report: gatk_gatherbqsrreports/output
       input_bam: sambamba_mdup/mdup_bam
       reference: indexed_reference_fasta
-      sequence_interval: python_createsequencegroups/out_intervals
+      sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
     out: [recalibrated_bam]
 

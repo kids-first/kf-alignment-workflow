@@ -19,15 +19,11 @@
 	  "class": "File",
 	  "location": "Homo_sapiens_assembly38.contam.bed"
 	},
-	"knownsites": [
-	  {
+	"dbsnp_vcf": {
 		"class": "File",
-		"location": "1000G_omni2.5.hg38.vcf.gz"
-	  },
-	  {
-		"class": "File",
-		"location": "1000G_phase1.snps.high_confidence.hg38.vcf.gz"
-	  },
+		"location": "Homo_sapiens_assembly38.dbsnp138.vcf"
+	},
+	"known_indel_vcf": [
 	  {
 		"class": "File",
 		"location": "Homo_sapiens_assembly38.known_indels.vcf.gz"
