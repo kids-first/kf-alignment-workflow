@@ -24,6 +24,7 @@ arguments:
       $CMD | bwa mem -K 100000000 -p -v 3 -t 36
       -Y $(inputs.ref.path)
       -R "$(inputs.rg)" -
+      | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 36 -f bam -l 0 -S /dev/stdin
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 36 --natural-sort -m 15GiB --tmpdir ./
       -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
