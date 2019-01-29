@@ -4,8 +4,8 @@ id: bwa_mem_split_sambamba
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 25000
-    coresMin: 18
+    ramMin: 50000
+    coresMin: 36
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
@@ -23,10 +23,10 @@ arguments:
         CMD="cat $(inputs.reads.path)"
       fi
 
-      $CMD | bwa mem -K 100000000 -p -v 3 -t 18 -Y $(inputs.ref.path) -R '$(inputs.rg)' - | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 18 -f bam -l 0 -S /dev/stdin > $(inputs.reads.nameroot).bwa.bam
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 36 -Y $(inputs.ref.path) -R '$(inputs.rg)' - | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 36 -f bam -l 0 -S /dev/stdin > $(inputs.reads.nameroot).bwa.bam
       && >&2 date
       && >&2 echo "Finished align"
-      && /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 18 -m 15GiB --tmpdir ./ -o $(inputs.reads.nameroot).aligned.bam -l 5 $(inputs.reads.nameroot).bwa.bam
+      && /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 36 -m 15GiB --tmpdir ./ -o $(inputs.reads.nameroot).aligned.bam -l 5 $(inputs.reads.nameroot).bwa.bam
       && >&2 date
       && >&2 echo "Finished coord sort"
 inputs:
