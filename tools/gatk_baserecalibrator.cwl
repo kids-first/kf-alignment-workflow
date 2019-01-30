@@ -26,11 +26,9 @@ arguments:
       --use-original-qualities
       -O $(inputs.input_bam.nameroot).recal_data.csv
       -L $(inputs.sequence_interval.path)
-      --known-sites $(inputs.dbsnp_vcf.path)
 inputs:
   reference: {type: File, secondaryFiles: [^.dict, .fai]}
   input_bam: {type: File, secondaryFiles: [^.bai]}
-  dbsnp_vcf: {type: File, secondaryFiles: [.idx]}
   known_indel_vcf:
     type:
       type: array

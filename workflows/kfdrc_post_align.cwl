@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_optimized_wf_test
+id: kf_post-align_test
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -8,7 +8,6 @@ requirements:
 
 inputs:
   input_reads: File
-  biospecimen_name: string
   output_basename: string
   indexed_reference_fasta: File
   dbsnp_vcf: File
@@ -31,36 +30,6 @@ outputs:
   wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
 
 steps:
-  samtools_split:
-    run: ../tools/samtools_split.cwl
-    in:
-      input_bam: input_reads
-      reference: indexed_reference_fasta
-    out: [bam_files]
-
-  bwa_mem:
-    run: ../workflows/kfdrc_bwamem_subwf.cwl
-    in:
-      input_reads: samtools_split/bam_files
-      indexed_reference_fasta: indexed_reference_fasta
-      sample_name: biospecimen_name
-    scatter: [input_reads]
-    out: [aligned_bams]
-
-  sambamba_merge:
-    run: ../tools/sambamba_merge.cwl
-    in:
-      bams: bwa_mem/aligned_bams
-      base_file_name: output_basename
-    out: [merged_bam]
-
-  sambamba_sort:
-    run: ../tools/sambamba_sort.cwl
-    in:
-      bam: sambamba_merge/merged_bam
-      base_file_name: output_basename
-    out: [sorted_bam]
-
   python_createsequencegroups:
     run: ../tools/python_createsequencegroups.cwl
     in:
@@ -70,7 +39,7 @@ steps:
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
-      input_bam: sambamba_sort/sorted_bam
+      input_bam: input_reads
       known_indel_vcf: known_indel_vcf
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
@@ -88,7 +57,7 @@ steps:
     run: ../tools/gatk_applybqsr.cwl
     in:
       bqsr_report: gatk_gatherbqsrreports/output
-      input_bam: sambamba_sort/sorted_bam
+      input_bam: input_reads
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
@@ -128,7 +97,7 @@ steps:
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
-      input_bam: sambamba_sort/sorted_bam
+      input_bam: input_reads
       ref_fasta: indexed_reference_fasta
       output_basename: output_basename
     out: [output]
