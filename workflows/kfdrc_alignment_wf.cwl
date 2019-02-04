@@ -12,7 +12,7 @@ inputs:
   output_basename: string
   indexed_reference_fasta: File
   dbsnp_vcf: File
-  known_indel_vcf: File[]
+  knownsites: File[]
   reference_dict: File
   contamination_sites_bed: File
   contamination_sites_mu: File
@@ -71,8 +71,7 @@ steps:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: sambamba_sort/sorted_bam
-      dbsnp_vcf: dbsnp_vcf
-      known_indel_vcf: known_indel_vcf
+      knownsites: knownsites
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
