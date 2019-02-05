@@ -3,6 +3,9 @@ cwlVersion: v1.0
 id: samtools_split
 requirements:
   - class: ShellCommandRequirement
+  - class: ResourceRequirement
+    ramMin: 10000
+    coresMin: 36
   - class: DockerRequirement
     dockerPull: 'kfdrc/samtools:1.8-dev'
   - class: InlineJavascriptRequirement

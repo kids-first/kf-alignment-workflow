@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_optimized_wf
+id: kf_alignment_optimized2_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -176,7 +176,5 @@ steps:
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
-  - class: 'sbg:AWSInstanceType'
-    value: c4.8xlarge;ebs-gp2;850
   - class: 'sbg:maxNumberOfParallelInstances'
-    value: 4
+    value: 8

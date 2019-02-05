@@ -4,6 +4,8 @@ id: verifybamid
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
+  - class: ResourceRequirement
+    ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'kfdrc/verifybamid:1.0.2'
   - class: ResourceRequirement

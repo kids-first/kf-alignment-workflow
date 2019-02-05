@@ -2,6 +2,8 @@ cwlVersion: v1.0
 class: CommandLineTool
 id: python_createsequencegroups
 requirements:
+  - class: ResourceRequirement
+    coresMin: 2
   - class: DockerRequirement
     dockerPull: 'kfdrc/python:2.7.13'
   - class: InlineJavascriptRequirement
