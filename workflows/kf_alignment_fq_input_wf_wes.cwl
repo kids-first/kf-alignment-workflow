@@ -1,47 +1,51 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_CramOnly_wf
+id: kf_alignment_fq_input_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
-  - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_reads: File
-  biospecimen_name: string
+  files_R1: File[]
+  files_R2: File[]
+  rgs: string[]
   output_basename: string
   indexed_reference_fasta: File
+  dbsnp_vcf: File
   knownsites: File[]
   reference_dict: File
-  wgs_coverage_interval_list: File
+  contamination_sites_bed: File
+  contamination_sites_mu: File
+  contamination_sites_ud: File
+  wgs_calling_interval_list: File
+  intervals: File
+  wgs_evaluation_interval_list: File
 
 outputs:
   cram: {type: File, outputSource: samtools_coverttocram/output}
+  gvcf: {type: File, outputSource: picard_mergevcfs/output}
+  verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
+  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
   aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
   wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
 
 steps:
-  samtools_split:
-    run: ../tools/samtools_split.cwl
-    in:
-      input_bam: input_reads
-      reference: indexed_reference_fasta
-    out: [bam_files]
-
   bwa_mem:
-    run: ../workflows/kfdrc_bwamem_subwf.cwl
+    run: ../tools/bwa_mem_fq.cwl
     in:
-      input_reads: samtools_split/bam_files
-      indexed_reference_fasta: indexed_reference_fasta
-      sample_name: biospecimen_name
-    scatter: [input_reads]
-    out: [aligned_bams]
-
+      file_R1: files_R1
+      file_R2: files_R2
+      rg: rgs
+      ref: indexed_reference_fasta
+    scatter: [file_R1, file_R2, rg]
+    scatterMethod: dotproduct
+    out: [output]
+    
   sambamba_merge:
-    run: ../tools/sambamba_merge.cwl
+    run: ../tools/sambamba_merge_one.cwl
     in:
-      bams: bwa_mem/aligned_bams
+      bams: bwa_mem/output
       base_file_name: output_basename
     out: [merged_bam]
 
@@ -99,12 +103,62 @@ steps:
       reference: indexed_reference_fasta
     out: [output]
 
-  picard_collectwgsmetrics:
-    run: ../tools/picard_collectwgsmetrics.cwl
+  picard_collecthsmetrics:
+    run: ../tools/picard_collecthsmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      intervals: wgs_coverage_interval_list
+      intervals: intervals
       reference: indexed_reference_fasta
+    out: [output]
+
+  picard_intervallisttools:
+    run: ../tools/picard_intervallisttools.cwl
+    in:
+      interval_list: wgs_calling_interval_list
+    out: [output]
+
+  verifybamid:
+    run: ../tools/verifybamid.cwl
+    in:
+      contamination_sites_bed: contamination_sites_bed
+      contamination_sites_mu: contamination_sites_mu
+      contamination_sites_ud: contamination_sites_ud
+      input_bam: sambamba_sort/sorted_bam
+      ref_fasta: indexed_reference_fasta
+      output_basename: output_basename
+    out: [output]
+
+  checkcontamination:
+    run: ../tools/expression_checkcontamination.cwl
+    in:
+      verifybamid_selfsm: verifybamid/output
+    out: [contamination]
+
+  gatk_haplotypecaller:
+    run: ../tools/gatk_haplotypecaller.cwl
+    in:
+      contamination: checkcontamination/contamination
+      input_bam: picard_gatherbamfiles/output
+      interval_list: picard_intervallisttools/output
+      reference: indexed_reference_fasta
+    scatter: [interval_list]
+    out: [output]
+
+  picard_mergevcfs:
+    run: ../tools/picard_mergevcfs.cwl
+    in:
+      input_vcf: gatk_haplotypecaller/output
+      output_vcf_basename: output_basename
+    out: [output]
+
+  picard_collectgvcfcallingmetrics:
+    run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    in:
+      dbsnp_vcf: dbsnp_vcf
+      final_gvcf_base_name: output_basename
+      input_vcf: picard_mergevcfs/output
+      reference_dict: reference_dict
+      wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
 
   samtools_coverttocram:
@@ -121,3 +175,4 @@ hints:
     value: c4.8xlarge;ebs-gp2;850
   - class: 'sbg:maxNumberOfParallelInstances'
     value: 4
+

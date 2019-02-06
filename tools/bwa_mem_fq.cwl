@@ -4,7 +4,7 @@ id: bwa_mem_fq
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 25000
+    ramMin: 50000
     coresMin: 17
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
@@ -14,7 +14,7 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      bwa mem -K 100000000 -p -v 3 -t 15
+      bwa mem -K 100000000 -v 3 -t 15
       -Y $(inputs.ref.path)
       -R '$(inputs.rg)' $(inputs.file_R1.path) $(inputs.file_R2.path)
       | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
