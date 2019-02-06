@@ -7,6 +7,7 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard-r:latest-dev'
   - class: ResourceRequirement
+    coresMin: 4
     ramMin: 12000
 baseCommand: [ java, -Xms5000m, -jar, /picard.jar, CollectMultipleMetrics]
 arguments:

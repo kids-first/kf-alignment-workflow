@@ -140,6 +140,9 @@ steps:
     out: [contamination]
 
   gatk_haplotypecaller:
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: m5.2xlarge;ebs-gp2;500
     run: ../tools/gatk_haplotypecaller.cwl
     in:
       contamination: checkcontamination/contamination

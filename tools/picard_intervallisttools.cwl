@@ -20,7 +20,7 @@ arguments:
       SORT=true
       BREAK_BANDS_AT_MULTIPLES_OF=1000000
       INPUT=$(inputs.interval_list.path)
-      OUTPUT=$(runtime.outdir)
+      OUTPUT=.
 inputs:
   interval_list: File
 outputs:

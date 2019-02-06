@@ -6,6 +6,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 3000
+    coresMin: 4
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.18.2-dev'
 baseCommand: [ java, -Xms2000m, -jar, /picard.jar, MergeVcfs]
