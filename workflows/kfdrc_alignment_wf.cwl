@@ -68,6 +68,9 @@ steps:
     out: [sequence_intervals, sequence_intervals_with_unmapped]
 
   gatk_baserecalibrator:
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c5.4xlarge;ebs-gp2;500
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: sambamba_sort/sorted_bam
@@ -85,6 +88,9 @@ steps:
     out: [output]
 
   gatk_applybqsr:
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c5.4xlarge;ebs-gp2;500
     run: ../tools/gatk_applybqsr.cwl
     in:
       bqsr_report: gatk_gatherbqsrreports/output
@@ -142,7 +148,7 @@ steps:
   gatk_haplotypecaller:
     hints:
       - class: 'sbg:AWSInstanceType'
-        value: m5.2xlarge;ebs-gp2;500
+        value: c5.4xlarge;ebs-gp2;500
     run: ../tools/gatk_haplotypecaller.cwl
     in:
       contamination: checkcontamination/contamination
@@ -180,4 +186,4 @@ $namespaces:
   sbg: https://sevenbridges.com
 hints:
   - class: 'sbg:maxNumberOfParallelInstances'
-    value: 8
+    value: 4

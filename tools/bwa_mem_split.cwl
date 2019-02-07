@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
     ramMin: 50000
-    coresMin: 16
+    coresMin: 36
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
@@ -21,12 +21,12 @@ arguments:
         CMD="cat $(inputs.reads.path)"
       fi
 
-      $CMD | bwa mem -K 100000000 -p -v 3 -t 16
+      $CMD | bwa mem -K 100000000 -p -v 3 -t 36
       -Y $(inputs.ref.path)
       -R "$(inputs.rg)" -
       | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
-      | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 16 -f bam -l 0 -S /dev/stdin
-      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 16 --natural-sort -m 30GiB --tmpdir ./
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 36 -f bam -l 0 -S /dev/stdin
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 36 --natural-sort -m 15GiB --tmpdir ./
       -o $(inputs.reads.nameroot).unsorted.bam -l 5 /dev/stdin
 
       rm $(inputs.reads.path)
@@ -45,4 +45,4 @@ $namespaces:
   sbg: https://sevenbridges.com
 hints:
   - class: 'sbg:AWSInstanceType'
-    value: m5.4xlarge;ebs-gp2;500
+    value: 5.9xlarge;ebs-gp2;600
