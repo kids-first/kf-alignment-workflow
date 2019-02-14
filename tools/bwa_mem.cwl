@@ -7,8 +7,8 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 14000
-    coresMin: 16
+    ramMin: 50000
+    coresMin: 36
 baseCommand: [java, -Xms5000m, -jar, /picard.jar]
 arguments:
   - position: 0
