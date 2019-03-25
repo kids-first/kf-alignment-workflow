@@ -8,11 +8,12 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/bwa-bundle:dev'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
+      set -eo pipefail
       samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
       if [ $(inputs.input_bam.size) -gt 20000000000 ]; then
         bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 680000000 - reads-

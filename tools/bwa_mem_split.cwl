@@ -9,11 +9,13 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
+      set -eo pipefail
+
       if [ $(inputs.reads.nameext) = ".bam" ]; then
         CMD='/opt/biobambam2/2.0.87-release-20180301132713/x86_64-etch-linux-gnu/bin/bamtofastq tryoq=1 filename=$(inputs.reads.path)'
       else

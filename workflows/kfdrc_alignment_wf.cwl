@@ -95,7 +95,7 @@ steps:
     doc: Create interval files to parallelize BQSR
     in:
       reference_dict: reference_dict
-    out: [out_intervals]
+    out: [sequence_intervals, sequence_intervals_with_unmapped]
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
@@ -107,7 +107,7 @@ steps:
       reference_fasta: reference_fasta
       reference_dict: reference_dict
       reference_fai: reference_fai
-      sequence_interval: python_createsequencegroups/out_intervals
+      sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
     out: [output]
 
@@ -130,7 +130,7 @@ steps:
       reference_fasta: reference_fasta
       reference_dict: reference_dict
       reference_fai: reference_fai
-      sequence_interval: python_createsequencegroups/out_intervals
+      sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
     out: [recalibrated_bam]
 
@@ -245,6 +245,6 @@ $namespaces:
   sbg: https://sevenbridges.com
 hints:
   - class: sbg:AWSInstanceType
-    value: c4.8xlarge;ebs-gp2;850
+    value: c5.9xlarge;ebs-gp2;850
   - class: sbg:maxNumberOfParallelInstances
     value: 4

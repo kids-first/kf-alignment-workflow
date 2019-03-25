@@ -44,6 +44,10 @@ arguments:
               tsv_file.write(tsv_string)
               tsv_file.close()
 
+          with open("unmapped.intervals", "w") as tsv_file:
+              tsv_file.write("unmapped")
+              tsv_file.close()
+
       if __name__ == "__main__":
           main()
 
@@ -51,7 +55,12 @@ inputs:
   reference_dict: File
 
 outputs:
-  out_intervals:
+  sequence_intervals:
+    type: File[]
+    outputBinding:
+      glob: 'sequence_grouping_*.intervals'
+
+  sequence_intervals_with_unmapped:
     type: File[]
     outputBinding:
       glob: '*.intervals'
