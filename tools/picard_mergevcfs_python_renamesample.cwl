@@ -8,11 +8,14 @@ requirements:
     ramMin: 3000
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.18.9'
-baseCommand: [ java, -Xms2000m, -jar, /picard.jar, MergeVcfs]
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
+      set -eo pipefail
+
+      java -Xms2000m -jar /picard.jar MergeVcfs
       OUTPUT=/dev/stdout
       CREATE_INDEX=false |
       /VcfSampleRename.py $(inputs.biospecimen_name) |

@@ -9,11 +9,14 @@ requirements:
   - class: ResourceRequirement
     ramMin: 50000
     coresMin: 36
-baseCommand: [java, -Xms5000m, -jar, /picard.jar]
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
+      set -eo pipefail
+
+      java -Xms5000m -jar /picard.jar
       SamToFastq
       INPUT=$(inputs.input_bam.path)
       FASTQ=/dev/stdout

@@ -9,11 +9,13 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/bwa-kf-bundle:0.1.17'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
+      set -eo pipefail
+
       bwa mem -K 100000000 -v 3 -t 15
       -Y $(inputs.ref.path)
       -R '$(inputs.rg)' $(inputs.file_R1.path) $(inputs.file_R2.path)
