@@ -9,11 +9,13 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'zhangb1/kf-bwa-bundle'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
+      set -eo pipefail
+
       if [ $(inputs.reads.nameext) = ".bam"]; then
         CMD='bamtofastq tryoq=1 filename=$(inputs.reads.path)'
       else

@@ -6,11 +6,13 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/samtools:1.8-dev'
   - class: InlineJavascriptRequirement
-baseCommand: []
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
+      set -eo pipefail
+
       RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
         samtools split -f '%!.bam' -@ 36 --reference $(inputs.reference.path) $(inputs.input_bam.path)
