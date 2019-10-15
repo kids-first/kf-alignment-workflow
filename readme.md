@@ -1,4 +1,7 @@
-# kfdrc alignment workflow
+# KFDRC Whole Genome Alignment Workflow
+
+![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
+
 
 Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows
 Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)
@@ -6,7 +9,7 @@ It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version
 base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from 
 this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis.
 
-## basic info
+## Basic Info
 - pipeline flowchart: 
   - [draw.io](https://tinyurl.com/y952jek2)
 - tool images: https://hub.docker.com/r/kfdrc/
@@ -15,12 +18,12 @@ this can be used later on for further analysis in joint trio genotyping and subs
   - rabix-v1.0.5: https://github.com/rabix/bunny/releases/tag/v1.0.5
   - cwltool: https://github.com/common-workflow-language/cwltool/releases/tag/1.0.20171107133715
 
-## references:
+## References:
 - https://console.cloud.google.com/storage/browser/broad-references/hg38/v0/
 - kfdrc bucket: s3://kids-first-seq-data/broad-references/
 - cavatica: https://cavatica.sbgenomics.com/u/yuankun/kf-reference/
 
-## inputs:
+## Inputs:
 ```yaml
   input_bam: input.bam
   reference_fasta: Homo_sapiens_assembly38.fasta
