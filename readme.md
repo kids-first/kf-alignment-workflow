@@ -29,7 +29,7 @@ this can be used later on for further analysis in joint trio genotyping and subs
   reference_fasta: Homo_sapiens_assembly38.fasta
   reference_fai: Homo_sapiens_assembly38.fai
   reference_dict: Homo_sapiens_assembly38.dict
-  bwa_index_tar: Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar # tar ball with genome fasta file and all bwa index files
+  bwa_index_tar: Homo_sapiens_assembly38.fasta.bwa-0.7.17.tar # tar ball with genome fasta file and all bwa index files. This can be created by tar-ing together the reference_fasta with all of the files with suffixes .alt, .amb, .ann, .bwt, .pac, .sa
   knownsites:
   - 1000G_omni2.5.hg38.vcf.gz
   - 1000G_phase1.snps.high_confidence.hg38.vcf.gz
