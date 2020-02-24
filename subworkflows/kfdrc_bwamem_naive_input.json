@@ -1,0 +1,68 @@
+{
+    "input_bam_list": null,
+    "input_pe_reads_list": null,
+    "input_pe_mates_list": null,
+    "input_pe_rgs_list": null,
+    "input_se_reads_list": null,
+    "input_se_rgs_list": null,
+    "indexed_reference_fasta": {
+        "class":"File",
+        "location": "/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta",
+        "secondaryFiles": [
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.dict"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.64.alt"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.64.amb"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.64.ann"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.64.bwt"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.64.pac"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.64.sa"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.amb"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.ann"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.bwt"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.fai"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.pac"
+            },
+            {
+            "class":"File",
+            "location":"/home/ubuntu/volume/Alignment/References/Homo_sapiens_assembly38.fasta.sa"
+            }
+       ]
+    },
+    "sample_name": "test",
+    "output_basename": "test_out"
+}
