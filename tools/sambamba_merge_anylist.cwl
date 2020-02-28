@@ -14,7 +14,13 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
-      bams=${return inputs.bams.flat(Infinity).join(' ')}
+      bams="${
+        var flatin = [].concat.apply([],inputs.bams);
+        var arr = [];
+        for (var i=0; i<flatin.length; i++)
+          arr = arr.concat(flatin[i].path)
+        return(arr.join(' '))
+      }"
       /opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 $(inputs.base_file_name).aligned.duplicates_marked.unsorted.bam $bams && rm $bams
 inputs:
   bams:
