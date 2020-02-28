@@ -20,8 +20,6 @@ arguments:
       $(inputs.bam.path)
 
       mv $(inputs.base_file_name).$(inputs.suffix).bam.bai $(inputs.base_file_name).$(inputs.suffix).bai
-
-      rm $(inputs.bam.path)
 inputs:
   bam: File
   base_file_name: string

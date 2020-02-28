@@ -1,12 +1,13 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bamtofastq_chomp
+id: fastq_chomp
 doc: |-
   This tool will chomp any fastq larger than 10 gb into 320000000 line chunks (80M reads). 
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 1000
+    ramMin: 8000
+    coresMin: 4
   - class: DockerRequirement
     dockerPull: 'kfdrc/bwa-bundle:dev'
   - class: InlineJavascriptRequirement
@@ -17,14 +18,11 @@ arguments:
     valueFrom: |-
       set -eo pipefail
 
-      FASTQ_PATH=${return inputs.input_fastq.path}
-
-      if [ $FASTQ_PATH -gt $(inputs.max_size) ]; then
-        cat $FASTQ_PATH | split -dl 680000000 - reads-
+      if [ $(inputs.input_fastq.size) -gt $(inputs.max_size) ]; then
+        zcat $(inputs.input_fastq.path) | split -dl 320000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
-        rm $FASTQ_PATH
       else
-        echo "FASTQ not split." 
+        echo "FASTQ not large enough to split."
       fi
 inputs:
   input_fastq: File
@@ -37,3 +35,8 @@ outputs:
     type: File[]
     outputBinding:
       glob: '*.fq'
+      outputEval: |-
+        ${
+          if (self.length == 0) return [inputs.input_fastq]
+          else return self
+        }

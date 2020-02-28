@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: bwa_mem_naive2_wf
+id: bwa_mem_naive3_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -45,7 +45,7 @@ steps:
     out: [unsorted_bams] #+2 Nesting File[][][]
 
   process_pe_reads:
-    run: kfdrc_process_pe_readslist.cwl 
+    run: kfdrc_process_pe_readslist2.cwl 
     in:
       indexed_reference_fasta: indexed_reference_fasta
       input_pe_reads_list: input_pe_reads_list 
@@ -56,7 +56,7 @@ steps:
     out: [unsorted_bams] #+0 Nesting File[]
 
   process_se_reads:
-    run: kfdrc_process_se_readslist.cwl
+    run: kfdrc_process_se_readslist2.cwl
     in:
       indexed_reference_fasta: indexed_reference_fasta
       input_se_reads_list: input_se_reads_list 
@@ -66,9 +66,6 @@ steps:
     out: [unsorted_bams] #+0 Nesting File[]
 
   sambamba_merge:
-    hints:
-      - class: sbg:AWSInstanceType
-        value: c5.9xlarge;ebs-gp2;2048
     run: ../tools/sambamba_merge_anylist.cwl
     in:
       bams: 
@@ -78,9 +75,6 @@ steps:
     out: [merged_bam]
 
   sambamba_sort:
-    hints:
-      - class: sbg:AWSInstanceType
-        value: c5.9xlarge;ebs-gp2;2048
     run: ../tools/sambamba_sort.cwl
     in:
       bam: sambamba_merge/merged_bam

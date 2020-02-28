@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: bwa_mem_naive_wf
+id: kfdrc_rgbam_to_realnbam_wf 
 requirements:
   - class: ScatterFeatureRequirement
 inputs:
@@ -19,14 +19,8 @@ steps:
     run: ../tools/bamtofastq_chomp.cwl
     in:
       input_bam: input_rgbam
-    out: [output, rg]
-
-  update_rg_sm:
-    run: ../tools/update_rg_sm.cwl
-    in:
-      rg: bamtofastq_chomp/rg
       sample: sample_name
-    out: [rg_str]
+    out: [output, rg_string]
 
   bwa_mem_naive_bam:
     run: ../tools/bwa_mem_naive.cwl
@@ -35,7 +29,7 @@ steps:
       reads: bamtofastq_chomp/output
       interleaved:
         default: true
-      rg: update_rg_sm/rg_str
+      rg: bamtofastq_chomp/rg_string 
     scatter: [reads]
     out: [output]
 

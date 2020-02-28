@@ -22,17 +22,13 @@ arguments:
     valueFrom: |-
       set -eo pipefail
 
-      BAM_PATH=${return inputs.input_bam.path}
+      samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
 
-      samtools view -H $BAM_PATH | grep ^@RG > rg.txt
-
-      if [ $BAM_PATH -gt $(inputs.max_size) ]; then
-        bamtofastq tryoq=1 filename=$BAM_PATH | split -dl 680000000 - reads-
+      if [ $(inputs.input_bam.size) -gt $(inputs.max_size) ]; then
+        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 680000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
-        rm $BAM_PATH
       else
-        bamtofastq tryoq=1 filename=$BAM_PATH > reads-00.fq
-        rm $BAM_PATH
+        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) > reads-00.fq
       fi
 inputs:
   input_bam: File
@@ -40,12 +36,24 @@ inputs:
     type: int
     default: 20000000000
     doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split."
+  sample: string
 outputs:
   output:
     type: File[]
     outputBinding:
       glob: '*.fq'
-  rg:
-    type: File
+  rg_string:
+    type: string
     outputBinding:
       glob: rg.txt
+      loadContents: true
+      outputEval:
+        ${
+          var arr = self[0].contents.split('\n')[0].split('\t');
+          for (var i=1; i<arr.length; i++){
+            if (arr[i].startsWith('SM')){
+              arr[i] = 'SM:' + inputs.sample;
+            }
+          }
+          return arr.join('\\t');
+        }
