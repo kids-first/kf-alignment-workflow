@@ -24,6 +24,9 @@ inputs:
   run_bam_processing: boolean
   run_pe_reads_processing: boolean
   run_se_reads_processing: boolean
+  run_hs_metrics: boolean
+  run_wgs_metrics: boolean
+  run_agg_metrics: boolean
   run_gvcf_processing: boolean
 outputs:
   scatter_bams:
@@ -48,6 +51,30 @@ outputs:
       outputEval:
         ${
           if (inputs.run_se_reads_processing) {return [1]}
+          else {return []}
+        }
+  scatter_hs_metrics:
+    type: int[]
+    outputBinding:
+      outputEval:
+        ${
+          if (inputs.run_hs_metrics) {return [1]}
+          else {return []}
+        }
+  scatter_wgs_metrics:
+    type: int[]
+    outputBinding:
+      outputEval:
+        ${
+          if (inputs.run_wgs_metrics) {return [1]}
+          else {return []}
+        }
+  scatter_agg_metrics:
+    type: int[]
+    outputBinding:
+      outputEval:
+        ${
+          if (inputs.run_agg_metrics) {return [1]}
           else {return []}
         }
   scatter_gvcf:
