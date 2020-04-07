@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_mergevcfs
+doc: |-
+  This tool merges many VCFs into a single VCF.
+  The following programs are run in this tool:
+    - picard MergeVcfs
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -22,14 +26,8 @@ inputs:
       inputBinding:
         prefix: INPUT=
         separate: false
-    secondaryFiles:
-      - .tbi
-  output_vcf_basename:
-    type: string
+    secondaryFiles: [.tbi]
+    doc: "List of input VCF files"
+  output_vcf_basename: { type: string, doc: "String to be used as the base filename for the output" }
 outputs:
-  output:
-    type: File
-    outputBinding:
-      glob: '*.vcf.gz'
-    secondaryFiles:
-      - .tbi
+  output: { type: File, outputBinding: { glob: '*.vcf.gz' }, secondaryFiles: [.tbi] }

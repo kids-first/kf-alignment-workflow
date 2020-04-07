@@ -33,21 +33,11 @@ arguments:
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 36 --natural-sort -m 15GiB --tmpdir ./
       -o ${if (inputs.reads != null) {return inputs.reads.nameroot} else {return ""}}.unsorted.bam -l 5 /dev/stdin
 inputs:
-  ref:
-    type: File
-    secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac,
-      .64.sa, .64.alt, ^.dict, .amb, .ann, .bwt, .pac, .sa]
-  reads:
-    type: File
-    doc: "Primary reads."
-  mates:
-    type: File?
-    doc: "Optional mates for the reads."
-  interleaved:
-    type: boolean
-    default: false
-    doc: "Is the reads input interleaved?"
-  rg: string
+  ref: { type: File, secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa, .64.alt, ^.dict, .amb, .ann, .bwt, .pac, .sa, .fai], doc: "Reference fasta file with associated indexes" }
+  reads: { type: File, doc: "Primary reads file" }
+  mates: { type: 'File?', doc: "Mates file for the reads" }
+  interleaved: { type: boolean, default: false, doc: "The reads input is interleaved" }
+  rg: { type: string, doc: "Formatted RG header to use in the resulting BAM, check BWA for formatting guidelines (e.g. escaped tabs '\\t')" }
 
 outputs:
   output: { type: File, outputBinding: { glob: '*.bam' } }

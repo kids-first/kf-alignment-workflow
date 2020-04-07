@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_intervallisttools
+doc: |-
+  This tool scatters a single interval list into many interval list files.
+  The following programs are run in this tool:
+    - picard IntervalListTools
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
@@ -20,9 +24,6 @@ arguments:
       INPUT=$(inputs.interval_list.path)
       OUTPUT=$(runtime.outdir)
 inputs:
-  interval_list: File
+  interval_list: { type: File, doc: "Input interval list" }
 outputs:
-  output:
-    type: File[]
-    outputBinding:
-      glob: 'temp*/*.interval_list'
+  output: { type: 'File[]', outputBinding: { glob: 'temp*/*.interval_list' } }

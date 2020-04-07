@@ -1,6 +1,12 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_collecthsmetrics
+doc: |-
+  This tool collects hs metrics on an input WXS bam.
+  The following programs are run in this tool:
+    - picard CollectHsMetrics
+  This tool is also made to be used conditionally with the conditional_run parameter.
+  Simply pass an empty array to conditional_run and scatter on the input to skip.
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -20,13 +26,10 @@ arguments:
       OUTPUT=$(inputs.input_bam.nameroot).hs_metrics
 
 inputs:
-  input_bam: {type: File, secondaryFiles: [^.bai]}
-  reference: {type: File, secondaryFiles: [.fai]}
-  bait_intervals: File
-  target_intervals: File
-  conditional_run: int
+  input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file"}
+  reference: { type: File, secondaryFiles: [.fai], doc: "Reference fasta with dict and fai indexes" }
+  bait_intervals: { type: File, doc: "An interval list file that contains the locations of the baits used" }
+  target_intervals: { type: File, doc: "An interval list file that contains the locations of the targets" }
+  conditional_run: { type: int, doc: "Placeholder variable to allow conditional running" } 
 outputs:
-  - id: output
-    type: File
-    outputBinding:
-      glob: $(inputs.input_bam.nameroot).hs_metrics
+  output: { type: File, outputBinding: { glob: '*.hs_metrics' } }

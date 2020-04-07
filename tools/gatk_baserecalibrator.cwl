@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatkv4_baserecalibrator
+doc: |-
+  Perform baserecalibration on a BAM.
+  Programs run in this tool:
+    - GATK BaseRecalibrator
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
@@ -27,8 +31,8 @@ arguments:
       -O $(inputs.input_bam.nameroot).recal_data.csv
       -L $(inputs.sequence_interval.path)
 inputs:
-  reference: {type: File, secondaryFiles: [^.dict, .fai]}
-  input_bam: {type: File, secondaryFiles: [^.bai]}
+  reference: {type: File, secondaryFiles: [^.dict, .fai], doc: "Reference fasta with dict and fai indexes"}
+  input_bam: {type: File, secondaryFiles: [^.bai], doc: "Input bam file"}
   knownsites:
     type:
       type: array
@@ -38,7 +42,8 @@ inputs:
     inputBinding:
       position: 1
     secondaryFiles: [.tbi]
-  sequence_interval: File
+    doc: "List of files and indexes containing known polymorphic sites used to exclude regions around known polymorphisms from analysis"
+  sequence_interval: { type: File, doc: "File containing one or more genomic intervals over which to operate" }
 outputs:
   output:
     type: File

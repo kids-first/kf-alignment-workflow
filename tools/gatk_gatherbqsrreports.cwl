@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_gatherbqsrreports
+doc: |-
+  This tool gathers the BQSR reports.
+  The following programs are run in this tool:
+    - GATK GatherBQSRReports
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -23,9 +27,7 @@ inputs:
       inputBinding:
         prefix: -I
         separate: true
-  output_basename: string
+    doc: "List of bqsr report files"
+  output_basename: { type: string, doc: "String to be used as the basename for the gathered bqsr report file" }
 outputs:
-  - id: output
-    type: File
-    outputBinding:
-      glob: '*.csv'
+  output: { type: File, outputBinding: { glob: '*.csv' } }

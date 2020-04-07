@@ -1,6 +1,11 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: verifybamid_contamination
+doc: |-
+  This tool verifies whether the reads in particular file match previously known genotypes for an individual
+  and checks whether the reads are contaminated as a mixture of two samples.
+  The following programs are run in this tool:
+    - VerifyBamID
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -24,18 +29,15 @@ arguments:
       --BedPath $(inputs.contamination_sites_bed.path)
       1>/dev/null
 inputs:
-  input_bam: {type: File, secondaryFiles: [^.bai]}
-  ref_fasta: {type: File, secondaryFiles: [.fai]}
-  contamination_sites_ud: File
-  contamination_sites_mu: File
-  contamination_sites_bed: File
-  output_basename: string
+  input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file" }
+  ref_fasta: { type: File, secondaryFiles: [.fai], doc: "Reference fasta and fai index" }
+  contamination_sites_ud: { type: File, doc: ".UD matrix file from SVD result of genotype matrix" }
+  contamination_sites_mu: { type: File, doc: ".mu matrix file of genotype matrix" }
+  contamination_sites_bed: { type: File, doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
+  output_basename: { type: string, doc: "String to be used as the base filename for the output" }
 outputs:
-  - id: output
-    type: File
-    outputBinding:
-      glob: '*.selfSM'
-  - id: contamination
+  output: { type: File, outputBinding: { glob: '*.selfSM' } }
+  contamination:
     type: float
     outputBinding:
       glob: '*.selfSM'

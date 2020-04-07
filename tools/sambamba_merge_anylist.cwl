@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: sambamba_merge_anylist
+doc: |-
+  Takes any list, flattens that list, then merges the items of the list.
+  This tool runs the following programs:
+    - sambamba merge && rm
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
@@ -23,14 +27,7 @@ arguments:
       }"
       /opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 $(inputs.base_file_name).aligned.duplicates_marked.unsorted.bam $bams && rm $bams
 inputs:
-  bams:
-    type: Any[]
-    doc: "Input will be a combination of File[] and deeply nested File[]. Any[] is flexible enough to accomodate the different types."
-  base_file_name: string
+  bams: { type: 'Any[]', doc: "Input will be a combination of File[] and deeply nested File[]. Any[] is flexible enough to accomodate the different types" }
+  base_file_name: { type: string, doc: "String to be used in naming the output bam" }
 outputs:
-  merged_bam:
-    type: File
-    outputBinding:
-      glob: '*.bam'
-    secondaryFiles: [.bai, ^.bai]
-    format: BAM
+  merged_bam: { type: File, outputBinding: { glob: '*.bam' }, secondaryFiles: [.bai, ^.bai], format: BAM }

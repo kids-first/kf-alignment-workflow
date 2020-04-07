@@ -1,6 +1,12 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_collectwgsmetrics
+doc: |-
+  This tool collects wgs metrics on an input WGS bam.
+  The following programs are run in this tool:
+    - picard CollectWgsMetrics
+  This tool is also made to be used conditionally with the conditional_run parameter.
+  Simply pass an empty array to conditional_run and scatter on the input to skip.
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -22,12 +28,9 @@ arguments:
       USE_FAST_ALGORITHM=true
       READ_LENGTH=250
 inputs:
-  input_bam: {type: File, secondaryFiles: [^.bai]}
-  reference: {type: File, secondaryFiles: [.fai]}
-  intervals: File
-  conditional_run: int
+  input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file" }
+  reference: { type: File, secondaryFiles: [.fai], doc: "Reference fasta and fai index" }
+  intervals: { type: File, doc: "An interval list file that contains the positions to restrict the assessment" }
+  conditional_run: { type: int, doc: "Placeholder variable to allow conditional running" }
 outputs:
-  - id: output
-    type: File
-    outputBinding:
-      glob: $(inputs.input_bam.nameroot).wgs_metrics
+  output: { type: File, outputBinding: { glob: $(inputs.input_bam.nameroot).wgs_metrics } }

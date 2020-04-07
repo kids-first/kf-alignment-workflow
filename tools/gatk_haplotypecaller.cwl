@@ -1,6 +1,11 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_haplotypecaller
+doc: |-
+  This tool calls germline SNPs and indels via local re-assembly of haplotypes.
+  The following programs are run in this tool:
+    - GATK PrintReads
+    - GATK HaplotypeCaller
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
@@ -31,13 +36,9 @@ arguments:
       -contamination $(inputs.contamination)
       --read_filter OverclippedRead
 inputs:
-  reference: {type: File, secondaryFiles: [^.dict, .fai]}
-  input_bam: {type: File, secondaryFiles: [^.bai]}
-  interval_list: File
-  contamination: float
+  reference: { type: File, secondaryFiles: [^.dict, .fai], doc: "Reference fasta with associated dict and fai indexes" }
+  input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file" }
+  interval_list: { type: File, doc: "File containing one or more genomic intervals over which to operate" }
+  contamination: { type: float, doc: "Fraction of contamination in sequencing data (for all samples) to aggressively remove" }
 outputs:
-  output:
-    type: File
-    outputBinding:
-      glob: '*.vcf.gz'
-    secondaryFiles: [.tbi]
+  output: { type: File, outputBinding: { glob: '*.vcf.gz' }, secondaryFiles: [.tbi] }

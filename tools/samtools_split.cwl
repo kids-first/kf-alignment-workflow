@@ -1,6 +1,13 @@
 class: CommandLineTool
 cwlVersion: v1.0
 id: samtools_split
+doc: |-
+  This tool splits the input bam input read group bams if it has more than one readgroup.
+  Programs run in this tool:
+    - samtools view | grep
+    - samtools split
+  Using samtools view and grep count the header lines starting with @RG. If that number is
+  not one, split the bam file into read group bams using samtools.
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -12,14 +19,13 @@ arguments:
     shellQuote: false
     valueFrom: |-
       set -eo pipefail
-
       RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
         samtools split -f '%!.bam' -@ 36 --reference $(inputs.reference.path) $(inputs.input_bam.path)
       fi
 inputs:
-  input_bam: File
-  reference: File
+  input_bam: { type: File, doc: "Input bam file" }
+  reference: { type: File, doc: "Reference fasta file" }
 outputs:
   bam_files:
     type: File[]
