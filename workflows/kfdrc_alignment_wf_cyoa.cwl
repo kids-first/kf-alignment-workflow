@@ -1,41 +1,86 @@
 cwlVersion: v1.0
 class: Workflow
 id: kf_alignment_cyoa_wf
+doc: |-
+  # KFDRC Alignment Workflow
+  Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+  
+  ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
+
+  This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
+  and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
+  to process these depending on what you tell it you have provided. The user informs the workflow of
+  which inputs to process using three boolean inputs: `run_bam_processing`, `run_pe_reads_processing`,
+  and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
+  will result in those inputs being processed.
+
+  The second half of the workflow deals with optional gVCF creation and metrics collection. 
+  This workflow is capable of collecting the metrics using the following boolean flags: `run_hs_metrics`,
+  `run_wgs_metrics`, and `run_agg_metrics`. To run these metrics, additional optional inputs must
+  also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for HsMetrics,
+  `wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
+  `true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
+  `contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
+  `wgs_evaluation_interval_list`.
+
+   ## Tips for running:
+   1. For the fastq input file lists (PE or SE), make sure the lists are properly ordered. The items in
+      the arrays are processed based on their position. These lists are dotproduct scattered. This means
+      that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
+      and the first string in `input_pe_rgs_list`. This also means these arrays must be the same
+      length or the workflow will fail.
+   1. Must have these associated indexes:
+      - knownsite vcfs: Each file requires a '.tbi' index
+      - reference fasta: BWA and samtools indexes ('.64.amb', '.64.ann', '.64.bwt',
+          '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai')
+   1. Turning off gVCF creation and metrics collection for a minimal successful run.
+   1. Suggested reference inputs:
+      - contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
+      - contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
+      - contamination_sites_ud: Homo_sapiens_assembly38.contam.UD
+      - dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
+      - indexed_reference_fasta: Homo_sapiens_assembly38.fasta
+      - knownsites:
+        - Homo_sapiens_assembly38.known_indels.vcf.gz
+        - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
+        - 1000G_phase1.snps.high_confidence.hg38.vcf.gz
+        - 1000G_omni2.5.hg38.vcf.gz
+      - reference_dict: Homo_sapiens_assembly38.dict
+
+ 
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
   - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_bam_list: 'File[]?'
-  input_pe_reads_list: 'File[]?'
-  input_pe_mates_list: 'File[]?'
-  input_pe_rgs_list: 'string[]?'
-  input_se_reads_list: 'File[]?'
-  input_se_rgs_list: 'string[]?'
-  indexed_reference_fasta:
-    type: File
-    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict', '.amb', '.ann', '.bwt', '.pac', '.sa', '.fai']
-  biospecimen_name: string
-  output_basename: string
-  reference_dict: File
-  dbsnp_vcf: File
-  knownsites: File[]
-  contamination_sites_bed: 'File?'
-  contamination_sites_mu: 'File?'
-  contamination_sites_ud: 'File?'
-  wgs_calling_interval_list: 'File?'
-  wgs_coverage_interval_list: 'File?'
-  wgs_evaluation_interval_list: 'File?'
-  wxs_bait_interval_list: 'File?'
-  wxs_target_interval_list: 'File?'
-  run_bam_processing: boolean
-  run_pe_reads_processing: boolean
-  run_se_reads_processing: boolean
-  run_hs_metrics: boolean
-  run_wgs_metrics: boolean
-  run_agg_metrics: boolean
-  run_gvcf_processing: boolean
+  input_bam_list: { type: 'File[]?', doc: "List of input BAM files" }
+  input_pe_reads_list: { type: 'File[]?', doc: "List of input R1 paired end fastq reads" }
+  input_pe_mates_list: { type: 'File[]?', doc: "List of input R2 paired end fastq reads" }
+  input_pe_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in PE processing" } 
+  input_se_reads_list: { type: 'File[]?', doc: "List of input singlie end fastq reads" }
+  input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
+  indexed_reference_fasta: { type: File, secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai'], doc: "Reference fasta with BWA and samtool indexes" }
+  biospecimen_name: { type: string, doc: "String name of biospcimen" }
+  output_basename: { type: string, doc: "String to use as the base for output filenames" }
+  reference_dict: { type: File, doc: "Dict index of the reference fasta" }
+  dbsnp_vcf: { type: 'File?', doc: "dbSNP vcf file" }
+  knownsites: { type: 'File[]', doc: "List of files and indexes containing known polymorphic sites used to exclude regions around known polymorphisms from analysis" }
+  contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
+  contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
+  contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
+  wgs_calling_interval_list: { type: 'File?', doc: "WGS interval list used to aid scattering Haplotype caller" }
+  wgs_coverage_interval_list: { type: 'File?', doc: "An interval list file that contains the positions to restrict the wgs metrics assessment" }
+  wgs_evaluation_interval_list: { type: 'File?', doc: "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)" }
+  wxs_bait_interval_list: { type: 'File?', doc: "An interval list file that contains the locations of the WXS baits used (for HsMetrics)" }
+  wxs_target_interval_list: { type: 'File?', doc: "An interval list file that contains the locations of the WXS targets (for HsMetrics)" }
+  run_bam_processing: { type: boolean, doc: "BAM processing will be run. Requires: input_bam_list" }
+  run_pe_reads_processing: { type: boolean, doc: "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list" } 
+  run_se_reads_processing: { type: boolean, doc: "SE reads processing will be run. Requires: input_se_reads_list, input_se_rgs_list" }
+  run_hs_metrics: { type: boolean, doc: "HsMetrics will be collected. Only recommended for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list" }
+  run_wgs_metrics: { type: boolean, doc: "WgsMetrics will be collected. Only recommended for WGS inputs. Requires: wgs_coverage_interval_list" }
+  run_agg_metrics: { type: boolean, doc: "MultipleMetrics will be collected. Warning! Very time intensive" } 
+  run_gvcf_processing: { type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list, wgs_evaluation_interval_list" }
 
 outputs:
   cram: {type: File, outputSource: samtools_coverttocram/output}

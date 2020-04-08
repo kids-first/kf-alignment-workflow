@@ -5,12 +5,12 @@
 
 Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam-to-cram-to-gVCF). This pipeline follows
 Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)
-It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and 
-base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from 
+It uses bam input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and
+base score recalibrated.  Contamination is calculated and a gVCF is created using GATK4 Haplotype caller. Inputs from
 this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis.
 
 ## Basic Info
-- pipeline flowchart: 
+- pipeline flowchart:
   - [draw.io](https://tinyurl.com/y952jek2)
 - tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
@@ -49,3 +49,50 @@ this can be used later on for further analysis in joint trio genotyping and subs
 Note, for all vcf files, indexing may be required - a "secondary file" requirement.
 
 ![WF Visualized](./kfdrc_alignment_wf.png?raw=true "Workflow diagram")
+
+## Input Agnostic Alignment Workflow
+Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+
+This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
+and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
+to process these depending on what you tell it you have provided. The user informs the workflow of
+which inputs to process using three boolean inputs: `run_bam_processing`, `run_pe_reads_processing`,
+and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
+will result in those inputs being processed.
+
+The second half of the workflow deals with optional gVCF creation and metrics collection.
+This workflow is capable of collecting the metrics using the following boolean flags: `run_hs_metrics`,
+`run_wgs_metrics`, and `run_agg_metrics`. To run these metrics, additional optional inputs must
+also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for HsMetrics,
+`wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
+`true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
+`contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
+`wgs_evaluation_interval_list`.
+
+### Tips for running:
+1. For the fastq input file lists (PE or SE), make sure the lists are properly ordered. The items in
+   the arrays are processed based on their position. These lists are dotproduct scattered. This means
+   that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
+   and the first string in `input_pe_rgs_list`. This also means these arrays must be the same
+   length or the workflow will fail.
+1. Must have these associated indexes:
+    - knownsite vcfs: Each file requires a `'.tbi'` index
+    - reference fasta: BWA, picard, and samtools indexes (`'.64.amb', '.64.ann', '.64.bwt',
+        '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai'`)
+1. Turning off gVCF creation and metrics collection for a minimal successful run.
+1. Suggested reference inputs:
+```yaml
+contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
+contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
+contamination_sites_ud: Homo_sapiens_assembly38.contam.UD
+dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
+indexed_reference_fasta: Homo_sapiens_assembly38.fasta
+knownsites:
+  - Homo_sapiens_assembly38.known_indels.vcf.gz
+  - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
+  - 1000G_phase1.snps.high_confidence.hg38.vcf.gz
+  - 1000G_omni2.5.hg38.vcf.gz
+reference_dict: Homo_sapiens_assembly38.dict
+```
+
+![WF Visualized](./docs/kfdrc_alignment_wf_cyoa.cwl.png?raw=true "Workflow diagram")

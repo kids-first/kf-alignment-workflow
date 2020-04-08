@@ -11,7 +11,7 @@ inputs:
   conditional_run: int
   indexed_reference_fasta:
     type: File
-    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict', '.amb', '.ann', '.bwt', '.pac', '.sa']
+    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
 outputs:
   unsorted_bams: 
     type:
