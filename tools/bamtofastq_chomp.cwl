@@ -33,7 +33,7 @@ arguments:
       fi
 inputs:
   input_bam: { type: File, doc: "Input bam file" }
-  max_size: { type: int, default: 20000000000, doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split" }
+  max_size: { type: long, default: 20000000000, doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split" }
   sample: { type: string, doc: "String name of the sample used to relabel the rg string" }
 outputs:
   output: { type: 'File[]', outputBinding: { glob: '*.fq' } }

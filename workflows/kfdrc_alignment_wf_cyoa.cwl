@@ -3,12 +3,12 @@ class: Workflow
 id: kf_alignment_cyoa_wf
 doc: |-
   # KFDRC Alignment Workflow
-  Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+  Workflow for the alignment or realignment of input BAMs, PE FASTQ reads, and/or SE FASTQ reads; conditionally generate gVCF and metrics.
   
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
   This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
-  and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
+  and mates FASTQ inputs, SE reads FASTQ inputs,  or any combination of these. The workflow will naively attempt
   to process these depending on what you tell it you have provided. The user informs the workflow of
   which inputs to process using three boolean inputs: `run_bam_processing`, `run_pe_reads_processing`,
   and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
