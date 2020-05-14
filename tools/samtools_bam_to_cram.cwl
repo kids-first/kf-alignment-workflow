@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: samtools_convert_to_cram
+id: samtools_bam_to_cram
 doc: |-
   This tool converts the input BAM into a CRAM.
   The following programs are run in this tool:

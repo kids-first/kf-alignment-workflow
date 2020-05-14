@@ -83,7 +83,7 @@ inputs:
   run_gvcf_processing: { type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list, wgs_evaluation_interval_list" }
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output}
   gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf}
   verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
@@ -198,8 +198,8 @@ steps:
       output_bam_basename: output_basename
     out: [output]
 
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_bam_to_cram:
+    run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
