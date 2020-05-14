@@ -69,6 +69,12 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
 `contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
 `wgs_evaluation_interval_list`.
 
+### Caveats:
+1. Duplicates are flagged in a process that is connected to bwa mem. The implication of this design
+   decision is that duplicates are flagged only on the inputs of that are scattered into bwa.
+   Duplicates, therefore, are not being flagged at a library level and, for large BAM and FASTQ inputs,
+   duplicates are only being detected within a portion of the read group.
+
 ### Tips for running:
 1. For the fastq input file lists (PE or SE), make sure the lists are properly ordered. The items in
    the arrays are processed based on their position. These lists are dotproduct scattered. This means
@@ -80,7 +86,7 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
     - reference fasta: BWA, picard, and samtools indexes (`'.64.amb', '.64.ann', '.64.bwt',
         '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai'`)
 1. Turning off gVCF creation and metrics collection for a minimal successful run.
-1. Suggested reference inputs:
+1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
 ```yaml
 contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
 contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
