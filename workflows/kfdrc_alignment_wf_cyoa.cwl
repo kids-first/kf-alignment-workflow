@@ -4,7 +4,7 @@ id: kf_alignment_cyoa_wf
 doc: |-
   # KFDRC Alignment Workflow
   Workflow for the alignment or realignment of input BAMs, PE FASTQ reads, and/or SE FASTQ reads; conditionally generate gVCF and metrics.
-  
+
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
   This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
@@ -14,7 +14,7 @@ doc: |-
   and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
   will result in those inputs being processed.
 
-  The second half of the workflow deals with optional gVCF creation and metrics collection. 
+  The second half of the workflow deals with optional gVCF creation and metrics collection.
   This workflow is capable of collecting the metrics using the following boolean flags: `run_hs_metrics`,
   `run_wgs_metrics`, and `run_agg_metrics`. To run these metrics, additional optional inputs must
   also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for HsMetrics,
@@ -22,6 +22,12 @@ doc: |-
   `true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
   `contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
   `wgs_evaluation_interval_list`.
+
+   ### Caveats:
+   1. Duplicates are flagged in a process that is connected to bwa mem. The implication of this design
+      decision is that duplicates are flagged only on the inputs of that are scattered into bwa.
+      Duplicates, therefore, are not being flagged at a library level and, for large BAM and FASTQ inputs,
+      duplicates are only being detected within a portion of the read group.
 
    ## Tips for running:
    1. For the fastq input file lists (PE or SE), make sure the lists are properly ordered. The items in
@@ -34,7 +40,7 @@ doc: |-
       - reference fasta: BWA and samtools indexes ('.64.amb', '.64.ann', '.64.bwt',
           '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai')
    1. Turning off gVCF creation and metrics collection for a minimal successful run.
-   1. Suggested reference inputs:
+   1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
       - contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
       - contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
       - contamination_sites_ud: Homo_sapiens_assembly38.contam.UD
@@ -47,7 +53,7 @@ doc: |-
         - 1000G_omni2.5.hg38.vcf.gz
       - reference_dict: Homo_sapiens_assembly38.dict
 
- 
+
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -57,7 +63,7 @@ inputs:
   input_bam_list: { type: 'File[]?', doc: "List of input BAM files" }
   input_pe_reads_list: { type: 'File[]?', doc: "List of input R1 paired end fastq reads" }
   input_pe_mates_list: { type: 'File[]?', doc: "List of input R2 paired end fastq reads" }
-  input_pe_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in PE processing" } 
+  input_pe_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in PE processing" }
   input_se_reads_list: { type: 'File[]?', doc: "List of input singlie end fastq reads" }
   input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
   indexed_reference_fasta: { type: File, secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai'], doc: "Reference fasta with BWA and samtool indexes" }
@@ -75,11 +81,11 @@ inputs:
   wxs_bait_interval_list: { type: 'File?', doc: "An interval list file that contains the locations of the WXS baits used (for HsMetrics)" }
   wxs_target_interval_list: { type: 'File?', doc: "An interval list file that contains the locations of the WXS targets (for HsMetrics)" }
   run_bam_processing: { type: boolean, doc: "BAM processing will be run. Requires: input_bam_list" }
-  run_pe_reads_processing: { type: boolean, doc: "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list" } 
+  run_pe_reads_processing: { type: boolean, doc: "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list" }
   run_se_reads_processing: { type: boolean, doc: "SE reads processing will be run. Requires: input_se_reads_list, input_se_rgs_list" }
   run_hs_metrics: { type: boolean, doc: "HsMetrics will be collected. Only recommended for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list" }
   run_wgs_metrics: { type: boolean, doc: "WgsMetrics will be collected. Only recommended for WGS inputs. Requires: wgs_coverage_interval_list" }
-  run_agg_metrics: { type: boolean, doc: "MultipleMetrics will be collected. Warning! Very time intensive" } 
+  run_agg_metrics: { type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics, QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended for both WXS and WGS inputs." }
   run_gvcf_processing: { type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list, wgs_evaluation_interval_list" }
 
 outputs:
@@ -87,10 +93,22 @@ outputs:
   gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf}
   verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
-  gvcf_calling_metrics: {type: ['null', { type: array , items: { type : array, items: File } } ], outputSource: generate_gvcf/gvcf_calling_metrics} 
-  aggregation_metrics: {type: ['null', { type: array , items: { type : array, items: File } } ], outputSource: picard_collectaggregationmetrics/output}
+  gvcf_calling_metrics: {type: ['null', { type: array , items: { type : array, items: File } } ], outputSource: generate_gvcf/gvcf_calling_metrics}
   hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output}
   wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output}
+  alignment_metrics: {type: 'File[]?', outputSource: picard_collectalignmentsummarymetrics/output}
+  gc_bias_detail: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/detail}
+  gc_bias_summary: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/summary}
+  gc_bias_chart: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/chart}
+  insert_metrics: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/metrics}
+  insert_plot: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/plot}
+  artifact_bait_bias_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_detail_metrics}
+  artifact_bait_bias_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_summary_metrics}
+  artifact_error_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/error_summary_metrics}
+  artifact_pre_adapter_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_detail_metrics}
+  artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics}
+  qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics}
+  qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart}
 
 steps:
   gatekeeper:
@@ -110,7 +128,7 @@ steps:
     in:
       input_bam_list: input_bam_list
       indexed_reference_fasta: indexed_reference_fasta
-      sample_name: biospecimen_name 
+      sample_name: biospecimen_name
       conditional_run: gatekeeper/scatter_bams
     scatter: conditional_run
     out: [unsorted_bams] #+2 Nesting File[][][]
@@ -167,7 +185,7 @@ steps:
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
-      input_bam: sambamba_sort/sorted_bam 
+      input_bam: sambamba_sort/sorted_bam
       knownsites: knownsites
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
@@ -226,8 +244,8 @@ steps:
     scatter: conditional_run
     out: [output]
 
-  picard_collectaggregationmetrics:
-    run: ../tools/picard_collectaggregationmetrics_conditional.cwl
+  picard_collectalignmentsummarymetrics:
+    run: ../tools/picard_collectalignmentsummarymetrics_conditional.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
@@ -235,10 +253,46 @@ steps:
     scatter: conditional_run
     out: [output]
 
+  picard_collectgcbiasmetrics:
+    run: ../tools/picard_collectgcbiasmetrics_conditional.cwl
+    in:
+      input_bam: picard_gatherbamfiles/output
+      reference: indexed_reference_fasta
+      conditional_run: gatekeeper/scatter_agg_metrics
+    scatter: conditional_run
+    out: [detail,summary,chart]
+
+  picard_collectinsertsizemetrics:
+    run: ../tools/picard_collectinsertsizemetrics_conditional.cwl
+    in:
+      input_bam: picard_gatherbamfiles/output
+      reference: indexed_reference_fasta
+      conditional_run: gatekeeper/scatter_agg_metrics
+    scatter: conditional_run
+    out: [metrics,plot]
+
+  picard_collectsequencingartifactmetrics:
+    run: ../tools/picard_collectsequencingartifactmetrics_conditional.cwl
+    in:
+      input_bam: picard_gatherbamfiles/output
+      reference: indexed_reference_fasta
+      conditional_run: gatekeeper/scatter_agg_metrics
+    scatter: conditional_run
+    out: [bait_bias_detail_metrics,bait_bias_summary_metrics,error_summary_metrics,pre_adapter_detail_metrics,pre_adapter_summary_metrics]
+
+  picard_qualityscoredistribution:
+    run: ../tools/picard_qualityscoredistribution_conditional.cwl
+    in:
+      input_bam: picard_gatherbamfiles/output
+      reference: indexed_reference_fasta
+      conditional_run: gatekeeper/scatter_agg_metrics
+    scatter: conditional_run
+    out: [metrics,chart]
+
   generate_gvcf:
     run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
     in:
-      contamination_sites_bed: contamination_sites_bed 
+      contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
       input_bam: picard_gatherbamfiles/output
@@ -251,10 +305,10 @@ steps:
       conditional_run: gatekeeper/scatter_gvcf
     scatter: conditional_run
     out: [verifybamid_output, gvcf, gvcf_calling_metrics]
-    
+
 
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
   - class: 'sbg:maxNumberOfParallelInstances'
-    value: 4
+    value: 6
