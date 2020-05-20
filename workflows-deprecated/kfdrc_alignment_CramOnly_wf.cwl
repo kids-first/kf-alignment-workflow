@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_CramOnly_wf_wes
+id: kf_alignment_CramOnly_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -13,13 +13,14 @@ inputs:
   indexed_reference_fasta: File
   knownsites: File[]
   reference_dict: File
-  intervals: File
+  wgs_coverage_interval_list: File
 
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
   aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
-  hs_metrics: {type: File, outputSource: picard_collecthsmetrics/output}
+  wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
+
 steps:
   samtools_split:
     run: ../tools/samtools_split.cwl
@@ -29,7 +30,7 @@ steps:
     out: [bam_files]
 
   bwa_mem:
-    run: ../workflows/kfdrc_bwamem_subwf.cwl
+    run: kfdrc_bwamem_subwf.cwl
     in:
       input_reads: samtools_split/bam_files
       indexed_reference_fasta: indexed_reference_fasta
@@ -98,11 +99,11 @@ steps:
       reference: indexed_reference_fasta
     out: [output]
 
-  picard_collecthsmetrics:
-    run: ../tools/picard_collecthsmetrics.cwl
+  picard_collectwgsmetrics:
+    run: ../tools/picard_collectwgsmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      intervals: intervals
+      intervals: wgs_coverage_interval_list
       reference: indexed_reference_fasta
     out: [output]
 

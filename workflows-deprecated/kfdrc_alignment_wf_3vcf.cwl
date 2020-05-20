@@ -12,7 +12,7 @@ inputs:
   output_basename: string
   indexed_reference_fasta: File
   dbsnp_vcf: File
-  knownsites: File[]
+  known_indel_vcf: File[]
   reference_dict: File
   contamination_sites_bed: File
   contamination_sites_mu: File
@@ -39,7 +39,7 @@ steps:
     out: [bam_files]
 
   bwa_mem:
-    run: ../workflows/kfdrc_bwamem_subwf.cwl
+    run: kfdrc_bwamem_subwf.cwl
     in:
       input_reads: samtools_split/bam_files
       indexed_reference_fasta: indexed_reference_fasta
@@ -71,7 +71,8 @@ steps:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: sambamba_sort/sorted_bam
-      knownsites: knownsites
+      dbsnp_vcf: dbsnp_vcf
+      known_indel_vcf: known_indel_vcf
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
