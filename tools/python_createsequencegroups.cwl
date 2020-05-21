@@ -1,6 +1,9 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: python_createsequencegroups
+doc: |-
+  Splits the reference dict file in a list of interval files. 
+  Intervals are determined by the longest SQ length in the dict.
 requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/python:2.7.13'
@@ -8,6 +11,7 @@ requirements:
 baseCommand: [python, -c]
 arguments:
   - position: 0
+    shellQuote: true
     valueFrom: >-
       def main():
           with open("$(inputs.ref_dict.path)", "r") as ref_dict_file:
@@ -50,15 +54,7 @@ arguments:
           main()
 
 inputs:
-  ref_dict: File
-
+  ref_dict: { type: File, doc: "Reference fasta dict file" }
 outputs:
-  sequence_intervals:
-    type: File[]
-    outputBinding:
-      glob: 'sequence_grouping_*.intervals'
-
-  sequence_intervals_with_unmapped:
-    type: File[]
-    outputBinding:
-      glob: '*.intervals'
+  sequence_intervals: { type: 'File[]', outputBinding: { glob: 'sequence_grouping_*.intervals' } }
+  sequence_intervals_with_unmapped: { type: 'File[]', outputBinding: { glob: '*.intervals' } }

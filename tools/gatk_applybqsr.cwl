@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk4_applybqsr
+doc: |-
+  This tool applies BQSR to the input bam.
+  The following programs are run in this tool:
+    - GATK ApplyBQSR
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
@@ -31,13 +35,9 @@ arguments:
       --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30
       -L $(inputs.sequence_interval.path)
 inputs:
-  reference: {type: File, secondaryFiles: [^.dict, .fai]}
-  input_bam: {type: File, secondaryFiles: [^.bai]}
-  bqsr_report: File
-  sequence_interval: File
+  reference: { type: File, secondaryFiles: [^.dict, .fai], doc: "Reference fasta with associated dict and fai indexes" }
+  input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file" }
+  bqsr_report: { type: File, doc: "Input recalibration table for BQSR" }
+  sequence_interval: { type: File, doc: "File containing one or more genomic intervals over which to operate" }
 outputs:
-  recalibrated_bam:
-    type: File
-    outputBinding:
-      glob: '*bam'
-    secondaryFiles: [^.bai, .md5]
+  recalibrated_bam: { type: File, outputBinding: { glob: '*bam' }, secondaryFiles: [^.bai, .md5] }

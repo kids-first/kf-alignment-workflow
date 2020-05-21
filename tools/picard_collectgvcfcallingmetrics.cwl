@@ -1,6 +1,10 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_collectgvcfcallingmetrics
+doc: |-
+  This tool collects summary and per-sample metrics about variant calls in a VCF file.
+  The following programs are run in this tool:
+    - picard CollectVariantCallingMetrics
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -22,13 +26,10 @@ arguments:
       GVCF_INPUT=true
       THREAD_COUNT=16
 inputs:
-  input_vcf: {type: File, secondaryFiles: [.tbi]}
-  reference_dict: File
-  final_gvcf_base_name: string
-  dbsnp_vcf: {type: File, secondaryFiles: [.idx]}
-  wgs_evaluation_interval_list: File
+  input_vcf: { type: File, secondaryFiles: [.tbi], doc: "Input VCF file" }
+  reference_dict: { type: File, doc: "Reference dict index file" }
+  final_gvcf_base_name: { type: string, doc: "String to use as the base filename for the output" }
+  dbsnp_vcf: { type: File, secondaryFiles: [.idx], doc: "dbsnp VCF file" }
+  wgs_evaluation_interval_list: { type: File, doc: "Target intervals to restrict analysis to" }
 outputs:
-  output:
-    type: File[]
-    outputBinding:
-      glob: '*_metrics'
+  output: { type: 'File[]', outputBinding: { glob: '*_metrics' } }

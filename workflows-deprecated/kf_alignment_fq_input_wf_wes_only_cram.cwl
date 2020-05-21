@@ -1,47 +1,42 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_CramOnly_wf
+id: kf_alignment_fq_input_wf_wes
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
-  - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_reads: File
-  biospecimen_name: string
+  files_R1: File[]
+  files_R2: File[]
+  rgs: string[]
   output_basename: string
   indexed_reference_fasta: File
   knownsites: File[]
   reference_dict: File
-  wgs_coverage_interval_list: File
+  intervals: File
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
   aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
-  wgs_metrics: {type: File, outputSource: picard_collectwgsmetrics/output}
+  hs_metrics: {type: File, outputSource: picard_collecthsmetrics/output}
 
 steps:
-  samtools_split:
-    run: ../tools/samtools_split.cwl
-    in:
-      input_bam: input_reads
-      reference: indexed_reference_fasta
-    out: [bam_files]
-
   bwa_mem:
-    run: ../workflows/kfdrc_bwamem_subwf.cwl
+    run: ../tools/bwa_mem_fq.cwl
     in:
-      input_reads: samtools_split/bam_files
-      indexed_reference_fasta: indexed_reference_fasta
-      sample_name: biospecimen_name
-    scatter: [input_reads]
-    out: [aligned_bams]
-
+      file_R1: files_R1
+      file_R2: files_R2
+      rg: rgs
+      ref: indexed_reference_fasta
+    scatter: [file_R1, file_R2, rg]
+    scatterMethod: dotproduct
+    out: [output]
+    
   sambamba_merge:
-    run: ../tools/sambamba_merge.cwl
+    run: ../tools/sambamba_merge_one.cwl
     in:
-      bams: bwa_mem/aligned_bams
+      bams: bwa_mem/output
       base_file_name: output_basename
     out: [merged_bam]
 
@@ -99,16 +94,16 @@ steps:
       reference: indexed_reference_fasta
     out: [output]
 
-  picard_collectwgsmetrics:
-    run: ../tools/picard_collectwgsmetrics.cwl
+  picard_collecthsmetrics:
+    run: ../tools/picard_collecthsmetrics.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      intervals: wgs_coverage_interval_list
+      intervals: intervals
       reference: indexed_reference_fasta
     out: [output]
 
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_bam_to_cram:
+    run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
@@ -117,7 +112,6 @@ steps:
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
-  - class: 'sbg:AWSInstanceType'
-    value: c4.8xlarge;ebs-gp2;850
   - class: 'sbg:maxNumberOfParallelInstances'
     value: 4
+

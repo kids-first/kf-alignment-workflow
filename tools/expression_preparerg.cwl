@@ -4,13 +4,16 @@ id: expression_preparerg
 requirements:
   - class: InlineJavascriptRequirement
 inputs:
-  rg: {type: File, inputBinding: {loadContents: true}}
+  rg:
+    type: File?
+    inputBinding: {loadContents: true}
   sample: string
 outputs:
   rg_str: string
 
 expression:
   "${
+      if (inputs.rg == null) {return {rg_str: null}};
       var arr = inputs.rg.contents.split('\\n')[0].split('\\t');
       for (var i=1; i<arr.length; i++){
         if (arr[i].startsWith('SM')){

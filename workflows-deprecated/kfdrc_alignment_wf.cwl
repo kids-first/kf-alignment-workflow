@@ -12,7 +12,7 @@ inputs:
   output_basename: string
   indexed_reference_fasta: File
   dbsnp_vcf: File
-  known_indel_vcf: File[]
+  knownsites: File[]
   reference_dict: File
   contamination_sites_bed: File
   contamination_sites_mu: File
@@ -22,7 +22,7 @@ inputs:
   wgs_evaluation_interval_list: File
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output}
   gvcf: {type: File, outputSource: picard_mergevcfs/output}
   verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
@@ -39,7 +39,7 @@ steps:
     out: [bam_files]
 
   bwa_mem:
-    run: ../workflows/kfdrc_bwamem_subwf.cwl
+    run: kfdrc_bwamem_subwf.cwl
     in:
       input_reads: samtools_split/bam_files
       indexed_reference_fasta: indexed_reference_fasta
@@ -71,8 +71,7 @@ steps:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: sambamba_sort/sorted_bam
-      dbsnp_vcf: dbsnp_vcf
-      known_indel_vcf: known_indel_vcf
+      knownsites: knownsites
       reference: indexed_reference_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
@@ -167,8 +166,8 @@ steps:
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
 
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_bam_to_cram:
+    run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta

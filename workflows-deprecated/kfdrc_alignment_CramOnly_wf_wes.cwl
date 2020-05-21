@@ -1,51 +1,46 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_fq_input_wf_wes
+id: kf_alignment_CramOnly_wf_wes
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
+  - class: SubworkflowFeatureRequirement
 
 inputs:
-  files_R1: File[]
-  files_R2: File[]
-  rgs: string[]
+  input_reads: File
+  biospecimen_name: string
   output_basename: string
   indexed_reference_fasta: File
-  dbsnp_vcf: File
   knownsites: File[]
   reference_dict: File
-  contamination_sites_bed: File
-  contamination_sites_mu: File
-  contamination_sites_ud: File
-  wgs_calling_interval_list: File
   intervals: File
-  wgs_evaluation_interval_list: File
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
-  gvcf: {type: File, outputSource: picard_mergevcfs/output}
-  verifybamid_output: {type: File, outputSource: verifybamid/output}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
-  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
   aggregation_metrics: {type: 'File[]', outputSource: picard_collectaggregationmetrics/output}
   hs_metrics: {type: File, outputSource: picard_collecthsmetrics/output}
-
 steps:
+  samtools_split:
+    run: ../tools/samtools_split.cwl
+    in:
+      input_bam: input_reads
+      reference: indexed_reference_fasta
+    out: [bam_files]
+
   bwa_mem:
-    run: ../tools/bwa_mem_fq.cwl
+    run: kfdrc_bwamem_subwf.cwl
     in:
-      file_R1: files_R1
-      file_R2: files_R2
-      rg: rgs
-      ref: indexed_reference_fasta
-    scatter: [file_R1, file_R2, rg]
-    scatterMethod: dotproduct
-    out: [output]
-    
+      input_reads: samtools_split/bam_files
+      indexed_reference_fasta: indexed_reference_fasta
+      sample_name: biospecimen_name
+    scatter: [input_reads]
+    out: [aligned_bams]
+
   sambamba_merge:
-    run: ../tools/sambamba_merge_one.cwl
+    run: ../tools/sambamba_merge.cwl
     in:
-      bams: bwa_mem/output
+      bams: bwa_mem/aligned_bams
       base_file_name: output_basename
     out: [merged_bam]
 
@@ -111,58 +106,8 @@ steps:
       reference: indexed_reference_fasta
     out: [output]
 
-  picard_intervallisttools:
-    run: ../tools/picard_intervallisttools.cwl
-    in:
-      interval_list: wgs_calling_interval_list
-    out: [output]
-
-  verifybamid:
-    run: ../tools/verifybamid.cwl
-    in:
-      contamination_sites_bed: contamination_sites_bed
-      contamination_sites_mu: contamination_sites_mu
-      contamination_sites_ud: contamination_sites_ud
-      input_bam: sambamba_sort/sorted_bam
-      ref_fasta: indexed_reference_fasta
-      output_basename: output_basename
-    out: [output]
-
-  checkcontamination:
-    run: ../tools/expression_checkcontamination.cwl
-    in:
-      verifybamid_selfsm: verifybamid/output
-    out: [contamination]
-
-  gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller.cwl
-    in:
-      contamination: checkcontamination/contamination
-      input_bam: picard_gatherbamfiles/output
-      interval_list: picard_intervallisttools/output
-      reference: indexed_reference_fasta
-    scatter: [interval_list]
-    out: [output]
-
-  picard_mergevcfs:
-    run: ../tools/picard_mergevcfs.cwl
-    in:
-      input_vcf: gatk_haplotypecaller/output
-      output_vcf_basename: output_basename
-    out: [output]
-
-  picard_collectgvcfcallingmetrics:
-    run: ../tools/picard_collectgvcfcallingmetrics.cwl
-    in:
-      dbsnp_vcf: dbsnp_vcf
-      final_gvcf_base_name: output_basename
-      input_vcf: picard_mergevcfs/output
-      reference_dict: reference_dict
-      wgs_evaluation_interval_list: wgs_evaluation_interval_list
-    out: [output]
-
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_bam_to_cram:
+    run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
@@ -170,6 +115,8 @@ steps:
 
 $namespaces:
   sbg: https://sevenbridges.com
+hints:
+  - class: 'sbg:AWSInstanceType'
+    value: c4.8xlarge;ebs-gp2;850
   - class: 'sbg:maxNumberOfParallelInstances'
     value: 4
-

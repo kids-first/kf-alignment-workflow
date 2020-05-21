@@ -1,6 +1,11 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: picard_gatherbamfiles
+doc: |-
+  This program gathers the input bam files into a single bam.
+  The following programs are run in this program:
+    - picard GatherBamFiles
+    - rm
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
@@ -35,15 +40,7 @@ arguments:
       &&
       rm $rm_bams
 inputs:
-  input_bam:
-    type:
-      type: array
-      items: File
-    secondaryFiles: [^.bai]
-  output_bam_basename: string
+  input_bam: { type: 'File[]', secondaryFiles: [^.bai], doc: "Input bam file list" }
+  output_bam_basename: { type: string, doc: "String to be used as the base filename for the output." }
 outputs:
-  output:
-    type: File
-    outputBinding:
-      glob: '*.bam'
-    secondaryFiles: [^.bai, .md5]
+  output: { type: File, outputBinding: { glob: '*.bam' }, secondaryFiles: [^.bai, .md5] }

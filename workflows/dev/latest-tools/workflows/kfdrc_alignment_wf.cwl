@@ -21,7 +21,7 @@ inputs:
   wgs_evaluation_interval_list: File
 
 outputs:
-  cram: {type: File, outputSource: samtools_coverttocram/output}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output}
   gvcf: {type: File, outputSource: picard_mergevcfs/output}
   verifybamid_output: {type: File, outputSource: verifybamid/output}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
@@ -165,8 +165,8 @@ steps:
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]
 
-  samtools_coverttocram:
-    run: ../tools/samtools_covert_to_cram.cwl
+  samtools_bam_to_cram:
+    run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: indexed_reference_fasta
