@@ -18,16 +18,19 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
-      bams="${
+      ${
         var flatin = [].concat.apply([],inputs.bams);
         var arr = [];
         for (var i=0; i<flatin.length; i++)
           arr = arr.concat(flatin[i].path)
-        return(arr.join(' '))
-      }"
-      /opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 $(inputs.base_file_name).aligned.duplicates_marked.unsorted.bam $bams && rm $bams
+        if (arr.length > 1) {
+          return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + arr.join(' ')
+        } else {
+          return "cp " + arr.join(' ') + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam"
+        }
+      }
 inputs:
   bams: { type: 'Any[]', doc: "Input will be a combination of File[] and deeply nested File[]. Any[] is flexible enough to accomodate the different types" }
   base_file_name: { type: string, doc: "String to be used in naming the output bam" }
 outputs:
-  merged_bam: { type: File, outputBinding: { glob: '*.bam' }, secondaryFiles: [.bai, ^.bai], format: BAM }
+  merged_bam: { type: File, outputBinding: { glob: '*.bam' }, format: BAM }
