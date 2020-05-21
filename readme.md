@@ -69,6 +69,193 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
 `contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
 `wgs_evaluation_interval_list`.
 
+### Staging Inputs:
+The pipeline is build to handle three distinct input types:
+1. BAMs
+1. PE Fastqs
+1. SE Fastqs
+
+Additionally, the workflow supports these three in any combination. You can have PE Fastqs and BAMs,
+PE Fastqs and SE Fastqs, BAMS and PE Fastqs and SE Fastqs, etc. Each of these three classes will be
+procsessed and aligned separately and the resulting BWA aligned bams will be merged into a final BAM
+before performing steps like BQSR and Metrics collection.
+
+#### BAM Inputs
+The BAM processing portion of the pipeline is the simplest when it comes to inputs. You may provide
+a single BAM or many BAMs. The input for BAMs is a file list. In Cavatica or other GUI interfaces,
+simply select the files you wish to process. For command line interfaces such as cwltool, your input
+should look like the following.
+```json
+{
+  ...,
+  "run_pe_reads_processing": false,
+  "run_se_reads_processing": false,
+  "run_bam_processing": true,
+  "input_bam_list": [
+    {
+      "class": "File",
+      "location": "/path/to/bam1.bam"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/bam2.bam"
+    }
+  ],
+  ...
+}
+```
+
+#### SE Fastq Inputs
+SE fastq processing requires more input to build its jobs correctly. Rather than providing a single
+list you must provide two lists: `input_se_reads_list` and `input_se_rgs_list`. The `input_se_reads_list`
+is where you put the files and the `input_se_rgs_list` is where you put your desired BAM @RG headers for
+each reads file. These two lists are must be of ordered and of equal length. By ordered, that means the
+first item of the `input_se_rgs_list` will be used when aligning the first item of the `input_se_reads_list`.
+
+In Cavatica make sure to double check that everything is in the right order when you enter the inputs.
+In command line interfaces such as cwltool, your input should look like the following.
+```json
+{
+  ...,
+  "run_pe_reads_processing": false,
+  "run_se_reads_processing": true,
+  "run_bam_processing": false,
+  "input_se_reads_list": [
+    {
+      "class": "File",
+      "location": "/path/to/single1.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/single2.fastq"
+    }
+  ],
+  "inputs_se_rgs_list": [
+    "@RG\tID:single1\tLB:blah\tPL:ILLUMINA\tSM:blah",
+    "@RG\tID:single2\tLB:blah\tPL:ILLUMINA\tSM:blah"
+  ],
+  ...
+}
+```
+Take particular note of how the first item in the rgs list is the metadata for the first item in the fastq list.
+
+#### PE Fastq Inputs
+PE Fastq processing inputs is exactly like SE Fastq processing but requires you to provide the paired mates
+files for your input paired reads. Once again, when using Cavatica make sure your inputs are in the correct
+order. In command line interfaces such as cwltool, your input should look like the following.
+```json
+{
+  ...,
+  "run_pe_reads_processing": true,
+  "run_se_reads_processing": false,
+  "run_bam_processing": false,
+  "input_pe_reads_list": [
+    {
+      "class": "File",
+      "location": "/path/to/sample1_R1.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample2_R1fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample3_R1.fastq"
+    }
+  ],
+  "input_pe_mates_list": [
+    {
+      "class": "File",
+      "location": "/path/to/sample1_R2.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample2_R2.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample3_R2.fastq"
+    }
+  ],
+  "inputs_pe_rgs_list": [
+    "@RG\tID:sample1\tLB:blah\tPL:ILLUMINA\tSM:blah",
+    "@RG\tID:sample2\tLB:blah\tPL:ILLUMINA\tSM:blah",
+    "@RG\tID:sample3\tLB:blah\tPL:ILLUMINA\tSM:blah"
+  ],
+  ...
+}
+```
+
+#### Multiple Input Types
+As mentioned above, these three input types can be added in any combination. If you wanted to add
+all three your command line input would look like the following.
+```json
+{
+  ...,
+  "run_pe_reads_processing": true,
+  "run_se_reads_processing": true,
+  "run_bam_processing": true,
+  "input_bam_list": [
+    {
+      "class": "File",
+      "location": "/path/to/bam1.bam"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/bam2.bam"
+    }
+  ],
+  "input_se_reads_list": [
+    {
+      "class": "File",
+      "location": "/path/to/single1.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/single2.fastq"
+    }
+  ],
+  "inputs_se_rgs_list": [
+    "@RG\tID:single1\tLB:blah\tPL:ILLUMINA\tSM:blah",
+    "@RG\tID:single2\tLB:blah\tPL:ILLUMINA\tSM:blah"
+  ],
+  "input_pe_reads_list": [
+    {
+      "class": "File",
+      "location": "/path/to/sample1_R1.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample2_R1fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample3_R1.fastq"
+    }
+  ],
+  "input_pe_mates_list": [
+    {
+      "class": "File",
+      "location": "/path/to/sample1_R2.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample2_R2.fastq"
+    },
+    {
+      "class": "File",
+      "location": "/path/to/sample3_R2.fastq"
+    }
+  ],
+  "inputs_pe_rgs_list": [
+    "@RG\tID:sample1\tLB:blah\tPL:ILLUMINA\tSM:blah",
+    "@RG\tID:sample2\tLB:blah\tPL:ILLUMINA\tSM:blah",
+    "@RG\tID:sample3\tLB:blah\tPL:ILLUMINA\tSM:blah"
+  ],
+  ...
+}
+```
+
 ### Example Runtimes:
 1. 120 GB WGS BAM with AggMetrics, WgsMetrics, and gVCF creation: 14 hours & $35
 1. 120 GB WGS BAM only: 11 hours
