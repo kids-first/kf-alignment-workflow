@@ -19,7 +19,7 @@ arguments:
               longest_sequence = 0
               for line in ref_dict_file:
                   if line.startswith("@SQ"):
-                      line_split = line.split("\t")
+                      line_split = line.split(chr(9))
                       sequence_tuple_list.append((line_split[1].split("SN:")[1], int(line_split[2].split("LN:")[1])))
               longest_sequence = sorted(sequence_tuple_list, key=lambda x: x[1], reverse=True)[0][1]
           hg38_protection_tag = ":1+"
@@ -29,7 +29,7 @@ arguments:
           for sequence_tuple in sequence_tuple_list[1:]:
               if temp_size + sequence_tuple[1] <= longest_sequence:
                   temp_size += sequence_tuple[1]
-                  tsv_string += "\n" + sequence_tuple[0] + hg38_protection_tag
+                  tsv_string += chr(10) + sequence_tuple[0] + hg38_protection_tag
               else:
                   i += 1
                   pad = "{:0>2d}".format(i)
