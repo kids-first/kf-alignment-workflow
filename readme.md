@@ -131,8 +131,8 @@ In command line interfaces such as cwltool, your input should look like the foll
     }
   ],
   "inputs_se_rgs_list": [
-    "@RG\tID:single1\tLB:blah\tPL:ILLUMINA\tSM:blah",
-    "@RG\tID:single2\tLB:blah\tPL:ILLUMINA\tSM:blah"
+    "@RG\tID:single1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\tID:single2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
   ],
   ...
 }
@@ -178,9 +178,9 @@ order. In command line interfaces such as cwltool, your input should look like t
     }
   ],
   "inputs_pe_rgs_list": [
-    "@RG\tID:sample1\tLB:blah\tPL:ILLUMINA\tSM:blah",
-    "@RG\tID:sample2\tLB:blah\tPL:ILLUMINA\tSM:blah",
-    "@RG\tID:sample3\tLB:blah\tPL:ILLUMINA\tSM:blah"
+    "@RG\tID:sample1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\tID:sample2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\tID:sample3\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
   ],
   ...
 }
@@ -216,8 +216,8 @@ all three your command line input would look like the following.
     }
   ],
   "inputs_se_rgs_list": [
-    "@RG\tID:single1\tLB:blah\tPL:ILLUMINA\tSM:blah",
-    "@RG\tID:single2\tLB:blah\tPL:ILLUMINA\tSM:blah"
+    "@RG\tID:single1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\tID:single2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
   ],
   "input_pe_reads_list": [
     {
@@ -248,9 +248,9 @@ all three your command line input would look like the following.
     }
   ],
   "inputs_pe_rgs_list": [
-    "@RG\tID:sample1\tLB:blah\tPL:ILLUMINA\tSM:blah",
-    "@RG\tID:sample2\tLB:blah\tPL:ILLUMINA\tSM:blah",
-    "@RG\tID:sample3\tLB:blah\tPL:ILLUMINA\tSM:blah"
+    "@RG\tID:sample1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\tID:sample2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\tID:sample3\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
   ],
   ...
 }
