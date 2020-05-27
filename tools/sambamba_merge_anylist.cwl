@@ -13,20 +13,35 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
   - class: InlineJavascriptRequirement
+    expressionLib:
+      - |-
+        //https://stackoverflow.com/a/27267762
+        var flatten = function flatten(ary) {
+            var ret = [];
+            for(var i = 0; i < ary.length; i++) {
+                if(Array.isArray(ary[i])) {
+                    ret = ret.concat(flatten(ary[i]));
+                } else {
+                    ret.push(ary[i]);
+                }
+            }
+            return ret;
+        }
 baseCommand: []
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
       ${
-        var flatin = [].concat.apply([],inputs.bams);
+        var flatin = flatten(inputs.bams);
         var arr = [];
-        for (var i=0; i<flatin.length; i++)
-          arr = arr.concat(flatin[i].path)
+        for (var i=0; i<flatin.length; i++) {
+          arr = arr.concat(flatin[i].path);
+        }
         if (arr.length > 1) {
-          return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + arr.join(' ')
+          return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + arr.join(' ');
         } else {
-          return "cp " + arr.join(' ') + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam"
+          return "cp " + arr.join(' ') + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam";
         }
       }
 inputs:
