@@ -111,6 +111,11 @@ list you must provide two lists: `input_se_reads_list` and `input_se_rgs_list`. 
 is where you put the files and the `input_se_rgs_list` is where you put your desired BAM @RG headers for
 each reads file. These two lists are must be of ordered and of equal length. By ordered, that means the
 first item of the `input_se_rgs_list` will be used when aligning the first item of the `input_se_reads_list`.
+IMPORTANT NOTE: When you are entering the rg names, you need to use a second escape `\` to the tab values `\t`
+as seen below. When the string value is read in by tool such as cwltool it will interpret a `\\t` input
+as `\t` and a `\t` as the literal `<tab>` value which is not a valid entry for bwa mem.
+If you are using Cavatica GUI, however, no extra escape is necessary. The GUI will add an extra
+escape to any tab values you enter.
 
 In Cavatica make sure to double check that everything is in the right order when you enter the inputs.
 In command line interfaces such as cwltool, your input should look like the following.
@@ -131,8 +136,8 @@ In command line interfaces such as cwltool, your input should look like the foll
     }
   ],
   "inputs_se_rgs_list": [
-    "@RG\tID:single1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
-    "@RG\tID:single2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
+    "@RG\\tID:single1\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name",
+    "@RG\\tID:single2\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name"
   ],
   ...
 }
@@ -178,9 +183,9 @@ order. In command line interfaces such as cwltool, your input should look like t
     }
   ],
   "inputs_pe_rgs_list": [
-    "@RG\tID:sample1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
-    "@RG\tID:sample2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
-    "@RG\tID:sample3\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
+    "@RG\\tID:sample1\\tLB:library_name\\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\\tID:sample2\\tLB:library_name\\tPL:ILLUMINA\tSM:sample_name",
+    "@RG\\tID:sample3\\tLB:library_name\\tPL:ILLUMINA\tSM:sample_name"
   ],
   ...
 }
@@ -216,8 +221,8 @@ all three your command line input would look like the following.
     }
   ],
   "inputs_se_rgs_list": [
-    "@RG\tID:single1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
-    "@RG\tID:single2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
+    "@RG\\tID:single1\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name",
+    "@RG\\tID:single2\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name"
   ],
   "input_pe_reads_list": [
     {
@@ -248,9 +253,9 @@ all three your command line input would look like the following.
     }
   ],
   "inputs_pe_rgs_list": [
-    "@RG\tID:sample1\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
-    "@RG\tID:sample2\tLB:library_name\tPL:ILLUMINA\tSM:sample_name",
-    "@RG\tID:sample3\tLB:library_name\tPL:ILLUMINA\tSM:sample_name"
+    "@RG\\tID:sample1\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name",
+    "@RG\\tID:sample2\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name",
+    "@RG\\tID:sample3\\tLB:library_name\\tPL:ILLUMINA\\tSM:sample_name"
   ],
   ...
 }
