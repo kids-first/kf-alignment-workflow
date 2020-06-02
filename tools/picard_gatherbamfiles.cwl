@@ -37,8 +37,6 @@ arguments:
       INPUT=$input_bams
       CREATE_INDEX=true
       CREATE_MD5_FILE=true
-      &&
-      rm $rm_bams
 inputs:
   input_bam: { type: 'File[]', secondaryFiles: [^.bai], doc: "Input bam file list" }
   output_bam_basename: { type: string, doc: "String to be used as the base filename for the output." }
