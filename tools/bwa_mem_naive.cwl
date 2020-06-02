@@ -23,7 +23,7 @@ arguments:
     valueFrom: >-
       set -eo pipefail
       
-      bwa mem -K 100000000 ${if (inputs.interleaved) {return '-p';} else {return ""}} -v 3 -t 36
+      bwa mem -K 100000000 ${if (inputs.interleaved) {return '-p';} else {return ""}} -v 3 -t 36 -T 0
       -Y $(inputs.ref.path)
       -R '${return inputs.rg}'
       ${return inputs.reads.path}
