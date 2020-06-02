@@ -87,6 +87,7 @@ inputs:
   run_wgs_metrics: { type: boolean, doc: "WgsMetrics will be collected. Only recommended for WGS inputs. Requires: wgs_coverage_interval_list" }
   run_agg_metrics: { type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics, QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended for both WXS and WGS inputs." }
   run_gvcf_processing: { type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list, wgs_evaluation_interval_list" }
+  min_alignment_score: { type: 'int?', default: 0, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
 
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output}
@@ -130,6 +131,7 @@ steps:
       indexed_reference_fasta: indexed_reference_fasta
       sample_name: biospecimen_name
       conditional_run: gatekeeper/scatter_bams
+      min_alignment_score: min_alignment_score
     scatter: conditional_run
     out: [unsorted_bams] #+2 Nesting File[][][]
 
@@ -141,6 +143,7 @@ steps:
       input_pe_mates_list: input_pe_mates_list
       input_pe_rgs_list: input_pe_rgs_list
       conditional_run: gatekeeper/scatter_pe_reads
+      min_alignment_score: min_alignment_score
     scatter: conditional_run
     out: [unsorted_bams] #+0 Nesting File[]
 
@@ -151,6 +154,7 @@ steps:
       input_se_reads_list: input_se_reads_list
       input_se_rgs_list: input_se_rgs_list
       conditional_run: gatekeeper/scatter_se_reads
+      min_alignment_score: min_alignment_score
     scatter: conditional_run
     out: [unsorted_bams] #+0 Nesting File[]
 
