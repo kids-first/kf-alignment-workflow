@@ -23,7 +23,8 @@ arguments:
     valueFrom: >-
       set -eo pipefail
       
-      bwa mem -K 100000000 ${if (inputs.interleaved) {return '-p';} else {return ""}} -v 3 -t 36 $(inputs.min_alignment_score ? '-T ' + inputs.min_alignment_score : '') 
+      bwa mem -K 100000000 ${if (inputs.interleaved) {return '-p';} else {return ""}} -v 3 -t 36
+      ${if (inputs.min_alignment_score == null) { return '';} else {return '-T ' + inputs.min_alignment_score;}}
       -Y $(inputs.ref.path)
       -R '${return inputs.rg}'
       ${return inputs.reads.path}
