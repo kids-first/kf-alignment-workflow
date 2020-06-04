@@ -10,6 +10,7 @@ inputs:
     type: File
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
   sample_name: string
+  min_alignment_score: int?
 outputs:
   unsorted_bams:
     type:
@@ -33,5 +34,6 @@ steps:
       indexed_reference_fasta: indexed_reference_fasta
       sample_name: sample_name
       input_rgbam: samtools_split/bam_files
+      min_alignment_score: min_alignment_score
     scatter: [input_rgbam]
     out: [unsorted_bams] #+1 Nesting File[][]

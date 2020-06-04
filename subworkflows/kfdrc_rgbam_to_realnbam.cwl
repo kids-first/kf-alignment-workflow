@@ -9,6 +9,7 @@ inputs:
     type: File
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
   sample_name: string
+  min_alignment_score: int?
 outputs:
   unsorted_bams:
     type: File[]
@@ -30,6 +31,7 @@ steps:
       interleaved:
         default: true
       rg: bamtofastq_chomp/rg_string 
+      min_alignment_score: min_alignment_score
     scatter: [reads]
     out: [output]
 

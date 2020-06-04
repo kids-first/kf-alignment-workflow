@@ -11,6 +11,7 @@ inputs:
   indexed_reference_fasta:
     type: File
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
+  min_alignment_score: int?
 outputs:
   unsorted_bams: 
     type: File[]
@@ -32,6 +33,7 @@ steps:
       ref: indexed_reference_fasta
       reads: zcat_split_reads/output
       rg: input_se_rgs
+      min_alignment_score: min_alignment_score
     scatter: reads
     out: [output] #+0 Nesting File[]
 

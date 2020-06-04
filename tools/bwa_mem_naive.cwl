@@ -24,6 +24,7 @@ arguments:
       set -eo pipefail
       
       bwa mem -K 100000000 ${if (inputs.interleaved) {return '-p';} else {return ""}} -v 3 -t 36
+      ${if (inputs.min_alignment_score == null) { return '';} else {return '-T ' + inputs.min_alignment_score;}}
       -Y $(inputs.ref.path)
       -R '${return inputs.rg}'
       ${return inputs.reads.path}
@@ -38,6 +39,7 @@ inputs:
   mates: { type: 'File?', doc: "Mates file for the reads" }
   interleaved: { type: boolean, default: false, doc: "The reads input is interleaved" }
   rg: { type: string, doc: "Formatted RG header to use in the resulting BAM, check BWA for formatting guidelines (e.g. escaped tabs '\\t')" }
+  min_alignment_score: { type: 'int?', doc: "Don't output alignment with score lower than INT. This option only affects output." }
 
 outputs:
   output: { type: File, outputBinding: { glob: '*.bam' } }

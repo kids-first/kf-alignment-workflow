@@ -12,6 +12,7 @@ inputs:
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
   sample_name: string
   conditional_run: int
+  min_alignment_score: int?
 outputs:
   unsorted_bams:
     type:
@@ -30,6 +31,7 @@ steps:
       input_bam: input_bam_list 
       indexed_reference_fasta: indexed_reference_fasta
       sample_name: sample_name
+      min_alignment_score: min_alignment_score
     scatter: input_bam
     out: [unsorted_bams] #+2 Nesting File[][][]
 
