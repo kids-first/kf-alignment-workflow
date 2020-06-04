@@ -106,13 +106,13 @@ should look like the following.
 ```
 
 #### SE Fastq Inputs
-SE fastq processing requires more input to build its jobs correctly. Rather than providing a single
+SE fastq processing requires more input to build the jobs correctly. Rather than providing a single
 list you must provide two lists: `input_se_reads_list` and `input_se_rgs_list`. The `input_se_reads_list`
 is where you put the files and the `input_se_rgs_list` is where you put your desired BAM @RG headers for
-each reads file. These two lists are must be of ordered and of equal length. By ordered, that means the
+each reads file. These two lists are must be ordered and of equal length. By ordered, that means the
 first item of the `input_se_rgs_list` will be used when aligning the first item of the `input_se_reads_list`.
 IMPORTANT NOTE: When you are entering the rg names, you need to use a second escape `\` to the tab values `\t`
-as seen below. When the string value is read in by tool such as cwltool it will interpret a `\\t` input
+as seen below. When the string value is read in by a tool such as cwltool it will interpret a `\\t` input
 as `\t` and a `\t` as the literal `<tab>` value which is not a valid entry for bwa mem.
 If you are using Cavatica GUI, however, no extra escape is necessary. The GUI will add an extra
 escape to any tab values you enter.
