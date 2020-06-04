@@ -15,6 +15,7 @@ inputs:
   output_basename: string
   wgs_calling_interval_list: File
   dbsnp_vcf: File
+  dbsnp_idx: File?
   reference_dict: File
   wgs_evaluation_interval_list: File
   conditional_run: int
@@ -25,6 +26,13 @@ outputs:
   gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}  
   
 steps:
+  index_dbsnp:
+    run: ../tools/gatk_indexfeaturefile.cwl
+    in:
+      input_file: dbsnp_vcf
+      input_index: dbsnp_idx
+    out: [output]
+
   verifybamid:
     run: ../tools/verifybamid_contamination.cwl
     in:
@@ -65,7 +73,7 @@ steps:
   picard_collectgvcfcallingmetrics:
     run: ../tools/picard_collectgvcfcallingmetrics.cwl
     in:
-      dbsnp_vcf: dbsnp_vcf
+      dbsnp_vcf: index_dbsnp/output
       final_gvcf_base_name: output_basename
       input_vcf: picard_mergevcfs/output
       reference_dict: reference_dict

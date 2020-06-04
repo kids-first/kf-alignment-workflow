@@ -66,11 +66,11 @@ inputs:
   input_pe_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in PE processing" }
   input_se_reads_list: { type: 'File[]?', doc: "List of input singlie end fastq reads" }
   input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
-  indexed_reference_fasta: { type: File, secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai'], doc: "Reference fasta with BWA and samtool indexes" }
+  reference_tar: { type: File, doc: "Tar file containing reference fasta and its associated indexes (samtools, bwa, and picard)" }
   biospecimen_name: { type: string, doc: "String name of biospcimen" }
   output_basename: { type: string, doc: "String to use as the base for output filenames" }
-  reference_dict: { type: File, doc: "Dict index of the reference fasta" }
   dbsnp_vcf: { type: 'File?', doc: "dbSNP vcf file" }
+  dbsnp_idx: { type: 'File?', doc: "dbSNP vcf index file" }
   knownsites: { type: 'File[]', doc: "List of files and indexes containing known polymorphic sites used to exclude regions around known polymorphisms from analysis" }
   contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
   contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
@@ -112,6 +112,35 @@ outputs:
   qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart}
 
 steps:
+  untar_reference:
+    run: ../subworkflows/untar_reference_tar.cwl
+    in:
+      reference_tar: reference_tar
+    out: [fasta,fai,dict,alt,amb,ann,bwt,pac,sa]
+
+  index_reference:
+    run: ../subworkflows/prepare_reference.cwl
+    in:
+      input_fasta: untar_reference/fasta
+      input_fai: untar_reference/fai
+      input_dict: untar_reference/dict
+      input_alt: untar_reference/alt
+      input_amb: untar_reference/amb
+      input_ann: untar_reference/ann
+      input_bwt: untar_reference/bwt
+      input_pac: untar_reference/pac
+      input_sa: untar_reference/sa
+      generate_bwa_indexes:
+        valueFrom: ${ return true }
+    out: [indexed_fasta,reference_dict]
+ 
+  index_knownsites:
+    run: ../tools/tabix_index.cwl
+    in:
+      input_file: knownsites
+    scatter: input_file
+    out: [output]
+
   gatekeeper:
     run: ../tools/gatekeeper.cwl
     in:
@@ -128,7 +157,7 @@ steps:
     run: ../subworkflows/kfdrc_process_bamlist.cwl
     in:
       input_bam_list: input_bam_list
-      indexed_reference_fasta: indexed_reference_fasta
+      indexed_reference_fasta: index_reference/indexed_fasta
       sample_name: biospecimen_name
       conditional_run: gatekeeper/scatter_bams
       min_alignment_score: min_alignment_score
@@ -138,7 +167,7 @@ steps:
   process_pe_reads:
     run: ../subworkflows/kfdrc_process_pe_readslist2.cwl
     in:
-      indexed_reference_fasta: indexed_reference_fasta
+      indexed_reference_fasta: index_reference/indexed_fasta
       input_pe_reads_list: input_pe_reads_list
       input_pe_mates_list: input_pe_mates_list
       input_pe_rgs_list: input_pe_rgs_list
@@ -150,7 +179,7 @@ steps:
   process_se_reads:
     run: ../subworkflows/kfdrc_process_se_readslist2.cwl
     in:
-      indexed_reference_fasta: indexed_reference_fasta
+      indexed_reference_fasta: index_reference/indexed_fasta
       input_se_reads_list: input_se_reads_list
       input_se_rgs_list: input_se_rgs_list
       conditional_run: gatekeeper/scatter_se_reads
@@ -183,7 +212,7 @@ steps:
   python_createsequencegroups:
     run: ../tools/python_createsequencegroups.cwl
     in:
-      ref_dict: reference_dict
+      ref_dict: index_reference/reference_dict
     out: [sequence_intervals, sequence_intervals_with_unmapped]
 
   gatk_baserecalibrator:
@@ -191,7 +220,7 @@ steps:
     in:
       input_bam: sambamba_sort/sorted_bam
       knownsites: knownsites
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
     out: [output]
@@ -208,7 +237,7 @@ steps:
     in:
       bqsr_report: gatk_gatherbqsrreports/output
       input_bam: sambamba_sort/sorted_bam
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
     out: [recalibrated_bam]
@@ -224,7 +253,7 @@ steps:
     run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
     out: [output]
 
   picard_collecthsmetrics:
@@ -233,7 +262,7 @@ steps:
       input_bam: picard_gatherbamfiles/output
       bait_intervals: wxs_bait_interval_list
       target_intervals: wxs_target_interval_list
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_hs_metrics
     scatter: conditional_run
     out: [output]
@@ -243,7 +272,7 @@ steps:
     in:
       input_bam: picard_gatherbamfiles/output
       intervals: wgs_coverage_interval_list
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_wgs_metrics
     scatter: conditional_run
     out: [output]
@@ -252,7 +281,7 @@ steps:
     run: ../tools/picard_collectalignmentsummarymetrics_conditional.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [output]
@@ -261,7 +290,7 @@ steps:
     run: ../tools/picard_collectgcbiasmetrics_conditional.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [detail,summary,chart]
@@ -270,7 +299,7 @@ steps:
     run: ../tools/picard_collectinsertsizemetrics_conditional.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [metrics,plot]
@@ -279,7 +308,7 @@ steps:
     run: ../tools/picard_collectsequencingartifactmetrics_conditional.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [bait_bias_detail_metrics,bait_bias_summary_metrics,error_summary_metrics,pre_adapter_detail_metrics,pre_adapter_summary_metrics]
@@ -288,7 +317,7 @@ steps:
     run: ../tools/picard_qualityscoredistribution_conditional.cwl
     in:
       input_bam: picard_gatherbamfiles/output
-      reference: indexed_reference_fasta
+      reference: index_reference/indexed_fasta
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [metrics,chart]
@@ -300,10 +329,11 @@ steps:
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
       input_bam: picard_gatherbamfiles/output
-      indexed_reference_fasta: indexed_reference_fasta
+      indexed_reference_fasta: index_reference/indexed_fasta
       output_basename: output_basename
       dbsnp_vcf: dbsnp_vcf
-      reference_dict: reference_dict
+      dbsnp_idx: dbsnp_idx
+      reference_dict: index_reference/reference_dict
       wgs_calling_interval_list: wgs_calling_interval_list
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
       conditional_run: gatekeeper/scatter_gvcf
