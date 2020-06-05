@@ -9,11 +9,8 @@ inputs:
       position: 1
   extractfile:
     type: string
-    inputBinding:
-      shellQuote: false
-      position: 2
 outputs:
   output: 
-    type: File
+    type: 'File?'
     outputBinding:
       glob: $(inputs.extractfile)

@@ -35,7 +35,17 @@ doc: |-
       that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
       and the first string in `input_pe_rgs_list`. This also means these arrays must be the same
       length or the workflow will fail.
-   1. The expected input for the reference_tar is a tar file containing the reference fasta along with its indexes.
+   1. The ideal input for the reference_tar is a tar file containing the reference fasta along with its indexes.
+      However, the minimal input would be a tar containing only the reference fasta. In this minimal instance,
+      the additional indexes will be made by the workflow.
+   1. For advanced usage, you can skip the knownsite indexing by providing the knownsites_indexes input.
+      This file list should contain the indexes for each of the files in your knownsites input. Please
+      note this list must be ordered in such a way where the position of the index file in the
+      knownsites_indexes list must correspond with the position of the VCF file in the knownsites list
+      that it indexes. In the example input below you can see that the 1000G_omni2.5.hg38.vcf.gz.tbi
+      file is the fourth item in the knownsites_indexes because the 1000G_omni2.5.hg38.vcf.gz file is the
+      fourth item in the knownsites list. Failure to order in this way will result in the pipeline
+      failing or generating erroneous files.
    1. Turning off gVCF creation and metrics collection for a minimal successful run.
    1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
       - contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
@@ -48,6 +58,11 @@ doc: |-
         - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
         - 1000G_phase1.snps.high_confidence.hg38.vcf.gz
         - 1000G_omni2.5.hg38.vcf.gz
+      - knownsites_indexes:
+        - Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
+        - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi
+        - 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
+        - 1000G_omni2.5.hg38.vcf.gz.tbi
       - reference_dict: Homo_sapiens_assembly38.dict
 
 
@@ -63,12 +78,13 @@ inputs:
   input_pe_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in PE processing" }
   input_se_reads_list: { type: 'File[]?', doc: "List of input singlie end fastq reads" }
   input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
-  reference_tar: { type: File, doc: "Tar file containing reference fasta and its associated indexes (samtools, bwa, and picard)" }
+  reference_tar: { type: File, doc: "Tar file containing a reference fasta and, optionally, its complete set of associated indexes (samtools, bwa, and picard)" }
   biospecimen_name: { type: string, doc: "String name of biospcimen" }
   output_basename: { type: string, doc: "String to use as the base for output filenames" }
   dbsnp_vcf: { type: 'File?', doc: "dbSNP vcf file" }
   dbsnp_idx: { type: 'File?', doc: "dbSNP vcf index file" }
-  knownsites: { type: 'File[]', doc: "List of files and indexes containing known polymorphic sites used to exclude regions around known polymorphisms from analysis" }
+  knownsites: { type: 'File[]', doc: "List of files containing known polymorphic sites used to exclude regions around known polymorphisms from analysis" }
+  knownsites_indexes: { type: 'File[]?', doc: "Corresponding indexes for the knownsites. File position in list must match with its corresponding VCF's position in the knownsites file list. For example, if the first file in the knownsites list is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be 1000G_omni2.5.hg38.vcf.gz.tbi. Optional, but will save time/cost on indexing." }
   contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
   contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
   contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
@@ -135,7 +151,9 @@ steps:
     run: ../tools/tabix_index.cwl
     in:
       input_file: knownsites
-    scatter: input_file
+      input_index: knownsites_indexes
+    scatter: [input_file,input_index]
+    scatterMethod: dotproduct
     out: [output]
 
   gatekeeper:
