@@ -35,17 +35,14 @@ doc: |-
       that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
       and the first string in `input_pe_rgs_list`. This also means these arrays must be the same
       length or the workflow will fail.
-   1. Must have these associated indexes:
-      - knownsite vcfs: Each file requires a '.tbi' index
-      - reference fasta: BWA and samtools indexes ('.64.amb', '.64.ann', '.64.bwt',
-          '.64.pac', '.64.sa', '.64.alt', '^.dict', '.fai')
+   1. The expected input for the reference_tar is a tar file containing the reference fasta along with its indexes.
    1. Turning off gVCF creation and metrics collection for a minimal successful run.
    1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
       - contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
       - contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
       - contamination_sites_ud: Homo_sapiens_assembly38.contam.UD
       - dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
-      - indexed_reference_fasta: Homo_sapiens_assembly38.fasta
+      - reference_tar: Homo_sapiens_assembly38.tgz
       - knownsites:
         - Homo_sapiens_assembly38.known_indels.vcf.gz
         - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
