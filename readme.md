@@ -281,8 +281,12 @@ all three your command line input would look like the following.
    that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
    and the first string in `input_pe_rgs_list`. This also means these arrays must be the same
    length or the workflow will fail.
-1. The expected input for the reference_tar is a tar file containing the reference fasta along with its indexes.
-   Any deviation from the following will result in a failed run:
+   1. The ideal input for the reference_tar is a tar file containing the reference fasta along with its indexes.
+      However, the minimal input would be a tar containing only the reference fasta. In this minimal instance,
+      the additional indexes will be made by the workflow.
+1. The minimal input for the reference_tar would be a tar containing only the reference fasta. In this minimal instance,
+   the additional indexes will be made by the workflow. The ideal input for the reference_tar is a tar file containing
+   the reference fasta along with its indexes:
 ```
 ~ tar tf Homo_sapiens_assembly38.tgz
 Homo_sapiens_assembly38.dict
@@ -295,6 +299,14 @@ Homo_sapiens_assembly38.fasta.64.pac
 Homo_sapiens_assembly38.fasta.64.sa
 Homo_sapiens_assembly38.fasta.fai
 ```
+1. For advanced usage, you can skip the knownsite indexing by providing the knownsites_indexes input.
+   This file list should contain the indexes for each of the files in your knownsites input. Please
+   note this list must be ordered in such a way where the position of the index file in the
+   knownsites_indexes list must correspond with the position of the VCF file in the knownsites list
+   that it indexes. In the example input below you can see that the 1000G_omni2.5.hg38.vcf.gz.tbi
+   file is the fourth item in the knownsites_indexes because the 1000G_omni2.5.hg38.vcf.gz file is the
+   fourth item in the knownsites list. Failure to order in this way will result in the pipeline
+   failing or generating erroneous files.
 1. Turning off gVCF creation and metrics collection for a minimal successful run.
 1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
 ```yaml
@@ -308,6 +320,11 @@ knownsites:
   - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
   - 1000G_phase1.snps.high_confidence.hg38.vcf.gz
   - 1000G_omni2.5.hg38.vcf.gz
+knownsites_indexes:
+  - Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
+  - Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi
+  - 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
+  - 1000G_omni2.5.hg38.vcf.gz.tbi
 reference_dict: Homo_sapiens_assembly38.dict
 ```
 

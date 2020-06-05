@@ -10,7 +10,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
   - class: InitialWorkDirRequirement
-    listing: [$(inputs.input_alt),$(inputs.input_amb),$(inputs.input_ann),$(inputs.input_bwt),$(inputs.input_pac),$(inputs.input_sa)]
+    listing: [$(inputs.input_fasta),$(inputs.input_alt),$(inputs.input_amb),$(inputs.input_ann),$(inputs.input_bwt),$(inputs.input_pac),$(inputs.input_sa)]
   - class: DockerRequirement
     dockerPull: 'kfdrc/bwa:0.7.17-dev'
   - class: InlineJavascriptRequirement
@@ -26,7 +26,7 @@ arguments:
       index -6 -a bwtsw 
 inputs:
   generate_bwa_indexes: { type: 'boolean?' }
-  input_fasta: { type: File, inputBinding: { position: 2 } }
+  input_fasta: { type: File, inputBinding: { position: 2, valueFrom: $(self.basename) } }
   input_alt: { type: 'File?' }
   input_amb: { type: 'File?' }
   input_ann: { type: 'File?' }
