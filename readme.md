@@ -285,8 +285,10 @@ all three your command line input would look like the following.
       However, the minimal input would be a tar containing only the reference fasta. In this minimal instance,
       the additional indexes will be made by the workflow.
 1. The minimal input for the reference_tar would be a tar containing only the reference fasta. In this minimal instance,
-   the additional indexes will be made by the workflow. The ideal input for the reference_tar is a tar file containing
-   the reference fasta along with its indexes:
+   all additional indexes except for `*.alt` will be made by the workflow. If you omit the ALT index file from the reference,
+   or if its naming structure mismatches the other indexes, then your alignments will be equivalent to the results you would
+   obtain if you run BWA-MEM with the -j option. The next section gives an example of what this looks like.The ideal input for
+   the reference_tar is a tar file containing the reference fasta along with its indexes:
 ```
 ~ tar tf Homo_sapiens_assembly38.tgz
 Homo_sapiens_assembly38.dict
