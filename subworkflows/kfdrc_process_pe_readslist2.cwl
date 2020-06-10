@@ -12,7 +12,7 @@ inputs:
   conditional_run: int
   indexed_reference_fasta:
     type: File
-    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
+    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '^.dict', '.fai']
   min_alignment_score: int?
 outputs:
   unsorted_bams: 
