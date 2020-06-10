@@ -35,9 +35,11 @@ doc: |-
       that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
       and the first string in `input_pe_rgs_list`. This also means these arrays must be the same
       length or the workflow will fail.
-   1. The ideal input for the reference_tar is a tar file containing the reference fasta along with its indexes.
-      However, the minimal input would be a tar containing only the reference fasta. In this minimal instance,
-      the additional indexes will be made by the workflow.
+   1. The minimal input for the reference_tar would be a tar containing only the reference fasta. In this minimal instance,
+      all additional indexes except for `*.alt` will be made by the workflow. If you omit the ALT index file from the reference,
+      or if its naming structure mismatches the other indexes, then your alignments will be equivalent to the results you would
+      obtain if you run BWA-MEM with the -j option. The next section gives an example of what this looks like.The ideal input for
+      the reference_tar is a tar file containing the reference fasta along with its indexes.
    1. For advanced usage, you can skip the knownsite indexing by providing the knownsites_indexes input.
       This file list should contain the indexes for each of the files in your knownsites input. Please
       note this list must be ordered in such a way where the position of the index file in the
