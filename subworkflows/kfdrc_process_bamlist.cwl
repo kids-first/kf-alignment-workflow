@@ -9,7 +9,7 @@ inputs:
   input_bam_list: File[]
   indexed_reference_fasta:
     type: File
-    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
+    secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '^.dict', '.fai']
   sample_name: string
   conditional_run: int
   min_alignment_score: int?
