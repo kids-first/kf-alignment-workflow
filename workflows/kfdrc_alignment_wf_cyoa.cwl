@@ -232,7 +232,7 @@ steps:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
       input_bam: sambamba_sort/sorted_bam
-      knownsites: knownsites
+      knownsites: index_knownsites/output
       reference: bundle_secondaries/output
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
