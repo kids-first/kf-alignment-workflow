@@ -131,7 +131,7 @@ outputs:
 
 steps:
   untar_reference:
-    run: ../subworkflows/untar_reference_tar.cwl
+    run: ../tools/untar_indexed_reference.cwl
     in:
       reference_tar: reference_tar
     out: [fasta,fai,dict,alt,amb,ann,bwt,pac,sa]
