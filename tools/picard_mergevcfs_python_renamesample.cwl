@@ -16,6 +16,9 @@ arguments:
       set -eo pipefail
 
       java -Xms2000m -jar /picard.jar MergeVcfs
+  - position: 3
+    shellQuote: false
+    valueFrom: >-
       OUTPUT=/dev/stdout
       CREATE_INDEX=false |
       /VcfSampleRename.py $(inputs.biospecimen_name) |
@@ -31,6 +34,8 @@ inputs:
         separate: false
     secondaryFiles:
       - .tbi
+    inputBinding:
+      position: 2
   output_vcf_basename:
     type: string
   biospecimen_name:
