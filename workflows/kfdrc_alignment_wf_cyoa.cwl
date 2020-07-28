@@ -90,7 +90,7 @@ inputs:
   dbsnp_idx: { type: 'File?', doc: "dbSNP vcf index file" }
   knownsites: { type: 'File[]', doc: "List of files containing known polymorphic sites used to exclude regions around known polymorphisms from analysis" }
   knownsites_indexes: { type: 'File[]?', doc: "Corresponding indexes for the knownsites. File position in list must match with its corresponding VCF's position in the knownsites file list. For example, if the first file in the knownsites list is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be 1000G_omni2.5.hg38.vcf.gz.tbi. Optional, but will save time/cost on indexing." }
-  contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
+  contamination_sites_bed: { type: 'File?', doc: ".bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
   contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
   contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
   wgs_calling_interval_list: { type: 'File?', doc: "WGS interval list used to aid scattering Haplotype caller" }
