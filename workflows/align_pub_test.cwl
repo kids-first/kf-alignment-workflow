@@ -376,8 +376,8 @@ inputs:
   knownsites: {type: 'File[]', doc: "List of files containing known polymorphic sites\
       \ used to exclude regions around known polymorphisms from analysis", sbg:suggestedValue: [
       {class: File, path: 5e9eff46e4b054952c25f671, name: 1000G_omni2.5.hg38.vcf.gz},
-      {class: File, path: 5e9eff46e4b054952c25f681, name: Homo_sapiens_assembly38.known_indels.vcf.gz},
       {class: File, path: 5e9eff46e4b054952c25f690, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz},
+      {class: File, path: 5e9eff46e4b054952c25f681, name: Homo_sapiens_assembly38.known_indels.vcf.gz},
       {class: File, path: 5e9eff46e4b054952c25f696, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz}]}
   knownsites_indexes: {type: 'File[]?', doc: "Corresponding indexes for the knownsites.\
       \ File position in list must match with its corresponding VCF's position in\
@@ -385,9 +385,9 @@ inputs:
       \ list is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be\
       \ 1000G_omni2.5.hg38.vcf.gz.tbi. Optional, but will save time/cost on indexing.",
     sbg:suggestedValue: [{class: File, path: 5e9eff46e4b054952c25f695, name: 1000G_omni2.5.hg38.vcf.gz.tbi},
+      {class: File, path: 5e9eff46e4b054952c25f6af, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi},
       {class: File, path: 5e9eff46e4b054952c25f675, name: Homo_sapiens_assembly38.known_indels.vcf.gz.tbi},
-      {class: File, path: 5e9eff46e4b054952c25f6a5, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi},
-      {class: File, path: 5e9eff46e4b054952c25f6af, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi}]}
+      {class: File, path: 5e9eff46e4b054952c25f6a5, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi}]}
   contamination_sites_bed: {type: 'File?', doc: ".bed file for markers used in this\
       \ analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)", sbg:suggestedValue: {
       class: File, path: 5e9eff46e4b054952c25f6a1, name: Homo_sapiens_assembly38.contam.bed}}
