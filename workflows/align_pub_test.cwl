@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_cyoa_wf_pub_test
+id: kf_alignment_cyoa_wf
 label: Kids First Universal Alignment Workflow
 doc: |
   # KFDRC Whole Genome Alignment Workflow
@@ -359,23 +359,23 @@ requirements:
 - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_bam_list: {type: 'File[]?', doc: List of input BAM files}
-  input_pe_reads_list: {type: 'File[]?', doc: List of input R1 paired end fastq reads}
-  input_pe_mates_list: {type: 'File[]?', doc: List of input R2 paired end fastq reads}
-  input_pe_rgs_list: {type: 'string[]?', doc: List of RG strings to use in PE processing}
-  input_se_reads_list: {type: 'File[]?', doc: List of input singlie end fastq reads}
-  input_se_rgs_list: {type: 'string[]?', doc: List of RG strings to use in SE processing}
-  reference_tar: {type: File, doc: 'Tar file containing a reference fasta and, optionally,
-      its complete set of associated indexes (samtools, bwa, and picard)', sbg:suggestedValue: {
+  input_bam_list: {type: 'File[]?', doc: "List of input BAM files"}
+  input_pe_reads_list: {type: 'File[]?', doc: "List of input R1 paired end fastq reads"}
+  input_pe_mates_list: {type: 'File[]?', doc: "List of input R2 paired end fastq reads"}
+  input_pe_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in PE processing"}
+  input_se_reads_list: {type: 'File[]?', doc: "List of input singlie end fastq reads"}
+  input_se_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in SE processing"}
+  reference_tar: {type: File, doc: "Tar file containing a reference fasta and, optionally,\
+      \ its complete set of associated indexes (samtools, bwa, and picard)", sbg:suggestedValue: {
       class: File, path: 5ed93f8fe4b09d9ac2e161a1, name: Homo_sapiens_assembly38.tgz}}
-  biospecimen_name: {type: string, doc: String name of biospcimen}
-  output_basename: {type: string, doc: String to use as the base for output filenames}
-  dbsnp_vcf: {type: File?, doc: dbSNP vcf file, sbg:suggestedValue: {class: File,
+  biospecimen_name: {type: string, doc: "String name of biospcimen"}
+  output_basename: {type: string, doc: "String to use as the base for output filenames"}
+  dbsnp_vcf: {type: 'File?', doc: "dbSNP vcf file", sbg:suggestedValue: {class: File,
       path: 5e9eff46e4b054952c25f68f, name: Homo_sapiens_assembly38.dbsnp138.vcf}}
-  dbsnp_idx: {type: File?, doc: dbSNP vcf index file, sbg:suggestedValue: {class: File,
+  dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", sbg:suggestedValue: {class: File,
       path: 5e9eff46e4b054952c25f6a0, name: Homo_sapiens_assembly38.dbsnp138.vcf.idx}}
-  knownsites: {type: 'File[]', doc: List of files containing known polymorphic sites
-      used to exclude regions around known polymorphisms from analysis, sbg:suggestedValue: [
+  knownsites: {type: 'File[]', doc: "List of files containing known polymorphic sites\
+      \ used to exclude regions around known polymorphisms from analysis", sbg:suggestedValue: [
       {class: File, path: 5e9eff46e4b054952c25f671, name: 1000G_omni2.5.hg38.vcf.gz},
       {class: File, path: 5e9eff46e4b054952c25f681, name: Homo_sapiens_assembly38.known_indels.vcf.gz},
       {class: File, path: 5e9eff46e4b054952c25f690, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz},
@@ -389,44 +389,45 @@ inputs:
       {class: File, path: 5e9eff46e4b054952c25f675, name: Homo_sapiens_assembly38.known_indels.vcf.gz.tbi},
       {class: File, path: 5e9eff46e4b054952c25f6a5, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi},
       {class: File, path: 5e9eff46e4b054952c25f6af, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi}]}
-  contamination_sites_bed: {type: File?, doc: ".bed file for markers used in this\
+  contamination_sites_bed: {type: 'File?', doc: ".bed file for markers used in this\
       \ analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)", sbg:suggestedValue: {
       class: File, path: 5e9eff46e4b054952c25f6a1, name: Homo_sapiens_assembly38.contam.bed}}
-  contamination_sites_mu: {type: File?, doc: .mu matrix file of genotype matrix, sbg:suggestedValue: {
-      class: File, path: 5e9eff46e4b054952c25f68a, name: Homo_sapiens_assembly38.contam.mu}}
-  contamination_sites_ud: {type: File?, doc: .UD matrix file from SVD result of genotype
-      matrix, sbg:suggestedValue: {class: File, path: 5e9eff46e4b054952c25f6a7, name: Homo_sapiens_assembly38.contam.UD}}
-  wgs_calling_interval_list: {type: File?, doc: WGS interval list used to aid scattering
-      Haplotype caller, sbg:suggestedValue: {class: File, path: 5e9eff46e4b054952c25f697,
+  contamination_sites_mu: {type: 'File?', doc: ".mu matrix file of genotype matrix",
+    sbg:suggestedValue: {class: File, path: 5e9eff46e4b054952c25f68a, name: Homo_sapiens_assembly38.contam.mu}}
+  contamination_sites_ud: {type: 'File?', doc: ".UD matrix file from SVD result of\
+      \ genotype matrix", sbg:suggestedValue: {class: File, path: 5e9eff46e4b054952c25f6a7,
+      name: Homo_sapiens_assembly38.contam.UD}}
+  wgs_calling_interval_list: {type: 'File?', doc: "WGS interval list used to aid scattering\
+      \ Haplotype caller", sbg:suggestedValue: {class: File, path: 5e9eff46e4b054952c25f697,
       name: wgs_calling_regions.hg38.interval_list}}
-  wgs_coverage_interval_list: {type: File?, doc: An interval list file that contains
-      the positions to restrict the wgs metrics assessment, sbg:suggestedValue: {
+  wgs_coverage_interval_list: {type: 'File?', doc: "An interval list file that contains\
+      \ the positions to restrict the wgs metrics assessment", sbg:suggestedValue: {
       class: File, path: 5e9eff46e4b054952c25f692, name: wgs_coverage_regions.hg38.interval_list}}
-  wgs_evaluation_interval_list: {type: File?, doc: Target intervals to restrict gvcf
-      metric analysis (for VariantCallingMetrics), sbg:suggestedValue: {class: File,
+  wgs_evaluation_interval_list: {type: 'File?', doc: "Target intervals to restrict\
+      \ gvcf metric analysis (for VariantCallingMetrics)", sbg:suggestedValue: {class: File,
       path: 5e9eff46e4b054952c25f6b0, name: wgs_evaluation_regions.hg38.interval_list}}
-  wxs_bait_interval_list: {type: File?, doc: An interval list file that contains the
-      locations of the WXS baits used (for HsMetrics)}
-  wxs_target_interval_list: {type: File?, doc: An interval list file that contains
-      the locations of the WXS targets (for HsMetrics)}
-  run_bam_processing: {type: boolean, doc: 'BAM processing will be run. Requires:
-      input_bam_list'}
-  run_pe_reads_processing: {type: boolean, doc: 'PE reads processing will be run.
-      Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list'}
-  run_se_reads_processing: {type: boolean, doc: 'SE reads processing will be run.
-      Requires: input_se_reads_list, input_se_rgs_list'}
-  run_hs_metrics: {type: boolean, doc: 'HsMetrics will be collected. Only recommended
-      for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list'}
-  run_wgs_metrics: {type: boolean, doc: 'WgsMetrics will be collected. Only recommended
-      for WGS inputs. Requires: wgs_coverage_interval_list'}
-  run_agg_metrics: {type: boolean, doc: 'AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics,
-      QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended
-      for both WXS and WGS inputs.'}
-  run_gvcf_processing: {type: boolean, doc: 'gVCF will be generated. Requires: dbsnp_vcf,
-      contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,
-      wgs_evaluation_interval_list'}
-  min_alignment_score: {type: int?, default: 30, doc: "For BWA MEM, Don't output alignment\
-      \ with score lower than INT. This option only affects output."}
+  wxs_bait_interval_list: {type: 'File?', doc: "An interval list file that contains\
+      \ the locations of the WXS baits used (for HsMetrics)"}
+  wxs_target_interval_list: {type: 'File?', doc: "An interval list file that contains\
+      \ the locations of the WXS targets (for HsMetrics)"}
+  run_bam_processing: {type: boolean, doc: "BAM processing will be run. Requires:\
+      \ input_bam_list"}
+  run_pe_reads_processing: {type: boolean, doc: "PE reads processing will be run.\
+      \ Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list"}
+  run_se_reads_processing: {type: boolean, doc: "SE reads processing will be run.\
+      \ Requires: input_se_reads_list, input_se_rgs_list"}
+  run_hs_metrics: {type: boolean, doc: "HsMetrics will be collected. Only recommended\
+      \ for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list"}
+  run_wgs_metrics: {type: boolean, doc: "WgsMetrics will be collected. Only recommended\
+      \ for WGS inputs. Requires: wgs_coverage_interval_list"}
+  run_agg_metrics: {type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics,\
+      \ QualityScoreDistribution, and SequencingArtifactMetrics will be collected.\
+      \ Recommended for both WXS and WGS inputs."}
+  run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,\
+      \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,\
+      \ wgs_evaluation_interval_list"}
+  min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output\
+      \ alignment with score lower than INT. This option only affects output."}
 
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output}
@@ -682,7 +683,7 @@ steps:
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
-- class: sbg:maxNumberOfParallelInstances
+- class: 'sbg:maxNumberOfParallelInstances'
   value: 6
 sbg:license: Apache License 2.0
 sbg:publisher: KFDRC
