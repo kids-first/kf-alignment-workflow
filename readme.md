@@ -9,7 +9,7 @@ It uses bam/fastq input and aligns/re-aligns to a bwa-indexed reference fasta, v
 base score recalibrated.  Contamination is calculated and a gVCF is created optionally using GATK4 Haplotype caller. Inputs from
 this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. If you would like to run this workflow using
 the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
-Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
+ Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
 
 ## Basic Info
 - pipeline flowchart:
@@ -40,7 +40,7 @@ Alternatively, if you'd like to run it locally using `cwltool`, a basic primer o
   contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
   contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
   run_gvcf_processing: { type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list, wgs_evaluation_interval_list" }
- # ADJUST TO FIT INPUT READS TYPE(S)
+  # ADJUST TO FIT INPUT READS TYPE(S)
   input_bam_list: { type: 'File[]?', doc: "List of input BAM files" }
   input_pe_reads_list: { type: 'File[]?', doc: "List of input R1 paired end fastq reads" }
   input_pe_mates_list: { type: 'File[]?', doc: "List of input R2 paired end fastq reads" }
@@ -65,7 +65,7 @@ Alternatively, if you'd like to run it locally using `cwltool`, a basic primer o
   min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
 ```
 
-![WF Visualized](./kfdrc_alignment_wf.png?raw=true "Workflow diagram")
+![WF Visualized](docs/kfdrc_alignment_wf_cyoa.cwl.png?raw=true "Workflow diagram")
 
 ## Input Agnostic Alignment Workflow
 Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
@@ -346,5 +346,3 @@ knownsites_indexes:
   - 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
   - 1000G_omni2.5.hg38.vcf.gz.tbi
 ```
-
-![WF Visualized](./docs/kfdrc_alignment_wf_cyoa.cwl.png?raw=true "Workflow diagram")
