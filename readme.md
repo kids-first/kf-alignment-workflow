@@ -1,10 +1,10 @@
 Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam/fastq-to-cram, gVCF optional). This pipeline follows
 Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)
-It uses bam/fastq input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38.  Resultant bam is de-dupped and
-base score recalibrated.  Contamination is calculated and a gVCF is created optionally using GATK4 Haplotype caller. Inputs from
-this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. If you would like to run this workflow using
-the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
+It uses bam/fastq input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38. Resultant bam is de-dupped and
+base score recalibrated. Contamination is calculated and a gVCF is created optionally using GATK4 vbeta.1-3.5 HaplotypeCaller. Inputs from
+this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. If you would like to run this workflow using the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
  Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
+ This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-alignment-workflow) and supersedes the [old workflow](https://github.com/kids-first/kf-alignment-workflow/tree/1.0.0) and [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however outputs are considered equivalent
 
 # KFDRC Whole Genome Alignment Workflow
 
@@ -44,7 +44,7 @@ the cavatica public app, a basic primer on running public apps can be found [her
   input_pe_reads_list: { type: 'File[]?', doc: "List of input R1 paired end fastq reads" }
   input_pe_mates_list: { type: 'File[]?', doc: "List of input R2 paired end fastq reads" }
   input_pe_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in PE processing" }
-  input_se_reads_list: { type: 'File[]?', doc: "List of input singlie end fastq reads" }
+  input_se_reads_list: { type: 'File[]?', doc: "List of input single end fastq reads" }
   input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
   run_bam_processing: { type: boolean, doc: "BAM processing will be run. Requires: input_bam_list" }
   run_pe_reads_processing: { type: boolean, doc: "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list" }
@@ -52,7 +52,7 @@ the cavatica public app, a basic primer on running public apps can be found [her
   # IF WGS or CREATE gVCF
   wgs_calling_interval_list: { type: 'File?', doc: "WGS interval list used to aid scattering Haplotype caller" }
   wgs_coverage_interval_list: { type: 'File?', doc: "An interval list file that contains the positions to restrict the wgs metrics assessment" }
-  wgs_evaluation_interval_list: { type: 'File?', doc: "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)" }
+  wgs_evaluation_interval_list: { type: 'File?', doc: "Target intervals to restrict gVCF metric analysis (for VariantCallingMetrics)" }
   # IF WXS
   wxs_bait_interval_list: { type: 'File?', doc: "An interval list file that contains the locations of the WXS baits used (for HsMetrics)" }
   wxs_target_interval_list: { type: 'File?', doc: "An interval list file that contains the locations of the WXS targets (for HsMetrics)" }
