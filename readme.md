@@ -6,13 +6,29 @@ this can be used later on for further analysis in joint trio genotyping and subs
  Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-alignment-workflow) and supersedes the [old workflow](https://github.com/kids-first/kf-alignment-workflow/tree/1.0.0) and [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however outputs are considered equivalent
 
-# KFDRC Whole Genome Alignment Workflow
+# Input Agnostic Alignment Workflow
+Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+
+This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
+and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
+to process these depending on what you tell it you have provided. The user informs the workflow of
+which inputs to process using three boolean inputs: `run_bam_processing`, `run_pe_reads_processing`,
+and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
+will result in those inputs being processed.
+
+The second half of the workflow deals with optional gVCF creation and metrics collection.
+This workflow is capable of collecting the metrics using the following boolean flags: `run_hs_metrics`,
+`run_wgs_metrics`, and `run_agg_metrics`. To run these metrics, additional optional inputs must
+also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for HsMetrics,
+`wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
+`true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
+`contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
+`wgs_evaluation_interval_list`.
+
 
 ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
 ## Basic Info
-- pipeline flowchart:
-  - [draw.io](https://tinyurl.com/y952jek2)
 - tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
 - tested with
@@ -65,25 +81,6 @@ this can be used later on for further analysis in joint trio genotyping and subs
 ```
 
 ![WF Visualized](docs/kfdrc_alignment_wf_cyoa.cwl.png?raw=true "Workflow diagram")
-
-## Input Agnostic Alignment Workflow
-Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
-
-This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
-and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
-to process these depending on what you tell it you have provided. The user informs the workflow of
-which inputs to process using three boolean inputs: `run_bam_processing`, `run_pe_reads_processing`,
-and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
-will result in those inputs being processed.
-
-The second half of the workflow deals with optional gVCF creation and metrics collection.
-This workflow is capable of collecting the metrics using the following boolean flags: `run_hs_metrics`,
-`run_wgs_metrics`, and `run_agg_metrics`. To run these metrics, additional optional inputs must
-also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for HsMetrics,
-`wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
-`true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
-`contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
-`wgs_evaluation_interval_list`.
 
 ### Detailed Input Information:
 The pipeline is build to handle three distinct input types:
