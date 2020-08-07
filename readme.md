@@ -32,8 +32,8 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
 - tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
 - tested with
-  - rabix-v1.0.5: https://github.com/rabix/bunny/releases/tag/v1.0.5
-  - cwltool: https://github.com/common-workflow-language/cwltool/releases/tag/1.0.20171107133715
+  - Seven Bridges Cavatica Platform: https://cavatica.sbgenomics.com/
+  - cwltool: https://github.com/common-workflow-language/cwltool/releases/tag/3.0.20200324120055
 
 ## References:
 - https://console.cloud.google.com/storage/browser/broad-references/hg38/v0/
