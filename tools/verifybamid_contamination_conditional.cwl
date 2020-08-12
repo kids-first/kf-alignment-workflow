@@ -19,7 +19,7 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      $( inputs.precalculated_contamination ? 'echo /bin/VerifyBamID' : '/bin/VerifyBamID' )
+      $( inputs.precalculated_contamination == null ? '/bin/VerifyBamID' : 'echo /bin/VerifyBamID' )
   - position: 1
     shellQuote: false
     valueFrom: >-
@@ -49,10 +49,7 @@ outputs:
       loadContents: true
       outputEval: |-
         ${
-          if (inputs.precalculated_contamination) {
-            return inputs.precalculated_contamination;
-          }
-          else {
+          if (inputs.precalculated_contamination == null) {
             var lines = self[0].contents.split('\n');
             for (var i = 1; i < lines.length; i++) {
               var fields = lines[i].split('\t');
@@ -61,5 +58,8 @@ outputs:
               }
               return fields[6]/0.75;
             }
+          }
+          else {
+            return inputs.precalculated_contamination;
           }
         }
