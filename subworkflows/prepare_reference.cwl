@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_prepare_reference
+id: prepare_reference
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement

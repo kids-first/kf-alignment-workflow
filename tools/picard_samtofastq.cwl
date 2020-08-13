@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: bwa_mem
+id: picard_samtofastq
 requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.18.2-dev'

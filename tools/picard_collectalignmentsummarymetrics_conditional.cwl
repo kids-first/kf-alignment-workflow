@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_collectalignmentsummarymetrics
+id: picard_collectalignmentsummarymetrics_conditional
 doc: |-
   This tool collects alignment summary metrics on an input WGS/WXS bam.
   The following programs are run in this tool:

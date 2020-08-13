@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: sambamba_merge
+id: sambamba_merge_one
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement

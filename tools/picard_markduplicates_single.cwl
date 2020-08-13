@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_markduplicates
+id: picard_markduplicates_single
 requirements:
   - class: DockerRequirement
     dockerPull: 'kfdrc/picard:2.18.2-dev'

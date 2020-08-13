@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_rgbam_to_realnbam_wf 
+id: kfdrc_rgbam_to_realnbam
 requirements:
   - class: ScatterFeatureRequirement
 inputs:

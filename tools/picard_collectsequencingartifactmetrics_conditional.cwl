@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_collectsequencingartifactmetrics
+id: picard_collectsequencingartifactmetrics_conditional
 doc: |-
   This tool collects sequencing artifact metrics on an input WGS/WXS bam.
   The following programs are run in this tool:

@@ -1,6 +1,6 @@
 class: CommandLineTool
 cwlVersion: v1.0
-id: bwa_mem_split
+id: bwa_mem_split_nodup
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
