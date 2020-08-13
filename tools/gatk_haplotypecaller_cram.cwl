@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: gatk_haplotypecaller
+id: gatk_haplotypecaller_cram
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement

@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: ExpressionTool
-id: expression_getbasename.cwl
+id: expression_getbasename
 requirements:
   - class: InlineJavascriptRequirement
 

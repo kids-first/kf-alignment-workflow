@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_collecthsmetrics
+id: picard_collecthsmetrics_conditional
 doc: |-
   This tool collects hs metrics on an input WXS bam.
   The following programs are run in this tool:

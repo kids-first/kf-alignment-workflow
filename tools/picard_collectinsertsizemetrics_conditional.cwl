@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_collectinsertsizemetrics
+id: picard_collectinsertsizemetrics_conditional
 doc: |-
   This tool collects insert size metrics on an input WGS/WXS bam.
   The following programs are run in this tool:

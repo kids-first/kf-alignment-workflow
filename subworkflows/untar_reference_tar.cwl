@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_prepare_reference
+id: untar_reference_tar
 requirements:
   - class: StepInputExpressionRequirement
   - class: ScatterFeatureRequirement

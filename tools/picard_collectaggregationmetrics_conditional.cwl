@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_collectaggregationmetrics
+id: picard_collectaggregationmetrics_conditional
 doc: |-
   This tool collects multiple metrics on an input bam.
   The following programs are run in this tool:

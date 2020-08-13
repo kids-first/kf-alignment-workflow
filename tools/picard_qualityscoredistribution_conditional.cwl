@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_qualityscoredistribution
+id: picard_qualityscoredistribution_conditional
 doc: |-
   This tool plots the quality score distribution found in an input WGS/WXS bam.
   The following programs are run in this tool:

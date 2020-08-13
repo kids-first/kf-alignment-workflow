@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_bam_contamination_wf
+id: kfdrc_bam_to_gvcf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement

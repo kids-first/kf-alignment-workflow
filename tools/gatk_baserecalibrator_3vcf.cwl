@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: gatkv4_baserecalibrator
+id: gatkv4_baserecalibrator_3vcf
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement

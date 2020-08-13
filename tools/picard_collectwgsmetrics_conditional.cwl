@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: picard_collectwgsmetrics
+id: picard_collectwgsmetrics_conditional
 doc: |-
   This tool collects wgs metrics on an input WGS bam.
   The following programs are run in this tool:
