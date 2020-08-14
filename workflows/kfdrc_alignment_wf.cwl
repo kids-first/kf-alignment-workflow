@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_alignment_wf
+id: kfdrc-alignment-workflow
 label: Kids First DRC Alignment and GATK HaplotypeCaller Workflow
 doc: |
   Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam/fastq-to-cram, gVCF optional). This pipeline follows

@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_gatk_haplotypecaller_wf
+id: kfdrc-gatk-haplotypecaller-wf
 label: Kids First DRC GATK HaplotypeCaller CRAM to gVCF Workflow
 doc: |-
   # KFDRC GATK HaplotypeCaller CRAM to gVCF
