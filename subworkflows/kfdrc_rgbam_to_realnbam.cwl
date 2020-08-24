@@ -20,8 +20,15 @@ steps:
     run: ../tools/bamtofastq_chomp.cwl
     in:
       input_bam: input_rgbam
-      sample: sample_name
+#      sample: sample_name
     out: [output, rg_string]
+
+  expression_updatergsample:
+    run: ../tools/expression_preparerg.cwl
+    in:
+      rg: bamtofastq_chomp/rg_string
+      sample: sample_name
+    out: [rg_str]
 
   bwa_mem_naive_bam:
     run: ../tools/bwa_mem_naive.cwl
@@ -30,7 +37,8 @@ steps:
       reads: bamtofastq_chomp/output
       interleaved:
         default: true
-      rg: bamtofastq_chomp/rg_string 
+#      rg: bamtofastq_chomp/rg_string
+      rg: expression_updatergsample/rg_str
       min_alignment_score: min_alignment_score
     scatter: [reads]
     out: [output]

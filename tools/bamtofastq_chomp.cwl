@@ -34,21 +34,22 @@ arguments:
 inputs:
   input_bam: { type: File, doc: "Input bam file" }
   max_size: { type: long, default: 20000000000, doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split" }
-  sample: { type: string, doc: "String name of the sample used to relabel the rg string" }
+#  sample: { type: string, doc: "String name of the sample used to relabel the rg string" }
 outputs:
   output: { type: 'File[]', outputBinding: { glob: '*.fq' } }
   rg_string:
-    type: string
+#    type: string
+    type: File
     outputBinding:
       glob: rg.txt
-      loadContents: true
-      outputEval:
-        ${
-          var arr = self[0].contents.split('\n')[0].split('\t');
-          for (var i=1; i<arr.length; i++){
-            if (arr[i].startsWith('SM')){
-              arr[i] = 'SM:' + inputs.sample;
-            }
-          }
-          return arr.join('\\t');
-        }
+#      loadContents: true
+#      outputEval:
+#        ${
+#          var arr = self[0].contents.split('\n')[0].split('\t');
+#          for (var i=1; i<arr.length; i++){
+#            if (arr[i].startsWith('SM')){
+#              arr[i] = 'SM:' + inputs.sample;
+#            }
+#          }
+#          return arr.join('\\t');
+#        }
