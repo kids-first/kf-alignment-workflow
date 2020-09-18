@@ -344,13 +344,15 @@ knownsites_indexes:
   - 1000G_omni2.5.hg38.vcf.gz.tbi
 ```
 
-![WF Visualized](./docs/kfdrc_alignment_gatk_hc_cyoa_wf.png?raw=true "FASTQ/BAM to CRAM to gVCF Workflow diagram")
+![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_alignment_gatk_hc_cyoa_wf.png?raw=true "BAM to CRAM to gVCF Workflow diagram")
 
 ## KFDRC GATK HaplotypeCaller CRAM to gVCF Workflow
 
 This workflow taks a CRAM file, converts it to a BAM, determines a contamination value, then runs
 GATK HaplotypeCaller to generate a gVCF, gVCF calling metrics, and, if no contamination value is provided,
 the VerifyBAMID output.
+
+This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-gatk-haplotypecaller-workflow)
 
 ### Inputs
 ```yaml
@@ -415,4 +417,4 @@ verifybamid_output: If contamination is calculated rather than handed in by the 
    or if its naming structure mismatches the other indexes, then your alignments will be equivalent to the results you would
    obtain if you run BWA-MEM with the -j option.
 
-![WF Visualized](./docs/kfdrc_gatk_hc_wf.png?raw=true "CRAM to gVCF Workflow diagram")
+![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_gatk_hc_wf.png?raw=true "CRAM to gVCF Workflow diagram")
