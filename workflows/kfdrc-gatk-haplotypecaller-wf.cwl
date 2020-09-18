@@ -3,11 +3,11 @@ class: Workflow
 id: kfdrc-gatk-haplotypecaller-workflow
 label: Kids First DRC GATK HaplotypeCaller CRAM to gVCF Workflow
 doc: |
-  ## KFDRC GATK HaplotypeCaller CRAM to gVCF Workflow
-
   This workflow taks a CRAM file, converts it to a BAM, determines a contamination value, then runs
   GATK HaplotypeCaller to generate a gVCF, gVCF calling metrics, and, if no contamination value is provided,
   the VerifyBAMID output.
+
+  ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
   This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-gatk-haplotypecaller-workflow)
 
