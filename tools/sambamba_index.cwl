@@ -6,7 +6,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: 36
   - class: DockerRequirement
-    dockerPull: 'kfdrc/sambamba:v0.6.7-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/sambamba:v0.6.7-dev'
   - class: InitialWorkDirRequirement
     listing: []
   - class: InlineJavascriptRequirement

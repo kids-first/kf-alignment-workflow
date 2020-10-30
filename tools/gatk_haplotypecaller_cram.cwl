@@ -7,7 +7,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 8000
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.0.3.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/gatk:4.0.3.0'
 baseCommand: [/gatk]
 arguments:
   - position: 1

@@ -13,7 +13,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 12000
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard-r:latest-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard-r:latest-dev'
 baseCommand: [ java, -Xms5000m, -jar, /picard.jar, CollectSequencingArtifactMetrics]
 arguments:
   - position: 1

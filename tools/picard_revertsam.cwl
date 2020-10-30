@@ -3,7 +3,7 @@ class: CommandLineTool
 id: picard_revertsam
 requirements:
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.18.2-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.2-dev'
   - class: ShellCommandRequirement
 baseCommand: [java, -Xms8000m, -jar, /picard.jar]
 arguments:

@@ -11,7 +11,7 @@ doc: |-
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/samtools:1.9'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
   - class: InlineJavascriptRequirement
 baseCommand: ["/bin/bash", "-c"]
 arguments:

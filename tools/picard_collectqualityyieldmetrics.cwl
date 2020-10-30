@@ -5,7 +5,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.18.2-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.2-dev'
   - class: ResourceRequirement
     ramMin: 8000
 baseCommand: [ java, -Xms2000m, -jar, /picard.jar, CollectQualityYieldMetrics]

@@ -14,7 +14,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 1000
   - class: DockerRequirement
-    dockerPull: 'kfdrc/bwa-bundle:dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/bwa-bundle:dev'
   - class: InlineJavascriptRequirement
 baseCommand: ["/bin/bash", "-c"]
 arguments:

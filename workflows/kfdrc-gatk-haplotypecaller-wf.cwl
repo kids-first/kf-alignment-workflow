@@ -211,5 +211,5 @@ sbg:categories:
 - HAPLOTYPECALLER
 - WGS
 sbg:links:
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.4.0'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.5.0'
   label: github-release
