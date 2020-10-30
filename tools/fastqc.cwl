@@ -14,17 +14,17 @@ requirements:
     listing:
       - entryname: fastqc_params
         entry: |-
-          duplication 		ignore 		1
-          kmer 				ignore 		1
-          n_content 			ignore 		0
-          overrepresented 	ignore 		1
-          quality_base 		ignore 		0
-          sequence 			ignore 		1
-          gc_sequence			ignore 		0
-          quality_sequence	ignore		1
-          tile				ignore		1
-          sequence_length		ignore		0
-          adapter				ignore		1
+          duplication	ignore	1
+          kmer	ignore	1
+          n_content	ignore	0
+          overrepresented 	ignore	1
+          quality_base	ignore	0
+          sequence	ignore	1
+          gc_sequence	ignore	0
+          quality_sequence	ignore	1
+          tile	ignore	1
+          sequence_length	ignore	0
+          adapter	ignore	1
           duplication	warn	90
           duplication error	65
           kmer	warn	2
