@@ -6,7 +6,7 @@ doc: |-
   Intervals are determined by the longest SQ length in the dict.
 requirements:
   - class: DockerRequirement
-    dockerPull: 'kfdrc/python:2.7.13'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/python:2.7.13'
   - class: InlineJavascriptRequirement
 baseCommand: [python, -c]
 arguments:

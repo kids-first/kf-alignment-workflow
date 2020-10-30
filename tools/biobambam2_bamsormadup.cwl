@@ -6,7 +6,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: 36
   - class: DockerRequirement
-    dockerPull: 'zhangb1/kf-bwa-bundle'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/kf-bwa-bundle'
   - class: InlineJavascriptRequirement
 baseCommand: [bamsormadup]
 arguments:

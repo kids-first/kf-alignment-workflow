@@ -9,7 +9,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.0.3.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/gatk:4.0.3.0'
   - class: ResourceRequirement
     ramMin: 4500
 baseCommand: [/gatk, ApplyBQSR]

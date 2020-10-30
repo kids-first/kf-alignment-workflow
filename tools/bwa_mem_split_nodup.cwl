@@ -7,7 +7,7 @@ requirements:
     ramMin: 14000
     coresMin: 16
   - class: DockerRequirement
-    dockerPull: 'zhangb1/kf-bwa-bundle'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/kf-bwa-bundle'
   - class: InlineJavascriptRequirement
 baseCommand: ["/bin/bash", "-c"]
 arguments:

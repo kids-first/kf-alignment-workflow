@@ -32,7 +32,6 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
 
 
 ### Basic Info
-- tool images: https://hub.docker.com/r/kfdrc/
 - dockerfiles: https://github.com/d3b-center/bixtools
 - tested with
   - Seven Bridges Cavatica Platform: https://cavatica.sbgenomics.com/

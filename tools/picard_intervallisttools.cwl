@@ -9,7 +9,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/picard:2.18.2-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.2-dev'
 baseCommand: [java, -Xmx2000m, -jar, /picard.jar]
 arguments:
   - position: 1

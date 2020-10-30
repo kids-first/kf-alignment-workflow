@@ -5,7 +5,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/verifybamid:1.0.2'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/verifybamid:1.0.2'
   - class: ResourceRequirement
     ramMin: 5000
     coresMin: 4

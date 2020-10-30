@@ -4,7 +4,7 @@ id: samtools_cram2bam
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/samtools:1.8-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.8-dev'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:

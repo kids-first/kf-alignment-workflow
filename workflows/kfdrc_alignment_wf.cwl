@@ -33,7 +33,6 @@ doc: |
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
   ## Basic Info
-  - tool images: https://hub.docker.com/r/kfdrc/
   - dockerfiles: https://github.com/d3b-center/bixtools
   - tested with
     - Seven Bridges Cavatica Platform: https://cavatica.sbgenomics.com/
@@ -687,5 +686,5 @@ sbg:categories:
 - WXS
 - GVCF
 sbg:links:
-  - id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.3.1'
+  - id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.5.0'
     label: github-release
