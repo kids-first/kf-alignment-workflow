@@ -41,7 +41,7 @@ inputs:
   mates: { type: 'File?', doc: "Mates file for the reads" }
   interleaved: { type: boolean, default: false, doc: "The reads input is interleaved" }
   min_alignment_score: { type: 'int?', doc: "Don't output alignment with score lower than INT. This option only affects output." }
-  rg: { type: string, doc: "Formatted RG header to use in the resulting BAM, check BWA for formatting guidelines (e.g. escaped tabs '\t')", inputBinding: {position: 1} }
+  rg: { type: string, doc: "Formatted RG header to use in the resulting BAM, check BWA for formatting guidelines (e.g. escaped tabs '\t')", inputBinding: {position: 1, shellQuote: true} }
 
 outputs:
   output: { type: File, outputBinding: { glob: '*.bam' } }
