@@ -8,7 +8,7 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/fastqc:v0.11.9'
   - class: ResourceRequirement
-    ramMin: 20000
+    ramMin: 2000
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
