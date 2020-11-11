@@ -8,7 +8,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/fastqc:v0.11.9'
   - class: ResourceRequirement
-    ramMin: 2000
+    ramMin: ${return inputs.ram * 1000}
+    coresMin: ${return Math.min(inputs.sequences.length, inputs.max_cpu)}
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
@@ -58,11 +59,13 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-     -l fastqc_params -t $(inputs.sequences.length) -o .
+     -l fastqc_params -t ${return Math.min(inputs.sequences.length, inputs.max_cpu)} -o .
 
 inputs:
   sequences: {type: 'File[]', inputBinding: { position: 99 }, doc: "set of sequences being run can be either fastqs or bams"}
   return_raw_data: {type: boolean?, doc: "TRUE: return zipped raw data folder or FALSE: only return summary HTML"}
+  ram: {type: ['null', int], default: 2, doc: "In GB"}
+  max_cpu: {type: ['null', int], default: 8, doc: "Maximum number of CPUs to request"}
 
 outputs:
   output_summarys:
