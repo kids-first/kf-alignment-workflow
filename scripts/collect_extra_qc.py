@@ -8,14 +8,14 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--file",
-        help = "Fastqc raw data file.",
-        required = True
+        help="Fastqc raw data file.",
+        required=True
         )
     args = parser.parse_args()
     file = args.file
     if not os.path.isfile(file):
         raise ValueError(file + " is not a file or does not exist.")
-    return(file)
+    return file
 
 def main(args):
     '''Main, take args, run script.'''
@@ -36,23 +36,23 @@ def main(args):
     with open(file) as f:
         for line in f:
             #if in the correct section, start processing line
-            if (per_base_start in line):
+            if per_base_start in line:
                 #turn processing on
                 process = 1
-            elif (per_base_stop in line and process == 1):
+            elif per_base_stop in line and process == 1:
                 #stop processing at section end
                 process = 0
-            elif (process == 1 ):
+            elif process == 1:
                 #process the line
                 line = line.rstrip()
-                if ('Quality' not in line):
+                if 'Quality' not in line:
                     quality, count = line.split('\t')
                     quality = float(quality)
                     count = float(count)
                     total_base += count
-                    if (quality >= 30.0):
+                    if quality >= 30.0:
                         base_q30 += count
-                    if (quality >= 20.0):
+                    if quality >= 20.0:
                         base_q20 += count
 
     #return output
