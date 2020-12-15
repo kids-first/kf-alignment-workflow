@@ -28,7 +28,7 @@ inputs:
   fastqc_params: {type: 'File?', inputBinding: {position: 1, prefix: -l}, doc: "fastqc parameter file to use"}
 
 outputs:
-  output_summarys:
+  output_summaries:
     type:
       type: array
       items: File
