@@ -2,6 +2,7 @@
 import sys
 import os
 import argparse
+import zipfile
 
 def parse_args(args):
     '''Get file argument.'''
@@ -17,13 +18,27 @@ def parse_args(args):
         raise ValueError(file + " is not a file or does not exist.")
     return file
 
+def unzip_fastqc_dir(zipped_file):
+    '''Unzip fastqc raw directory and return data file.'''
+    src_dir = os.path.dirname(zipped_file)
+    unzip_dir = os.path.basename(zipped_file).split('.')[0]
+    with zipfile.ZipFile(zipped_file, 'r') as zip_ref:
+        zip_ref.extractall(src_dir)
+    file = unzip_dir + "/fastqc_data.txt"
+    return file
+
 def main(args):
     '''Main, take args, run script.'''
 
     #parse args
-    file = parse_args(args)
-    sample_name = os.path.basename(file)
+    zipped_file = parse_args(args)
+    sample_name = os.path.basename(zipped_file)
     sample_name = os.path.splitext(sample_name)[0]
+    #remove '_fastqc' to get original sample name
+    sample_name = sample_name.replace('_fastqc', '')
+
+    #unzip file
+    file = unzip_fastqc_dir(zipped_file)
 
     process = 0 #flag to determine if we're in the right secion
     total_base = 1.0
@@ -57,9 +72,9 @@ def main(args):
 
     #return output
     perc_20 = base_q20 / total_base
-    print(sample_name, " percent Q20: ", perc_20)
     perc_30 = base_q30 / total_base
-    print(sample_name, " percent Q30: ", perc_30)
+    print("sample_name,percent Q20, percent Q30")
+    print("%s,%s,%s" % (sample_name, perc_20, perc_30))
 
 if __name__ == "__main__":
     # execute only if run as a script
