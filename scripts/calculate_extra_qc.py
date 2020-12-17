@@ -1,6 +1,7 @@
 '''Calculate QC metrics that fastqc doesn't explicitly provide.'''
 import sys
 import os
+import re
 import argparse
 import zipfile
 
@@ -20,11 +21,19 @@ def parse_args(args):
 
 def unzip_fastqc_dir(zipped_file):
     '''Unzip fastqc raw directory and return data file.'''
-    src_dir = os.path.dirname(zipped_file)
-    unzip_dir = os.path.basename(zipped_file).split('.')[0]
+    unzip_dir = os.path.basename(zipped_file)
+    unzip_dir = os.path.splitext(unzip_dir)[0]
+    print(unzip_dir)
     with zipfile.ZipFile(zipped_file, 'r') as zip_ref:
-        zip_ref.extractall(src_dir)
+        zip_ref.extractall()
     file = unzip_dir + "/fastqc_data.txt"
+    print(file)
+    #if the file doesn't exist, remove _\d_
+    #_\d_ added by cavatica to handle multiple files of the same name
+    print(os.path.exists(file))
+    if not os.path.exists(file):
+        file = re.sub(r'^_\d_','',file)
+        print(file)
     return file
 
 def main(args):
@@ -34,8 +43,9 @@ def main(args):
     zipped_file = parse_args(args)
     sample_name = os.path.basename(zipped_file)
     sample_name = os.path.splitext(sample_name)[0]
-    #remove '_fastqc' to get original sample name
+    #remove '_fastqc' and _\d_ to get original sample name
     sample_name = sample_name.replace('_fastqc', '')
+    sample_name = re.sub(r'^_\d+_', '', sample_name)
 
     #unzip file
     file = unzip_fastqc_dir(zipped_file)
