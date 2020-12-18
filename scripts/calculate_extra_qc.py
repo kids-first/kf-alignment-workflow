@@ -23,17 +23,13 @@ def unzip_fastqc_dir(zipped_file):
     '''Unzip fastqc raw directory and return data file.'''
     unzip_dir = os.path.basename(zipped_file)
     unzip_dir = os.path.splitext(unzip_dir)[0]
-    print(unzip_dir)
     with zipfile.ZipFile(zipped_file, 'r') as zip_ref:
         zip_ref.extractall()
     file = unzip_dir + "/fastqc_data.txt"
-    print(file)
     #if the file doesn't exist, remove _\d_
     #_\d_ added by cavatica to handle multiple files of the same name
-    print(os.path.exists(file))
     if not os.path.exists(file):
         file = re.sub(r'^_\d_','',file)
-        print(file)
     return file
 
 def main(args):
