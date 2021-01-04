@@ -30,28 +30,28 @@ requirements:
                 file = args.file
                 if not os.path.isfile(file):
                     raise ValueError(file + " is not a file or does not exist.")
-                return file
+                return os.path.abspath(file)
             def unzip_fastqc_dir(zipped_file):
                 '''Unzip fastqc raw directory and return data file.'''
-                unzip_dir = os.path.basename(zipped_file)
-                unzip_dir = os.path.splitext(unzip_dir)[0]
+                zip_base = os.path.basename(zipped_file)
+                unzip_dir = os.path.splitext(zip_base)[0]
                 with zipfile.ZipFile(zipped_file, 'r') as zip_ref:
                     zip_ref.extractall()
                 file = unzip_dir + "/fastqc_data.txt"
                 #if the file doesn't exist, remove _\d_
                 #_\d_ added by cavatica to handle multiple files of the same name
                 if not os.path.exists(file):
-                  file = re.sub(r'^_\d+_', '', file)
-                return file
+                    file = re.sub(r'^_\d_', '', file)
+                return os.path.abspath(file)
             def main(args):
                 '''Main, take args, run script.'''
                 #parse args
                 zipped_file = parse_args(args)
-                sample_name = os.path.basename(zipped_file)
-                sample_name = os.path.splitext(sample_name)[0]
-                #remove '_fastqc' to get original sample name
-                sample_name = sample_name.replace('_fastqc', '')
-                sample_name = re.sub(r'^_\d+_', '', sample_name)
+                sample_temp = os.path.basename(zipped_file)
+                sample_temp = os.path.splitext(sample_temp)[0]
+                #remove '_fastqc' and _\d_ to get original sample name
+                sample_temp = sample_temp.replace('_fastqc', '')
+                sample_name = re.sub(r'^_\d+_', '', sample_temp)
                 #unzip file
                 file = unzip_fastqc_dir(zipped_file)
                 process = 0 #flag to determine if we're in the right secion
@@ -69,7 +69,7 @@ requirements:
                             process = 1
                         elif per_base_stop in line and process == 1:
                             #stop processing at section end
-                            process = 0
+                            break
                         elif process == 1:
                             #process the line
                             line = line.rstrip()
