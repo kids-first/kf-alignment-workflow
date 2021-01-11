@@ -85,7 +85,7 @@ requirements:
                 #return output
                 perc_20 = base_q20 / total_base
                 perc_30 = base_q30 / total_base
-                print("sample_name,percent Q20, percent Q30")
+                print("sample_name,percent Q20,percent Q30")
                 print("%s,%s,%s" % (sample_name, perc_20, perc_30))
             if __name__ == "__main__":
                 # execute only if run as a script
