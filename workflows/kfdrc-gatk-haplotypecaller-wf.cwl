@@ -52,7 +52,7 @@ doc: |
 
   ### Outputs
   gvcf: The germline variants calls in VCF format
-  gvcf_calling_metrics: Various metrics from the creation of the gVCF 
+  gvcf_calling_metrics: Various metrics from the creation of the gVCF
   verifybamid_output: If contamination is calculated rather than handed in by the user, the workflow will provide the output from verifybamid
 
   ### Tips for running:
@@ -112,9 +112,9 @@ inputs:
       path: 5d9f63e9e4b03edc89a24c9c, name: wgs_evaluation_regions.hg38.interval_list}}
 
 outputs:
-  gvcf: {type: File, outputSource: picard_mergevcfs_python_renamesample/output}
-  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
-  verifybamid_output: {type: File?, outputSource: verifybamid_checkcontam_conditional/output}
+  gvcf: {type: File, outputSource: generate_gvcf/gvcf}
+  gvcf_calling_metrics: {type: 'File[]', outputSource: generate_gvcf/gvcf_calling_metrics}
+  verifybamid_output: {type: File?, outputSource: generate_gvcf/verifybamid_output}
 
 steps:
   untar_reference:
@@ -133,19 +133,6 @@ steps:
         linkMerge: merge_flattened
     out: [output]
 
-  index_dbsnp:
-    run: ../tools/gatk_indexfeaturefile.cwl
-    in:
-      input_file: dbsnp_vcf
-      input_index: dbsnp_idx
-    out: [output]
-
-  picard_intervallisttools:
-    run: ../tools/picard_intervallisttools.cwl
-    in:
-      interval_list: wgs_calling_interval_list
-    out: [output]
-
   samtools_cram_to_bam:
     run: ../tools/samtools_cram_to_bam.cwl
     in:
@@ -154,45 +141,24 @@ steps:
       reference: bundle_secondaries/output
     out: [output]
 
-  verifybamid_checkcontam_conditional:
-    run: ../tools/verifybamid_contamination_conditional.cwl
+  generate_gvcf:
+    run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
     in:
-      input_bam: samtools_cram_to_bam/output
-      ref_fasta: bundle_secondaries/output
       contamination_sites_ud: contamination_sites_ud
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_bed: contamination_sites_bed
-      precalculated_contamination: contamination
-      output_basename: output_basename
-    out: [output, contamination]
-
-  gatk_haplotypecaller:
-    run: ../tools/gatk_haplotypecaller.cwl
-    in:
-      contamination: verifybamid_checkcontam_conditional/contamination
       input_bam: samtools_cram_to_bam/output
-      interval_list: picard_intervallisttools/output
-      reference: bundle_secondaries/output
-    scatter: [interval_list]
-    out: [output]
-
-  picard_mergevcfs_python_renamesample:
-    run: ../tools/picard_mergevcfs_python_renamesample.cwl
-    in:
-      input_vcf: gatk_haplotypecaller/output
-      output_vcf_basename: output_basename
-      biospecimen_name: biospecimen_name
-    out: [output]
-
-  picard_collectgvcfcallingmetrics:
-    run: ../tools/picard_collectgvcfcallingmetrics.cwl
-    in:
-      dbsnp_vcf: index_dbsnp/output
-      final_gvcf_base_name: output_basename
-      input_vcf: picard_mergevcfs_python_renamesample/output
+      indexed_reference_fasta: bundle_secondaries/output
+      output_basename: output_basename
+      dbsnp_vcf: dbsnp_vcf
+      dbsnp_idx: dbsnp_idx
       reference_dict: untar_reference/dict
+      wgs_calling_interval_list: wgs_calling_interval_list
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
-    out: [output]
+      conditional_run: {default: 1}
+      contamination: contamination
+      biospecimen_name: biospecimen_name
+    out: [verifybamid_output, gvcf, gvcf_calling_metrics]
 
 $namespaces:
   sbg: https://sevenbridges.com
@@ -211,5 +177,5 @@ sbg:categories:
 - HAPLOTYPECALLER
 - WGS
 sbg:links:
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.5.0'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.6.0'
   label: github-release

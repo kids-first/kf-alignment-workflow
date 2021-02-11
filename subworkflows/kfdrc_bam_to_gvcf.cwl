@@ -7,6 +7,8 @@ requirements:
   - class: SubworkflowFeatureRequirement
 
 inputs:
+  biospecimen_name: string
+  contamination: float?
   contamination_sites_bed: File
   contamination_sites_mu: File
   contamination_sites_ud: File
@@ -19,12 +21,12 @@ inputs:
   reference_dict: File
   wgs_evaluation_interval_list: File
   conditional_run: int
-  
+
 outputs:
-  verifybamid_output: {type: File, outputSource: verifybamid/output}
-  gvcf: {type: File, outputSource: picard_mergevcfs/output}
-  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}  
-  
+  verifybamid_output: {type: File, outputSource: verifybamid_checkcontam_conditional/output}
+  gvcf: {type: File, outputSource: picard_mergevcfs_python_renamesample/output}
+  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
+
 steps:
   index_dbsnp:
     run: ../tools/gatk_indexfeaturefile.cwl
@@ -33,13 +35,14 @@ steps:
       input_index: dbsnp_idx
     out: [output]
 
-  verifybamid:
-    run: ../tools/verifybamid_contamination.cwl
+  verifybamid_checkcontam_conditional:
+    run: ../tools/verifybamid_contamination_conditional.cwl
     in:
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
-      input_bam: input_bam 
+      precalculated_contamination: contamination
+      input_bam: input_bam
       ref_fasta: indexed_reference_fasta
       output_basename: output_basename
     out: [output,contamination]
@@ -56,18 +59,19 @@ steps:
         value: c5.9xlarge
     run: ../tools/gatk_haplotypecaller.cwl
     in:
-      contamination: verifybamid/contamination
-      input_bam: input_bam 
+      contamination: verifybamid_checkcontam_conditional/contamination
+      input_bam: input_bam
       interval_list: picard_intervallisttools/output
       reference: indexed_reference_fasta
     scatter: [interval_list]
     out: [output]
 
-  picard_mergevcfs:
-    run: ../tools/picard_mergevcfs.cwl
+  picard_mergevcfs_python_renamesample:
+    run: ../tools/picard_mergevcfs_python_renamesample.cwl
     in:
       input_vcf: gatk_haplotypecaller/output
       output_vcf_basename: output_basename
+      biospecimen_name: biospecimen_name
     out: [output]
 
   picard_collectgvcfcallingmetrics:
@@ -75,7 +79,7 @@ steps:
     in:
       dbsnp_vcf: index_dbsnp/output
       final_gvcf_base_name: output_basename
-      input_vcf: picard_mergevcfs/output
+      input_vcf: picard_mergevcfs_python_renamesample/output
       reference_dict: reference_dict
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
     out: [output]

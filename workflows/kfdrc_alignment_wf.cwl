@@ -656,6 +656,7 @@ steps:
   generate_gvcf:
     run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
     in:
+      biospecimen_name: biospecimen_name
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
@@ -686,5 +687,5 @@ sbg:categories:
 - WXS
 - GVCF
 sbg:links:
-  - id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.5.0'
+  - id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.6.0'
     label: github-release
