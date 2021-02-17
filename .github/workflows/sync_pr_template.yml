@@ -1,6 +1,6 @@
 on:
   schedule:
-  - cron:  '57 12 * * *'
+  - cron:  '57 0 1 * *'
   push:
     branches:
     - main 
@@ -38,4 +38,4 @@ jobs:
         delete-branch: true
         branch: gha-sync-pr-temp
         branch-suffix: timestamp
-        reviewers: dmiller15
+        reviewers: dmiller15,migbro,sickler-alex,NHJohnson,yuankunzhu
