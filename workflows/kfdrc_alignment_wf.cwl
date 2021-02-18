@@ -79,6 +79,7 @@ doc: |
     run_hs_metrics: { type: boolean, doc: "HsMetrics will be collected. Only recommended for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list" }
     run_wgs_metrics: { type: boolean, doc: "WgsMetrics will be collected. Only recommended for WGS inputs. Requires: wgs_coverage_interval_list" }
     run_agg_metrics: { type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics, QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended for both WXS and WGS inputs." }
+    run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
     # ADVANCED
     min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
   ```
@@ -415,6 +416,7 @@ inputs:
   run_agg_metrics: {type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics,\
       \ QualityScoreDistribution, and SequencingArtifactMetrics will be collected.\
       \ Recommended for both WXS and WGS inputs."}
+  run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
   run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,\
       \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,\
       \ wgs_evaluation_interval_list"}
@@ -443,6 +445,8 @@ outputs:
   artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics}
   qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics}
   qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart}
+  idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output}
+  xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio}
 
 steps:
   untar_reference:
@@ -652,6 +656,13 @@ steps:
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [metrics, chart]
+
+  samtools_idxstats_xy_ratio:
+    run: ../tools/samtools_idxstats_xy_ratio.cwl
+    in:
+      run_idxstats: run_sex_metrics
+      input_bam: picard_gatherbamfiles/output
+    out: [output, ratio]
 
   generate_gvcf:
     run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
