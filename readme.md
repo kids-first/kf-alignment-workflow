@@ -27,7 +27,9 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
 `wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
 `true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
 `contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
-`wgs_evaluation_interval_list`.
+`wgs_evaluation_interval_list`. Additionally, the workflow is capable of performing a basic
+evaluation of the X and Y sex chromosomes using idxstats. To activate this feature, set `run_sex_metrics`
+to `true`; no additonal inputs are required.
 
 
 
@@ -78,6 +80,7 @@ also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for Hs
   run_hs_metrics: { type: boolean, doc: "HsMetrics will be collected. Only recommended for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list" }
   run_wgs_metrics: { type: boolean, doc: "WgsMetrics will be collected. Only recommended for WGS inputs. Requires: wgs_coverage_interval_list" }
   run_agg_metrics: { type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics, QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended for both WXS and WGS inputs." }
+  run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
   # ADVANCED
   min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
 ```
