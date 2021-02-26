@@ -18,10 +18,19 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-     -t ${return Math.min(inputs.sequences.length, inputs.max_cpu)} -o .
+      -t ${return Math.min(inputs.sequences.length, inputs.max_cpu)} -o . ${
+       var arr = [];
+       for (var i=0; i<inputs.sequences.length; i++)
+         arr = arr.concat(inputs.sequences[i].path)
+       return (arr.join(' '))
+      };
+  - position: 2
+    shellQuote: false
+    valueFrom: >-
+     if [ `ls *.html | wc -l` != $(inputs.sequences.length) ] ; then echo "Error running fastqc"; exit 1; fi
 
 inputs:
-  sequences: {type: 'File[]', inputBinding: {position: 99}, doc: "set of sequences being run can be either fastqs or bams"}
+  sequences: {type: 'File[]', doc: "set of sequences being run can be either fastqs or bams"}
   return_raw_data: {type: boolean?, doc: "TRUE: return zipped raw data folder or FALSE: only return summary HTML"}
   ram: {type: ['null', int], default: 2, doc: "In GB"}
   max_cpu: {type: ['null', int], default: 8, doc: "Maximum number of CPUs to request"}

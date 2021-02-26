@@ -21,11 +21,11 @@ inputs:
   ram: {type: ['null', int], default: 2, doc: "In GB"}
   max_cpu: {type: ['null', int], default: 8, doc: "Maximum number of CPUs to request"}
   fastqc_params: {type: 'File?', doc: "fastqc parameter file to use"}
+  output_basename: {type: string, doc: "Basename for output file with Q20 and Q30 data"}
 
 outputs:
   fastqc_summary: {type: 'File[]', outputSource: fastqc/output_summaries}
-  fastqc_data: {type: 'File[]', outputSource: fastqc/data_folders}
-  qc_metrics_file: {type: 'File[]', outputSource: calculate_extra_qc/metrics_file}
+  qc_metrics_file: {type: 'File', outputSource: calculate_extra_qc/metrics_file}
 
 steps:
   fastqc:
@@ -43,5 +43,5 @@ steps:
     run: ../tools/calculate_extra_qc.cwl
     in:
       fastqc_data: fastqc/data_folders
-    scatter: fastqc_data
+      output_basename: output_basename
     out: [metrics_file]
