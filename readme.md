@@ -85,6 +85,32 @@ to `true`; no additonal inputs are required.
   min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
 ```
 
+### Outputs:
+```yaml
+  cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned Reads File"}
+  gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
+  verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output, doc: "Ouput from VerifyBamID that is used to calculate contamination."}
+  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration report from BQSR."}
+  gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}], outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF calling quality."}
+  hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output, doc: "Picard CollectHsMetrics metrics for the analysis of target-capture sequencing experiments."}
+  wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output, doc: "Picard CollectWgsMetrics metrics for evaluating the performance of whole genome sequencing experiments."}
+  alignment_metrics: {type: 'File[]?', outputSource: picard_collectalignmentsummarymetrics/output, doc: "Picard CollectAlignmentSummaryMetrics high level metrics about the alignment of reads within a SAM file."}
+  gc_bias_detail: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/detail, doc: "Picard CollectGcBiasMetrics detailed metrics about reads that fall within windows of a certain GC bin on the reference genome."}
+  gc_bias_summary: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/summary, doc: "Picard CollectGcBiasMetrics high level metrics that capture how biased the coverage in a certain lane is."}
+  gc_bias_chart: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/chart, doc: "Picard CollectGcBiasMetrics plot of GC bias."}
+  insert_metrics: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/metrics, doc: "Picard CollectInsertSizeMetrics metrics about the insert size distribution of a paired-end library."}
+  insert_plot: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/plot, doc: "Picard CollectInsertSizeMetrics insert size distribution plotted."}
+  artifact_bait_bias_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_detail_metrics, doc: "Picard CollectSequencingArtifactMetrics bait bias artifacts broken down by context."}
+  artifact_bait_bias_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_summary_metrics, doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single bait bias artifact."}
+  artifact_error_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/error_summary_metrics, doc: "Picard CollectSequencingArtifactMetrics summary metrics as a roll up of the context-specific error rates, to provide global error rates per type of base substitution."}
+  artifact_pre_adapter_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_detail_metrics, doc: "Picard CollectSequencingArtifactMetrics pre-adapter artifacts broken down by context."}
+  artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics, doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single pre-adapter artifact."}
+  qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics, doc: "Quality metrics for the realigned CRAM."}
+  qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart, doc: "Visualization of quality metrics."}
+  idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output, doc: "samtools idxstats of the realigned BAM file."}
+  xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text file containing X and Y reads statistics generated from idxstats."}
+```
+
 #### Detailed Input Information:
 The pipeline is build to handle three distinct input types:
 1. BAMs
@@ -397,7 +423,7 @@ wgs_evaluation_interval_list:
 
 ### Outputs
 gvcf: The germline variants calls in VCF format
-gvcf_calling_metrics: Various metrics from the creation of the gVCF 
+gvcf_calling_metrics: Various metrics from the creation of the gVCF
 verifybamid_output: If contamination is calculated rather than handed in by the user, the workflow will provide the output from verifybamid
 
 ### Tips for running:

@@ -3,15 +3,19 @@ class: Workflow
 id: kfdrc-alignment-workflow
 label: Kids First DRC Alignment and GATK HaplotypeCaller Workflow
 doc: |
-  Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam/fastq-to-cram, gVCF optional). This pipeline follows
+  # Kids First Data Resource Center Alignment and GATK HaplotypeCaller Workflows
+
+  ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
+
+  The Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam/fastq-to-cram, gVCF optional) follows
   Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)
   It uses bam/fastq input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38. Resultant bam is de-dupped and
   base score recalibrated. Contamination is calculated and a gVCF is created optionally using GATK4 vbeta.1-3.5 HaplotypeCaller. Inputs from
   this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. If you would like to run this workflow using the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
-  Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
-  This workflow is the current production workflow, superseding this [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however the outputs are considered equivalent.
+   Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
+   This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-alignment-workflow) and supersedes the [old workflow](https://github.com/kids-first/kf-alignment-workflow/tree/1.0.0) and [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however outputs are considered equivalent.
 
-  # Input Agnostic Alignment Workflow
+  ## Input Agnostic Alignment Workflow
   Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
 
   This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
@@ -28,22 +32,24 @@ doc: |
   `wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
   `true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
   `contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
-  `wgs_evaluation_interval_list`.
+  `wgs_evaluation_interval_list`. Additionally, the workflow is capable of performing a basic
+  evaluation of the X and Y sex chromosomes using idxstats. To activate this feature, set `run_sex_metrics`
+  to `true`; no additonal inputs are required.
 
-  ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
-  ## Basic Info
+
+  ### Basic Info
   - dockerfiles: https://github.com/d3b-center/bixtools
   - tested with
     - Seven Bridges Cavatica Platform: https://cavatica.sbgenomics.com/
     - cwltool: https://github.com/common-workflow-language/cwltool/releases/tag/3.0.20200324120055
 
-  ## References:
+  ### References:
   - https://console.cloud.google.com/storage/browser/broad-references/hg38/v0/
   - kfdrc bucket: s3://kids-first-seq-data/broad-references/
   - cavatica: https://cavatica.sbgenomics.com/u/yuankun/kf-reference/
 
-  ## Inputs:
+  ### Inputs:
   ```yaml
     # REQUIRED
     reference_tar: { type: File, doc: "Tar file containing a reference fasta and, optionally, its complete set of associated indexes (samtools, bwa, and picard)" }
@@ -84,7 +90,33 @@ doc: |
     min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
   ```
 
-  ### Detailed Input Information:
+  ### Outputs:
+  ```yaml
+    cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned Reads File"}
+    gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
+    verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output, doc: "Ouput from VerifyBamID that is used to calculate contamination."}
+    bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration report from BQSR."}
+    gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}], outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF calling quality."}
+    hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output, doc: "Picard CollectHsMetrics metrics for the analysis of target-capture sequencing experiments."}
+    wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output, doc: "Picard CollectWgsMetrics metrics for evaluating the performance of whole genome sequencing experiments."}
+    alignment_metrics: {type: 'File[]?', outputSource: picard_collectalignmentsummarymetrics/output, doc: "Picard CollectAlignmentSummaryMetrics high level metrics about the alignment of reads within a SAM file."}
+    gc_bias_detail: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/detail, doc: "Picard CollectGcBiasMetrics detailed metrics about reads that fall within windows of a certain GC bin on the reference genome."}
+    gc_bias_summary: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/summary, doc: "Picard CollectGcBiasMetrics high level metrics that capture how biased the coverage in a certain lane is."}
+    gc_bias_chart: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/chart, doc: "Picard CollectGcBiasMetrics plot of GC bias."}
+    insert_metrics: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/metrics, doc: "Picard CollectInsertSizeMetrics metrics about the insert size distribution of a paired-end library."}
+    insert_plot: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/plot, doc: "Picard CollectInsertSizeMetrics insert size distribution plotted."}
+    artifact_bait_bias_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_detail_metrics, doc: "Picard CollectSequencingArtifactMetrics bait bias artifacts broken down by context."}
+    artifact_bait_bias_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_summary_metrics, doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single bait bias artifact."}
+    artifact_error_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/error_summary_metrics, doc: "Picard CollectSequencingArtifactMetrics summary metrics as a roll up of the context-specific error rates, to provide global error rates per type of base substitution."}
+    artifact_pre_adapter_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_detail_metrics, doc: "Picard CollectSequencingArtifactMetrics pre-adapter artifacts broken down by context."}
+    artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics, doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single pre-adapter artifact."}
+    qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics, doc: "Quality metrics for the realigned CRAM."}
+    qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart, doc: "Visualization of quality metrics."}
+    idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output, doc: "samtools idxstats of the realigned BAM file."}
+    xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text file containing X and Y reads statistics generated from idxstats."}
+  ```
+
+  #### Detailed Input Information:
   The pipeline is build to handle three distinct input types:
   1. BAMs
   1. PE Fastqs
@@ -95,7 +127,7 @@ doc: |
   procsessed and aligned separately and the resulting BWA aligned bams will be merged into a final BAM
   before performing steps like BQSR and Metrics collection.
 
-  #### BAM Inputs
+  ##### BAM Inputs
   The BAM processing portion of the pipeline is the simplest when it comes to inputs. You may provide
   a single BAM or many BAMs. The input for BAMs is a file list. In Cavatica or other GUI interfaces,
   simply select the files you wish to process. For command line interfaces such as cwltool, your input
@@ -120,7 +152,7 @@ doc: |
   }
   ```
 
-  #### SE Fastq Inputs
+  ##### SE Fastq Inputs
   SE fastq processing requires more input to build the jobs correctly. Rather than providing a single
   list you must provide two lists: `input_se_reads_list` and `input_se_rgs_list`. The `input_se_reads_list`
   is where you put the files and the `input_se_rgs_list` is where you put your desired BAM @RG headers for
@@ -159,7 +191,7 @@ doc: |
   ```
   Take particular note of how the first item in the rgs list is the metadata for the first item in the fastq list.
 
-  #### PE Fastq Inputs
+  ##### PE Fastq Inputs
   PE Fastq processing inputs is exactly like SE Fastq processing but requires you to provide the paired mates
   files for your input paired reads. Once again, when using Cavatica make sure your inputs are in the correct
   order. In command line interfaces such as cwltool, your input should look like the following.
@@ -206,7 +238,7 @@ doc: |
   }
   ```
 
-  #### Multiple Input Types
+  ##### Multiple Input Types
   As mentioned above, these three input types can be added in any combination. If you wanted to add
   all three your command line input would look like the following.
   ```json
@@ -276,7 +308,7 @@ doc: |
   }
   ```
 
-  ### Example Runtimes:
+  #### Example Runtimes:
   1. 120 GB WGS BAM with AggMetrics, WgsMetrics, and gVCF creation: 14 hours & $35
   1. 120 GB WGS BAM only: 11 hours
   1. 4x40 GB WGS FASTQ files with AggMetrics, WgsMetrics, and gVCF creation: 23 hours & $72
@@ -284,13 +316,13 @@ doc: |
   1. 4x9 GB WXS FASTQ files with AggMetrics and gVCF creation: 4 hours & $9
   1. 4x9 GB WXS FASTQ files only: 3 hours
 
-  ### Caveats:
+  #### Caveats:
   1. Duplicates are flagged in a process that is connected to bwa mem. The implication of this design
      decision is that duplicates are flagged only on the inputs of that are scattered into bwa.
      Duplicates, therefore, are not being flagged at a library level and, for large BAM and FASTQ inputs,
      duplicates are only being detected within a portion of the read group.
 
-  ### Tips for running:
+  #### Tips for running:
   1. For the fastq input file lists (PE or SE), make sure the lists are properly ordered. The items in
      the arrays are processed based on their position. These lists are dotproduct scattered. This means
      that the first file in `input_pe_reads_list` is run with the first file in `input_pe_mates_list`
@@ -416,7 +448,8 @@ inputs:
   run_agg_metrics: {type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics,\
       \ QualityScoreDistribution, and SequencingArtifactMetrics will be collected.\
       \ Recommended for both WXS and WGS inputs."}
-  run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
+  run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios\
+      \ calculated"}
   run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,\
       \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,\
       \ wgs_evaluation_interval_list"}
@@ -424,29 +457,62 @@ inputs:
       \ alignment with score lower than INT. This option only affects output."}
 
 outputs:
-  cram: {type: File, outputSource: samtools_bam_to_cram/output}
-  gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf}
-  verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output}
-  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned\
+      \ Reads File"}
+  gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated\
+      \ from the realigned alignment file."}
+  verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output,
+    doc: "Ouput from VerifyBamID that is used to calculate contamination."}
+  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration\
+      \ report from BQSR."}
   gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}],
-    outputSource: generate_gvcf/gvcf_calling_metrics}
-  hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output}
-  wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output}
-  alignment_metrics: {type: 'File[]?', outputSource: picard_collectalignmentsummarymetrics/output}
-  gc_bias_detail: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/detail}
-  gc_bias_summary: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/summary}
-  gc_bias_chart: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/chart}
-  insert_metrics: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/metrics}
-  insert_plot: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/plot}
-  artifact_bait_bias_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_detail_metrics}
-  artifact_bait_bias_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_summary_metrics}
-  artifact_error_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/error_summary_metrics}
-  artifact_pre_adapter_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_detail_metrics}
-  artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics}
-  qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics}
-  qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart}
-  idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output}
-  xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio}
+    outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF\
+      \ calling quality."}
+  hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output, doc: "Picard\
+      \ CollectHsMetrics metrics for the analysis of target-capture sequencing experiments."}
+  wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output, doc: "Picard\
+      \ CollectWgsMetrics metrics for evaluating the performance of whole genome sequencing\
+      \ experiments."}
+  alignment_metrics: {type: 'File[]?', outputSource: picard_collectalignmentsummarymetrics/output,
+    doc: "Picard CollectAlignmentSummaryMetrics high level metrics about the alignment\
+      \ of reads within a SAM file."}
+  gc_bias_detail: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/detail,
+    doc: "Picard CollectGcBiasMetrics detailed metrics about reads that fall within\
+      \ windows of a certain GC bin on the reference genome."}
+  gc_bias_summary: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/summary,
+    doc: "Picard CollectGcBiasMetrics high level metrics that capture how biased the\
+      \ coverage in a certain lane is."}
+  gc_bias_chart: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/chart,
+    doc: "Picard CollectGcBiasMetrics plot of GC bias."}
+  insert_metrics: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/metrics,
+    doc: "Picard CollectInsertSizeMetrics metrics about the insert size distribution\
+      \ of a paired-end library."}
+  insert_plot: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/plot,
+    doc: "Picard CollectInsertSizeMetrics insert size distribution plotted."}
+  artifact_bait_bias_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_detail_metrics,
+    doc: "Picard CollectSequencingArtifactMetrics bait bias artifacts broken down\
+      \ by context."}
+  artifact_bait_bias_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_summary_metrics,
+    doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single bait\
+      \ bias artifact."}
+  artifact_error_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/error_summary_metrics,
+    doc: "Picard CollectSequencingArtifactMetrics summary metrics as a roll up of\
+      \ the context-specific error rates, to provide global error rates per type of\
+      \ base substitution."}
+  artifact_pre_adapter_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_detail_metrics,
+    doc: "Picard CollectSequencingArtifactMetrics pre-adapter artifacts broken down\
+      \ by context."}
+  artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics,
+    doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single pre-adapter\
+      \ artifact."}
+  qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics,
+    doc: "Quality metrics for the realigned CRAM."}
+  qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart,
+    doc: "Visualization of quality metrics."}
+  idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output, doc: "samtools\
+      \ idxstats of the realigned BAM file."}
+  xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text\
+      \ file containing X and Y reads statistics generated from idxstats."}
 
 steps:
   untar_reference:
@@ -698,5 +764,5 @@ sbg:categories:
 - WXS
 - GVCF
 sbg:links:
-  - id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.6.0'
-    label: github-release
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.0'
+  label: github-release
