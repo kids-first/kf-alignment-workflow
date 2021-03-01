@@ -23,11 +23,11 @@ arguments:
        for (var i=0; i<inputs.sequences.length; i++)
          arr = arr.concat(inputs.sequences[i].path)
        return (arr.join(' '))
-      };
+      }
   - position: 2
     shellQuote: false
     valueFrom: >-
-     if [ `ls *.html | wc -l` != $(inputs.sequences.length) ] ; then echo "Error running fastqc"; exit 1; fi
+     && if [ `ls *.html | wc -l` != $(inputs.sequences.length) ] ; then >&2 echo "Error running fastqc"; exit 1; fi
 
 inputs:
   sequences: {type: 'File[]', doc: "set of sequences being run can be either fastqs or bams"}
