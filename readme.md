@@ -42,7 +42,7 @@ to `true`; no additonal inputs are required.
 ### References:
 - https://console.cloud.google.com/storage/browser/broad-references/hg38/v0/
 - kfdrc bucket: s3://kids-first-seq-data/broad-references/
-- cavatica: https://cavatica.sbgenomics.com/u/yuankun/kf-reference/
+- cavatica: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
 
 ### Inputs:
 ```yaml
