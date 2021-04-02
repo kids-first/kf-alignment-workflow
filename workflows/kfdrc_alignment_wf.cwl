@@ -47,7 +47,7 @@ doc: |
   ### References:
   - https://console.cloud.google.com/storage/browser/broad-references/hg38/v0/
   - kfdrc bucket: s3://kids-first-seq-data/broad-references/
-  - cavatica: https://cavatica.sbgenomics.com/u/yuankun/kf-reference/
+  - cavatica: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
 
   ### Inputs:
   ```yaml
@@ -764,5 +764,5 @@ sbg:categories:
 - WXS
 - GVCF
 sbg:links:
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.0'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.1'
   label: github-release
