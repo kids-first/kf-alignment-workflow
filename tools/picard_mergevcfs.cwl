@@ -11,7 +11,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 3000
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.2-dev'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
 baseCommand: [ java, -Xms2000m, -jar, /picard.jar, MergeVcfs]
 arguments:
   - position: 1
