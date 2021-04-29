@@ -7,7 +7,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 3000
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
 baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 1
