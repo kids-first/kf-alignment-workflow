@@ -7,9 +7,9 @@ inputs:
   rg:
     type: File?
     inputBinding: {loadContents: true}
-  sample: string
+  sample: { type: string }
 outputs:
-  rg_str: string
+  rg_str: { type: string }
 
 expression:
   "${
