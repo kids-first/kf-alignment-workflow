@@ -764,5 +764,5 @@ sbg:categories:
 - WXS
 - GVCF
 sbg:links:
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.2'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.3'
   label: github-release
