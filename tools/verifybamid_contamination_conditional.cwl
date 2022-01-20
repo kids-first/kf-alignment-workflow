@@ -33,15 +33,15 @@ arguments:
       --BedPath $(inputs.contamination_sites_bed ? inputs.contamination_sites_bed.path : '')
       1>/dev/null
 inputs:
-  input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file" }
-  ref_fasta: { type: File, secondaryFiles: [.fai], doc: "Reference fasta and fai index" }
-  contamination_sites_ud: { type: File?, doc: ".UD matrix file from SVD result of genotype matrix" }
-  contamination_sites_mu: { type: File?, doc: ".mu matrix file of genotype matrix" }
-  contamination_sites_bed: { type: File?, doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
-  precalculated_contamination: { type: float?, doc: "Precalculated contamination value. If provided, will skip calculation and return value." }
-  output_basename: { type: string, doc: "String to be used as the base filename for the output" }
+  input_bam: { type: 'File', secondaryFiles: [^.bai], doc: "Input bam file" }
+  ref_fasta: { type: 'File', secondaryFiles: [.fai], doc: "Reference fasta and fai index" }
+  contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
+  contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
+  contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
+  precalculated_contamination: { type: 'float?', doc: "Precalculated contamination value. If provided, will skip calculation and return value." }
+  output_basename: { type: 'string', doc: "String to be used as the base filename for the output" }
 outputs:
-  output: { type: File?, outputBinding: { glob: '*.selfSM' } }
+  output: { type: 'File?', outputBinding: { glob: '*.selfSM' } }
   contamination:
     type: float
     outputBinding:

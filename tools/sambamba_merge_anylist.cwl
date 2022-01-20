@@ -45,7 +45,7 @@ arguments:
         }
       }
 inputs:
-  bams: { type: 'Any[]', doc: "Input will be a combination of File[] and deeply nested File[]. Any[] is flexible enough to accomodate the different types" }
+  bams: { type: 'File[]', doc: "Input will be a combination of File[] and deeply nested File[]. Any[] is flexible enough to accomodate the different types" }
   base_file_name: { type: string, doc: "String to be used in naming the output bam" }
 outputs:
   merged_bam: { type: File, outputBinding: { glob: '*.bam' }, format: BAM }
