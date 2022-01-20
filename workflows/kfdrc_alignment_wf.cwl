@@ -391,16 +391,16 @@ inputs:
   input_se_reads_list: {type: 'File[]?', doc: "List of input singlie end fastq reads"}
   input_se_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in SE processing"}
   reference_tar: {type: File, doc: "Tar file containing a reference fasta and, optionally,\
-      \ its complete set of associated indexes (samtools, bwa, and picard)", sbg:suggestedValue: {
+      \ its complete set of associated indexes (samtools, bwa, and picard)", "sbg:suggestedValue": {
       class: File, path: 5f4ffff4e4b0370371c05153, name: Homo_sapiens_assembly38.tgz}}
   biospecimen_name: {type: string, doc: "String name of biospcimen"}
   output_basename: {type: string, doc: "String to use as the base for output filenames"}
-  dbsnp_vcf: {type: 'File?', doc: "dbSNP vcf file", sbg:suggestedValue: {class: File,
+  dbsnp_vcf: {type: 'File?', doc: "dbSNP vcf file", "sbg:suggestedValue": {class: File,
       path: 6063901f357c3a53540ca84b, name: Homo_sapiens_assembly38.dbsnp138.vcf}}
-  dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", sbg:suggestedValue: {class: File,
+  dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", "sbg:suggestedValue": {class: File,
       path: 6063901e357c3a53540ca834, name: Homo_sapiens_assembly38.dbsnp138.vcf.idx}}
   knownsites: {type: 'File[]', doc: "List of files containing known polymorphic sites\
-      \ used to exclude regions around known polymorphisms from analysis", sbg:suggestedValue: [
+      \ used to exclude regions around known polymorphisms from analysis", "sbg:suggestedValue": [
       {class: File, path: 6063901e357c3a53540ca835, name: 1000G_omni2.5.hg38.vcf.gz},
       {class: File, path: 6063901c357c3a53540ca80f, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz},
       {class: File, path: 60639017357c3a53540ca7d0, name: Homo_sapiens_assembly38.known_indels.vcf.gz},
@@ -410,26 +410,26 @@ inputs:
       \ the knownsites file list. For example, if the first file in the knownsites\
       \ list is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be\
       \ 1000G_omni2.5.hg38.vcf.gz.tbi. Optional, but will save time/cost on indexing.",
-    sbg:suggestedValue: [{class: File, path: 60639016357c3a53540ca7b1, name: 1000G_omni2.5.hg38.vcf.gz.tbi},
+    "sbg:suggestedValue": [{class: File, path: 60639016357c3a53540ca7b1, name: 1000G_omni2.5.hg38.vcf.gz.tbi},
       {class: File, path: 6063901e357c3a53540ca845, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi},
       {class: File, path: 6063901c357c3a53540ca80d, name: Homo_sapiens_assembly38.known_indels.vcf.gz.tbi},
       {class: File, path: 6063901c357c3a53540ca806, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi}]}
   contamination_sites_bed: {type: 'File?', doc: ".bed file for markers used in this\
-      \ analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)", sbg:suggestedValue: {
+      \ analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)", "sbg:suggestedValue": {
       class: File, path: 6063901e357c3a53540ca833, name: Homo_sapiens_assembly38.contam.bed}}
   contamination_sites_mu: {type: 'File?', doc: ".mu matrix file of genotype matrix",
-    sbg:suggestedValue: {class: File, path: 60639017357c3a53540ca7cd, name: Homo_sapiens_assembly38.contam.mu}}
+    "sbg:suggestedValue": {class: File, path: 60639017357c3a53540ca7cd, name: Homo_sapiens_assembly38.contam.mu}}
   contamination_sites_ud: {type: 'File?', doc: ".UD matrix file from SVD result of\
-      \ genotype matrix", sbg:suggestedValue: {class: File, path: 6063901f357c3a53540ca84f,
+      \ genotype matrix", "sbg:suggestedValue": {class: File, path: 6063901f357c3a53540ca84f,
       name: Homo_sapiens_assembly38.contam.UD}}
   wgs_calling_interval_list: {type: 'File?', doc: "WGS interval list used to aid scattering\
-      \ Haplotype caller", sbg:suggestedValue: {class: File, path: 60639018357c3a53540ca7df,
+      \ Haplotype caller", "sbg:suggestedValue": {class: File, path: 60639018357c3a53540ca7df,
       name: wgs_calling_regions.hg38.interval_list}}
   wgs_coverage_interval_list: {type: 'File?', doc: "An interval list file that contains\
-      \ the positions to restrict the wgs metrics assessment", sbg:suggestedValue: {
+      \ the positions to restrict the wgs metrics assessment", "sbg:suggestedValue": {
       class: File, path: 6063901c357c3a53540ca813, name: wgs_coverage_regions.hg38.interval_list}}
   wgs_evaluation_interval_list: {type: 'File?', doc: "Target intervals to restrict\
-      \ gvcf metric analysis (for VariantCallingMetrics)", sbg:suggestedValue: {class: File,
+      \ gvcf metric analysis (for VariantCallingMetrics)", "sbg:suggestedValue": {class: File,
       path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
   wxs_bait_interval_list: {type: 'File?', doc: "An interval list file that contains\
       \ the locations of the WXS baits used (for HsMetrics)"}
@@ -589,7 +589,7 @@ steps:
 
   sambamba_merge:
     hints:
-    - class: sbg:AWSInstanceType
+    - class: "sbg:AWSInstanceType"
       value: c5.9xlarge;ebs-gp2;2048
     run: ../tools/sambamba_merge_anylist.cwl
     in:
@@ -601,7 +601,7 @@ steps:
 
   sambamba_sort:
     hints:
-    - class: sbg:AWSInstanceType
+    - class: "sbg:AWSInstanceType"
       value: c5.9xlarge;ebs-gp2;2048
     run: ../tools/sambamba_sort.cwl
     in:
@@ -753,16 +753,16 @@ steps:
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
-- class: 'sbg:maxNumberOfParallelInstances'
+- class: "sbg:maxNumberOfParallelInstances"
   value: 6
-sbg:license: Apache License 2.0
-sbg:publisher: KFDRC
-sbg:categories:
+"sbg:license": Apache License 2.0
+"sbg:publisher": KFDRC
+"sbg:categories":
 - ALIGNMENT
 - DNA
 - WGS
 - WXS
 - GVCF
-sbg:links:
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.3'
+"sbg:links":
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.4'
   label: github-release

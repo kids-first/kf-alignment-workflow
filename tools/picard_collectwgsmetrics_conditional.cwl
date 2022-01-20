@@ -14,7 +14,7 @@ requirements:
     ramMin: 8000
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
-baseCommand: [ java, -Xms2000m, -Xmx6000m, -XX:GCTimeLimit=50, -XX:GCHeapFreeLimit=10, -jar, /picard.jar, CollectWgsMetrics]
+baseCommand: ['java', '-Xms2000m', '-Xmx6000m', '-XX:GCTimeLimit=50', '-XX:GCHeapFreeLimit=10', '-jar', '/picard.jar', 'CollectWgsMetrics']
 arguments:
   - position: 1
     shellQuote: false
