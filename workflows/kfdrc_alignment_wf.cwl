@@ -382,6 +382,21 @@ requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
 - class: SubworkflowFeatureRequirement
+- class: InlineJavascriptRequirement
+  expressionLib:
+    - |-
+      //https://stackoverflow.com/a/27267762
+      var flatten = function flatten(ary) {
+          var ret = [];
+          for(var i = 0; i < ary.length; i++) {
+              if(Array.isArray(ary[i])) {
+                  ret = ret.concat(flatten(ary[i]));
+              } else {
+                  ret.push(ary[i]);
+              }
+          }
+          return ret;
+      }
 
 inputs:
   input_bam_list: {type: 'File[]?', doc: "List of input BAM files"}
@@ -595,7 +610,8 @@ steps:
     in:
       bams:
         source: [process_bams/unsorted_bams, process_pe_reads/unsorted_bams, process_se_reads/unsorted_bams]
-        linkMerge: merge_flattened #Flattens all to File[]
+        valueFrom: |
+          $(flatten(self))
       base_file_name: output_basename
     out: [merged_bam]
 
