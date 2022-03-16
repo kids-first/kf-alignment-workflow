@@ -1,5 +1,5 @@
 class: CommandLineTool
-cwlVersion: v1.0
+cwlVersion: v1.2
 id: samtools_split
 doc: |-
   This tool splits the input bam input read group bams if it has more than one readgroup.

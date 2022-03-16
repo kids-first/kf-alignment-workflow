@@ -44,3 +44,4 @@ outputs:
     type: 'File'
     outputBinding:
       glob: '*.64.sa' 
+
