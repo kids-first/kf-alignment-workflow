@@ -190,6 +190,10 @@ inputs:
   label: Memory per job
   doc: Memory per job[MB].
   type: int?
+- id: conditional
+  type: boolean?
+  doc: "On/off switch for use in optional workflows"
+  
 
 outputs:
 - id: hs_output

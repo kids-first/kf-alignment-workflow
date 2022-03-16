@@ -14,36 +14,18 @@ $namespaces:
 
 requirements:
 - class: ShellCommandRequirement
+- class: InlineJavascriptRequirement
 - class: ResourceRequirement
-  coresMin: |-
-    ${
-        if (inputs.cpu_per_job)
-        {
-            return inputs.cpu_per_job
-        }
-        else
-        {
-            return 32
-        }
-    }
-  ramMin: |-
-    ${
-        if (inputs.mem_per_job)
-        {
-            return inputs.mem_per_job
-        }
-        else
-        {
-            return 32000
-        }
-    }
+  coresMin: |
+    $(inputs.cpu_per_job ? inputs.cpu_per_job : 32)
+  ramMin: |
+    $(inputs.mem_per_job ? inputs.mem_per_job: 32000)
 - class: DockerRequirement
   dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 - class: EnvVarRequirement
   envDef:
   - envName: SENTIEON_LICENSE
     envValue: $(inputs.sentieon_license)
-- class: InlineJavascriptRequirement
 
 inputs:
 - id: sentieon_license

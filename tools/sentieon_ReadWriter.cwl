@@ -10,36 +10,21 @@ doc: |-
 
 requirements:
 - class: ShellCommandRequirement
+- class: InlineJavascriptRequirement
 - class: ResourceRequirement
-  coresMin: |-
-    ${
-        if (inputs.cpu_per_job)
-        {
-            return inputs.cpu_per_job
-        }
-        else
-        {
-            return 16
-        }
-    }
-  ramMin: |-
-    ${
-        if (inputs.mem_per_job)
-        {
-            return inputs.mem_per_job
-        }
-        else
-        {
-            return 16000
-        }
-    }
+  coresMin: |
+    $(inputs.cpu_per_job ? inputs.cpu_per_job : 16)
+  ramMin: |
+    $(inputs.mem_per_job ? inputs.mem_per_job : 16000)
 - class: DockerRequirement
   dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 - class: EnvVarRequirement
   envDef:
   - envName: SENTIEON_LICENSE
     envValue: $(inputs.sentieon_license)
-- class: InlineJavascriptRequirement
+
+$namespaces:
+  sbg: https://sevenbridges.com
 
 inputs:
 - id: sentieon_license
@@ -130,11 +115,11 @@ inputs:
   type: int?
 
 outputs:
-- id: output_bam
+- id: output_reads
   type: File
   secondaryFiles:
   - pattern: .bai
-    required: true
+    required: false
   - pattern: .crai
     required: false
   outputBinding:
