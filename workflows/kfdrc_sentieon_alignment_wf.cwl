@@ -198,15 +198,18 @@ steps:
       reference: untar_reference/indexed_fasta
     out: [bam_files]
 
+  flatten_split_bams:
+    run: ../tools/expression_flatten_filelist.cwl
+    in:
+      input_files: samtools_split/bam_files
+    out: [output_files]
+
   prepare_bam_bwa_payloads:
     run: ../subworkflows/rgbam_to_bwa_payload.cwl
     when: $(inputs.input_rgbam != null)
     scatter: [input_rgbam]
     in:
-      input_rgbam:
-        source: samtools_split/bam_files
-        valueFrom: |
-          $(flatten(self))
+      input_rgbam: flatten_split_bams/output_files
       sample_name: biospecimen_name
     out: [bwa_payload]
     
