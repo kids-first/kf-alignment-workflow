@@ -3,6 +3,9 @@ class: ExpressionTool
 id: expression_flatten_filelist
 requirements:
   - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    ramMin: ${ return inputs.max_memory * 1000 }
+    coresMin: $(inputs.cores)
 
 inputs:
   input_files:
@@ -11,6 +14,8 @@ inputs:
       items:
         type: array
         items: File
+  max_memory: { type: 'int?', default: 36, doc: "GB of RAM to allocate to the task." }
+  cores: { type: 'int?', default: 36, doc: "Minimum reserved number of CPU cores for the task." }
 
 outputs:
   output_files: File[]
