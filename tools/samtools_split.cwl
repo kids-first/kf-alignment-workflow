@@ -13,6 +13,9 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
   - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    ramMin: ${ return inputs.max_memory * 1000 }
+    coresMin: $(inputs.cores)
 baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 0
@@ -21,11 +24,13 @@ arguments:
       set -eo pipefail
       RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
-        samtools split -f '%!.bam' -@ 36 --reference $(inputs.reference.path) $(inputs.input_bam.path)
+        samtools split -f '%!.bam' -@ $(inputs.cores) --reference $(inputs.reference.path) $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: { type: File, doc: "Input bam file" }
   reference: { type: File, doc: "Reference fasta file" }
+  max_memory: { type: 'int?', default: 36, doc: "GB of RAM to allocate to the task." }
+  cores: { type: 'int?', default: 36, doc: "Minimum reserved number of CPU cores for the task." }
 outputs:
   bam_files:
     type: File[]

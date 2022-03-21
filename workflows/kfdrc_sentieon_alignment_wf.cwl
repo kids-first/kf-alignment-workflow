@@ -205,6 +205,9 @@ steps:
     out: [output_files]
 
   prepare_bam_bwa_payloads:
+    hints:
+    - class: "sbg:AWSInstanceType"
+      value: c5.9xlarge
     run: ../subworkflows/rgbam_to_bwa_payload.cwl
     when: $(inputs.input_rgbam != null)
     scatter: [input_rgbam]
