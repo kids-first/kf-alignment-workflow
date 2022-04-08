@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: Workflow
 id: kfdrc_bam_to_gvcf
 requirements:
@@ -9,14 +9,14 @@ requirements:
 inputs:
   biospecimen_name: string
   contamination: float?
-  contamination_sites_bed: File
-  contamination_sites_mu: File
-  contamination_sites_ud: File
+  contamination_sites_bed: File?
+  contamination_sites_mu: File?
+  contamination_sites_ud: File?
   input_bam: File
-  indexed_reference_fasta: File
+  indexed_reference_fasta: { type: File, secondaryFiles: [.fai] }
   output_basename: string
   wgs_calling_interval_list: File
-  dbsnp_vcf: File
+  dbsnp_vcf: File?
   dbsnp_idx: File?
   reference_dict: File
   wgs_evaluation_interval_list: File
@@ -25,11 +25,12 @@ inputs:
 outputs:
   verifybamid_output: {type: File, outputSource: verifybamid_checkcontam_conditional/output}
   gvcf: {type: File, outputSource: picard_mergevcfs_python_renamesample/output}
-  gvcf_calling_metrics: {type: 'File[]', outputSource: picard_collectgvcfcallingmetrics/output}
+  gvcf_calling_metrics: {type: 'File[]?', outputSource: picard_collectgvcfcallingmetrics/output}
 
 steps:
   index_dbsnp:
     run: ../tools/gatk_indexfeaturefile.cwl
+    when: $(inputs.dbsnp_vcf != null)
     in:
       input_file: dbsnp_vcf
       input_index: dbsnp_idx
@@ -37,6 +38,7 @@ steps:
 
   verifybamid_checkcontam_conditional:
     run: ../tools/verifybamid_contamination_conditional.cwl
+    when: $(inputs.contamination_sites_bed != null)
     in:
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
@@ -76,6 +78,7 @@ steps:
 
   picard_collectgvcfcallingmetrics:
     run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    when: $(inputs.dbsnp_vcf != null)
     in:
       dbsnp_vcf: index_dbsnp/output
       final_gvcf_base_name: output_basename
