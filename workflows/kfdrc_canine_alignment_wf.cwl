@@ -177,6 +177,7 @@ steps:
 
   index_knownsites:
     run: ../tools/tabix_index.cwl
+    when: $(inputs.knownsites != null)
     in:
       input_file: knownsites
       input_index: knownsites_indexes

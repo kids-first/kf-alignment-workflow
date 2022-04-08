@@ -11,7 +11,7 @@ outputs:
   fasta:
     type: 'File'
     outputBinding:
-      glob: '*.fasta' 
+      glob: '{*.fa, *.fasta}' 
   dict:
     type: 'File'
     outputBinding:
