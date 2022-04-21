@@ -177,7 +177,7 @@ steps:
 
   index_knownsites:
     run: ../tools/tabix_index.cwl
-    when: $(inputs.knownsites != null)
+    when: $(inputs.input_file != null)
     in:
       input_file: knownsites
       input_index: knownsites_indexes
@@ -263,7 +263,7 @@ steps:
 
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
-    when: $(inputs.knownsites != null)
+    when: $(inputs.knownsites.some(function(e) { return e !== null}))
     in:
       input_bam: sambamba_sort/sorted_bam
       knownsites: index_knownsites/output
@@ -274,7 +274,7 @@ steps:
 
   gatk_gatherbqsrreports:
     run: ../tools/gatk_gatherbqsrreports.cwl
-    when: $(inputs.knownsites != null)
+    when: $(inputs.input_brsq_reports.some(function(e) { return e !== null}))
     in:
       input_brsq_reports: gatk_baserecalibrator/output
       output_basename: output_basename
@@ -282,7 +282,7 @@ steps:
 
   gatk_applybqsr:
     run: ../tools/gatk_applybqsr.cwl
-    when: $(inputs.knownsites != null)
+    when: $(inputs.bqsr_report != null)
     in:
       bqsr_report: gatk_gatherbqsrreports/output
       input_bam: sambamba_sort/sorted_bam
@@ -293,7 +293,7 @@ steps:
 
   picard_gatherbamfiles:
     run: ../tools/picard_gatherbamfiles.cwl
-    when: $(inputs.knownsites != null)
+    when: $(inputs.input_bam.some(function(e) { return e !== null}))
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
       output_bam_basename: output_basename
