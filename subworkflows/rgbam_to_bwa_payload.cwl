@@ -46,7 +46,7 @@ steps:
     out: [output]
 
   expression_prepare_bwa_payload:
-    run: ../tools/expression_prepare_bwa_payload.cwl
+    run: ../tools/clt_prepare_bwa_payload.cwl
     in:
       reads: bamtofastq/output
       rg_str: expression_updatergsample/rg_str

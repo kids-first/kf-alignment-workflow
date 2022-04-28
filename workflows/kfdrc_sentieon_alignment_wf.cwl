@@ -13,23 +13,9 @@ requirements:
 - class: MultipleInputFeatureRequirement
 - class: SubworkflowFeatureRequirement
 - class: InlineJavascriptRequirement
-  expressionLib:
-    - |-
-      //https://stackoverflow.com/a/27267762
-      var flatten = function flatten(ary) {
-          var ret = [];
-          for(var i = 0; i < ary.length; i++) {
-              if(Array.isArray(ary[i])) {
-                  ret = ret.concat(flatten(ary[i]));
-              } else {
-                  ret.push(ary[i]);
-              }
-          }
-          return ret;
-      }
 
 inputs:
-  sentieon_license: { type: string, doc: "License server host and port" } 
+  sentieon_license: { type: string, doc: "License server host and port" }
   input_bam_list: {type: 'File[]?', doc: "List of input BAM files"}
   input_pe_reads_list: {type: 'File[]?', doc: "List of input R1 paired end fastq reads"}
   input_pe_mates_list: {type: 'File[]?', doc: "List of input R2 paired end fastq reads"}
@@ -198,8 +184,9 @@ steps:
       reference: untar_reference/indexed_fasta
     out: [bam_files]
 
-  flatten_split_bams:
-    run: ../tools/expression_flatten_filelist.cwl
+  flatten_split_rgbams:
+    run: ../tools/clt_flatten_filelist.cwl
+    when: $(inputs.input_files != null)
     in:
       input_files: samtools_split/bam_files
     out: [output_files]
@@ -212,12 +199,12 @@ steps:
     when: $(inputs.input_rgbam != null)
     scatter: [input_rgbam]
     in:
-      input_rgbam: flatten_split_bams/output_files
+      input_rgbam: flatten_split_rgbams/output_files
       sample_name: biospecimen_name
     out: [bwa_payload]
-    
+
   prepare_pe_fq_bwa_payloads:
-    run: ../tools/expression_prepare_bwa_payload.cwl
+    run: ../tools/clt_prepare_bwa_payload.cwl
     when: $(inputs.reads != null)
     scatter: [reads, mates, rg_str]
     scatterMethod: dotproduct
@@ -228,7 +215,7 @@ steps:
     out: [bwa_payload]
 
   prepare_se_fq_bwa_payloads:
-    run: ../tools/expression_prepare_bwa_payload.cwl
+    run: ../tools/clt_prepare_bwa_payload.cwl
     when: $(inputs.reads != null)
     scatter: [reads, rg_str]
     scatterMethod: dotproduct
@@ -257,7 +244,7 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam: sentieon_bwa_mem_payloads/realgn_bam
-      output_file_name: 
+      output_file_name:
         source: output_basename
         valueFrom: $(self+".aligned.sorted.bam")
     out: [output_reads]
@@ -267,7 +254,7 @@ steps:
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      in_alignments: 
+      in_alignments:
         source: sentieon_readwriter_merge_bams/output_reads
         valueFrom: $([self])
     out: [metrics_file, out_alignments]
@@ -281,7 +268,7 @@ steps:
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
-      input_bam: sentieon_markdups/out_alignments 
+      input_bam: sentieon_markdups/out_alignments
       knownsites: index_knownsites/output
       reference: untar_reference/indexed_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals
@@ -299,7 +286,7 @@ steps:
     run: ../tools/gatk_applybqsr.cwl
     in:
       bqsr_report: gatk_gatherbqsrreports/output
-      input_bam: sentieon_markdups/out_alignments 
+      input_bam: sentieon_markdups/out_alignments
       reference: untar_reference/indexed_fasta
       sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
@@ -317,11 +304,11 @@ steps:
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      input_bam: 
+      input_bam:
         source: picard_gatherbamfiles/output
         valueFrom: $([self])
       output_file_name:
-        source: picard_gatherbamfiles/output 
+        source: picard_gatherbamfiles/output
         valueFrom: $(self.nameroot+".cram")
     out: [output_reads]
 
@@ -334,8 +321,8 @@ steps:
       input_bam: picard_gatherbamfiles/output
       targets_list: wxs_target_interval_list
       baits_list: wxs_bait_interval_list
-      conditional: run_hs_metrics 
-    out: [hs_output] 
+      conditional: run_hs_metrics
+    out: [hs_output]
 
   sentieon_wgsmetrics:
     run: ../tools/sentieon_WgsMetricsAlgo.cwl
@@ -357,7 +344,7 @@ steps:
       input_bam: picard_gatherbamfiles/output
       accum_level_gc_bias:
         valueFrom: "SAMPLE,LIBRARY"
-      conditional: run_agg_metrics 
+      conditional: run_agg_metrics
     out: [as_output, sama_bait_bias_detail_metrics, sama_bait_bias_summary_metrics, sama_error_summary_metrics, sama_oxog_metrics, sama_pre_adapter_detail_metrics, sama_pre_adapter_summary_metrics, bdbc_output, gc_bias_chart, gc_bias_detail, gc_bias_summary, is_metrics, is_plot, mqbc_output, mqbc_plot, qd_chart, qd_metrics, qy_output]
 
   samtools_idxstats_xy_ratio:
