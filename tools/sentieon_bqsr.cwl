@@ -168,3 +168,6 @@ arguments:
         return table_name.concat(" && sentieon driver -r ").concat(inputs.reference.path).concat(" -i ").concat(inputs.input_bam.path).concat(" --read_filter QualCalFilter,table=").concat(table_name).concat(",prior=-1.0,indel=false,levels=10/20/30,min_qual=6 --algo ReadWriter ").concat(output_name)
     }
   shellQuote: false
+
+$namespaces:
+  sbg: https://sevenbridges.com

@@ -95,7 +95,7 @@ outputs:
       \ from the realigned alignment file."}
   verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output,
     doc: "Ouput from VerifyBamID that is used to calculate contamination."}
-  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration\
+  bqsr_report: {type: File, outputSource: sentieon_bqsr/recal_table, doc: "Recalibration\
       \ report from BQSR."}
   gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}],
     outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF\
@@ -259,45 +259,14 @@ steps:
         valueFrom: $([self])
     out: [metrics_file, out_alignments]
 
-  python_createsequencegroups:
-    run: ../tools/python_createsequencegroups.cwl
+  sentieon_bqsr:
+    run: ../tools/sentieon_bqsr.cwl
     in:
-      ref_dict: untar_reference/dict
-    out: [sequence_intervals, sequence_intervals_with_unmapped]
-
-  gatk_baserecalibrator:
-    run: ../tools/gatk_baserecalibrator.cwl
-    in:
-      input_bam: sentieon_markdups/out_alignments
-      knownsites: index_knownsites/output
+      sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      sequence_interval: python_createsequencegroups/sequence_intervals
-    scatter: [sequence_interval]
-    out: [output]
-
-  gatk_gatherbqsrreports:
-    run: ../tools/gatk_gatherbqsrreports.cwl
-    in:
-      input_brsq_reports: gatk_baserecalibrator/output
-      output_basename: output_basename
-    out: [output]
-
-  gatk_applybqsr:
-    run: ../tools/gatk_applybqsr.cwl
-    in:
-      bqsr_report: gatk_gatherbqsrreports/output
       input_bam: sentieon_markdups/out_alignments
-      reference: untar_reference/indexed_fasta
-      sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
-    scatter: [sequence_interval]
-    out: [recalibrated_bam]
-
-  picard_gatherbamfiles:
-    run: ../tools/picard_gatherbamfiles.cwl
-    in:
-      input_bam: gatk_applybqsr/recalibrated_bam
-      output_bam_basename: output_basename
-    out: [output]
+      known_sites: index_knownsites/output
+    out: [output_reads, recal_table]
 
   sentieon_readwriter_bam_to_cram:
     run: ../tools/sentieon_ReadWriter.cwl
@@ -305,10 +274,10 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam:
-        source: picard_gatherbamfiles/output
+        source: sentieon_bqsr/output_reads 
         valueFrom: $([self])
       output_file_name:
-        source: picard_gatherbamfiles/output
+        source: sentieon_bqsr/output_reads 
         valueFrom: $(self.nameroot+".cram")
     out: [output_reads]
 
@@ -318,7 +287,7 @@ steps:
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      input_bam: picard_gatherbamfiles/output
+      input_bam: sentieon_bqsr/output_reads
       targets_list: wxs_target_interval_list
       baits_list: wxs_bait_interval_list
       conditional: run_hs_metrics
@@ -330,7 +299,7 @@ steps:
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      input_bam: picard_gatherbamfiles/output
+      input_bam: sentieon_bqsr/output_reads
       interval: wgs_coverage_interval_list
       conditional: run_wgs_metrics
     out: [wgs_output]
@@ -341,7 +310,7 @@ steps:
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      input_bam: picard_gatherbamfiles/output
+      input_bam: sentieon_bqsr/output_reads
       accum_level_gc_bias:
         valueFrom: "SAMPLE,LIBRARY"
       conditional: run_agg_metrics
@@ -351,7 +320,7 @@ steps:
     run: ../tools/samtools_idxstats_xy_ratio.cwl
     in:
       run_idxstats: run_sex_metrics
-      input_bam: picard_gatherbamfiles/output
+      input_bam: sentieon_bqsr/output_reads
     out: [output, ratio]
 
   generate_gvcf:
@@ -361,7 +330,7 @@ steps:
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
-      input_bam: picard_gatherbamfiles/output
+      input_bam: sentieon_bqsr/output_reads
       indexed_reference_fasta: untar_reference/indexed_fasta
       output_basename: output_basename
       dbsnp_vcf: dbsnp_vcf
