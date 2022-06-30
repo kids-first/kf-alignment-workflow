@@ -87,6 +87,8 @@ inputs:
       \ wgs_evaluation_interval_list"}
   min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output\
       \ alignment with score lower than INT. This option only affects output."}
+  samtools_split_max_memory: { type: 'int?', default: 36, doc: "GB of RAM to allocate to samtools split." }
+  samtools_split_cores: { type: 'int?', default: 36, doc: "Minimum reserved number of CPU cores for samtools split." }
 
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned\
@@ -182,6 +184,8 @@ steps:
     in:
       input_bam: input_bam_list
       reference: untar_reference/indexed_fasta
+      max_memory: samtools_split_max_memory
+      cores: samtools_split_cores
     out: [bam_files]
 
   flatten_split_rgbams:
@@ -189,6 +193,8 @@ steps:
     when: $(inputs.input_files != null)
     in:
       input_files: samtools_split/bam_files
+      max_memory: samtools_split_max_memory
+      cores: samtools_split_cores
     out: [output_files]
 
   prepare_bam_bwa_payloads:

@@ -16,8 +16,8 @@ inputs:
       items:
         type: array
         items: File
-  max_memory: { type: 'int?', default: 36, doc: "GB of RAM to allocate to the task." }
-  cores: { type: 'int?', default: 36, doc: "Minimum reserved number of CPU cores for the task." }
+  max_memory: { type: 'int?', default: 1, doc: "GB of RAM to allocate to the task." }
+  cores: { type: 'int?', default: 1, doc: "Minimum reserved number of CPU cores for the task." }
 
 outputs:
   output_files:
