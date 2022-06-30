@@ -1,11 +1,11 @@
 cwlVersion: v1.2
-class: CommandLineTool 
-id: expression_preparerg
+class: CommandLineTool
+id: clt_prepare_bwa_payload
 requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
 
-baseCommand: [echo, complete] 
+baseCommand: [echo, complete]
 inputs:
   reads:
     type: File
