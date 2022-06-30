@@ -21,7 +21,7 @@ outputs:
           type: string
         interleaved:
           type: boolean
-    outputSource: expression_prepare_bwa_payload/bwa_payload
+    outputSource: clt_prepare_bwa_payload/bwa_payload
 
 steps:
   samtools_head_rg:
@@ -45,7 +45,7 @@ steps:
       input_bam: input_rgbam
     out: [output]
 
-  expression_prepare_bwa_payload:
+  clt_prepare_bwa_payload:
     run: ../tools/clt_prepare_bwa_payload.cwl
     in:
       reads: bamtofastq/output
