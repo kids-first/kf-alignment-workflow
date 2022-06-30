@@ -1,6 +1,6 @@
 cwlVersion: v1.2
 class: Workflow
-id: rgbam_to_bwa_payload
+id: bwa_payload_to_realn_bam
 requirements:
   - class: ScatterFeatureRequirement
   - class: InlineJavascriptRequirement
@@ -27,9 +27,9 @@ inputs:
   cpu_per_job: { type: 'int?' }
   mem_per_job: { type: 'int?' }
 outputs:
-  realgn_bam: 
+  realgn_bam:
     type: File
-    outputSource: sentieon_bwa_mem/output 
+    outputSource: sentieon_bwa_mem/output
 
 steps:
   sentieon_bwa_mem:
