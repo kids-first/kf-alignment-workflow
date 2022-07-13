@@ -29,8 +29,14 @@ doc: |
 
   ## Input Files
 
-  This workflow uses identical inputs as our existing alignment workflow. For more
-  information see: https://github.com/kids-first/kf-alignment-workflow#inputs
+  This workflow has a unique input `sentieon_license` that is not present in our
+  main alignment workflow. To run the Sentieon tool, users must provide the license
+  value to run any of the Sentieon tools. We have provided a default value that
+  works exclusively on Cavatica. Alternatively, if you wish to use this outside
+  of Cavatica, you will need to provide your own server license.
+
+  Otherwise, this workflow uses identical inputs as our existing alignment workflow.
+  For more information see: https://github.com/kids-first/kf-alignment-workflow#inputs
 
   ## Output Files
 
@@ -97,7 +103,8 @@ requirements:
 - class: InlineJavascriptRequirement
 
 inputs:
-  sentieon_license: {type: string, doc: "License server host and port"}
+  sentieon_license: {type: 'string?', default: "10.5.59.108:8990", doc: "License server\
+      \ host and port"}
   input_bam_list: {type: 'File[]?', doc: "List of input BAM files"}
   input_pe_reads_list: {type: 'File[]?', doc: "List of input R1 paired end fastq reads"}
   input_pe_mates_list: {type: 'File[]?', doc: "List of input R2 paired end fastq reads"}
