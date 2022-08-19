@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: Workflow
 id: kfdrc_process_bam
 requirements:
@@ -27,7 +27,9 @@ steps:
     run: ../tools/samtools_split.cwl
     in:
       input_bam: input_bam
-      reference: indexed_reference_fasta
+      reference:
+        source: [cram_reference, indexed_reference_fasta]
+        pickValue: first_non_null
     out: [bam_files] #+1 Nesting File[]
 
   realign_split_bam:
