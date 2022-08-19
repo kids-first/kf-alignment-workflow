@@ -46,8 +46,8 @@ doc: |
   ## Sentieon Alignment: Similarities and Differences
 
   The two workflows start identically; both workflows start by splitting the
-  input BAMs into read group (RG) BAMs using samtools split then convert those RG
-  BAMs into FASTQ files using biobambam2 bamtofastq. After FASTQ creation, the
+  input SAMs/BAMs/CRAMs (Alignment/Map files, or AMs) into read group (RG) AMs using samtools split then convert those RG
+  AMs into FASTQ files using biobambam2 bamtofastq. After FASTQ creation, the
   two workflows diverge in software usage. Whereas the KFDRC GATK pipeline uses a
   wide variety of tools (bwa, sambamba, samblaster, GATK, Picard, and samtools)
   to generate the realigned CRAMs, the KFDRC Sentieon pipeline uses exclusively
@@ -109,11 +109,13 @@ inputs:
   input_pe_reads_list: {type: 'File[]?', doc: "List of input R1 paired end fastq reads"}
   input_pe_mates_list: {type: 'File[]?', doc: "List of input R2 paired end fastq reads"}
   input_pe_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in PE processing"}
-  input_se_reads_list: {type: 'File[]?', doc: "List of input singlie end fastq reads"}
+  input_se_reads_list: {type: 'File[]?', doc: "List of input single end fastq reads"}
   input_se_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in SE processing"}
   reference_tar: {type: File, doc: "Tar file containing a reference fasta and, optionally,\
       \ its complete set of associated indexes (samtools, bwa, and picard)", "sbg:suggestedValue": {
       class: File, path: 5f4ffff4e4b0370371c05153, name: Homo_sapiens_assembly38.tgz}}
+  cram_reference: {type: 'File?', doc: "If aligning from cram, need to provided reference\
+      \ used to generate that cram"}
   biospecimen_name: {type: string, doc: "String name of biospcimen"}
   output_basename: {type: string, doc: "String to use as the base for output filenames"}
   dbsnp_vcf: {type: 'File?', doc: "dbSNP vcf file", "sbg:suggestedValue": {class: File,
@@ -299,6 +301,7 @@ steps:
     in:
       input_rgbam: flatten_split_rgbams/output_files
       sample_name: biospecimen_name
+      cram_reference: cram_reference
     out: [bwa_payload]
 
   prepare_pe_fq_bwa_payloads:
@@ -461,5 +464,5 @@ hints:
 - SENTIEON
 - GATK
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.0'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.1'
   label: github-release

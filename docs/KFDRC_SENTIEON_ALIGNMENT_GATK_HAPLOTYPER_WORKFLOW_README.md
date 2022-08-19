@@ -41,8 +41,8 @@ For more information see: https://github.com/kids-first/kf-alignment-workflow#ou
 ## Sentieon Alignment: Similarities and Differences
 
 The two workflows start identically; both workflows start by splitting the
-input BAMs into read group (RG) BAMs using samtools split then convert those RG
-BAMs into FASTQ files using biobambam2 bamtofastq. After FASTQ creation, the
+input SAMs/BAMs/CRAMs (Alignment/Map files, or AMs) into read group (RG) AMs using samtools split then convert those RG
+AMs into FASTQ files using biobambam2 bamtofastq. After FASTQ creation, the
 two workflows diverge in software usage. Whereas the KFDRC GATK pipeline uses a
 wide variety of tools (bwa, sambamba, samblaster, GATK, Picard, and samtools)
 to generate the realigned CRAMs, the KFDRC Sentieon pipeline uses exclusively

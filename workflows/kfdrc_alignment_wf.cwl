@@ -8,7 +8,7 @@ doc: |
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
   The Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam/fastq-to-cram, gVCF optional) follows
-  Broad best practices outlined in [Data pre-processing for variant discovery.](https://software.broadinstitute.org/gatk/best-practices/workflow?id=11165)
+  Broad best practices outlined in [Data pre-processing for variant discovery.](https://gatk.broadinstitute.org/hc/en-us/articles/360035535912-Data-pre-processing-for-variant-discovery)
   It uses bam/fastq input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38. Resultant bam is de-dupped and
   base score recalibrated. Contamination is calculated and a gVCF is created optionally using GATK4 vbeta.1-3.5 HaplotypeCaller. Inputs from
   this can be used later on for further analysis in joint trio genotyping and subsequent refinement and deNovo variant analysis. If you would like to run this workflow using the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
@@ -16,7 +16,7 @@ doc: |
    This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-alignment-workflow) and supersedes the [old workflow](https://github.com/kids-first/kf-alignment-workflow/tree/1.0.0) and [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however outputs are considered equivalent.
 
   ## Input Agnostic Alignment Workflow
-  Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+  Workflow for the alignment or realignment of input SAMs/BAMs/CRAMs (Alignment/Map files, or AMs), PE reads, and/or SE reads; conditionally generate gVCF and metrics.
 
   This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
   and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
@@ -73,6 +73,7 @@ doc: |
     input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
     run_bam_processing: { type: boolean, doc: "BAM processing will be run. Requires: input_bam_list" }
     run_pe_reads_processing: { type: boolean, doc: "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list" }
+    cram_reference: { type: 'File?', doc: "If aligning from cram, need to provided reference used to generate that cram" }
     run_se_reads_processing: { type: boolean, doc: "SE reads processing will be run. Requires: input_se_reads_list, input_se_rgs_list" }
     # IF WGS or CREATE gVCF
     wgs_calling_interval_list: { type: 'File?', doc: "WGS interval list used to aid scattering Haplotype caller" }
@@ -118,18 +119,18 @@ doc: |
 
   #### Detailed Input Information:
   The pipeline is build to handle three distinct input types:
-  1. BAMs
+  1. SAMs/BAMs/CRAMs (Alignment/Map files, or AMs)
   1. PE Fastqs
   1. SE Fastqs
 
-  Additionally, the workflow supports these three in any combination. You can have PE Fastqs and BAMs,
-  PE Fastqs and SE Fastqs, BAMS and PE Fastqs and SE Fastqs, etc. Each of these three classes will be
+  Additionally, the workflow supports these three in any combination. You can have PE Fastqs and AMs,
+  PE Fastqs and SE Fastqs, AMs and PE Fastqs and SE Fastqs, etc. Each of these three classes will be
   procsessed and aligned separately and the resulting BWA aligned bams will be merged into a final BAM
   before performing steps like BQSR and Metrics collection.
 
-  ##### BAM Inputs
-  The BAM processing portion of the pipeline is the simplest when it comes to inputs. You may provide
-  a single BAM or many BAMs. The input for BAMs is a file list. In Cavatica or other GUI interfaces,
+  #####  Alignment/Map Inputs
+  The Alignment/Map processing portion of the pipeline is the simplest when it comes to inputs. You may provide
+  a single Alignment/Map file or many AMs. The input for AMs is a file list. In Cavatica or other GUI interfaces,
   simply select the files you wish to process. For command line interfaces such as cwltool, your input
   should look like the following.
   ```json
@@ -377,6 +378,81 @@ doc: |
     - 1000G_omni2.5.hg38.vcf.gz.tbi
   ```
 
+  ![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_alignment_gatk_hc_cyoa_wf.png?raw=true "BAM to CRAM to gVCF Workflow diagram")
+
+  ## KFDRC GATK HaplotypeCaller CRAM to gVCF Workflow
+
+  This workflow taks a CRAM file, converts it to a BAM, determines a contamination value, then runs
+  GATK HaplotypeCaller to generate a gVCF, gVCF calling metrics, and, if no contamination value is provided,
+  the VerifyBAMID output.
+
+  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-gatk-haplotypecaller-workflow)
+
+  ### Inputs
+  ```yaml
+  inputs:
+    input_cram: { type: 'File', doc: "Input CRAM file" }
+    biospecimen_name: { type: 'string', doc: "String name of biospcimen" }
+    output_basename: { type: 'string', doc: "String to use as the base for output filenames" }
+    reference_tar: { type: 'File', doc: "Tar file containing a reference fasta and, optionally, its complete set of associated indexes (samtools, bwa, and picard)" }
+    dbsnp_vcf: { type: 'File', doc: "dbSNP vcf file" }
+    dbsnp_idx: { type: 'File?', doc: "dbSNP vcf index file" }
+    contamination: { type: 'float?', doc: "Precalculated contamination value. Providing the value here will skip the run of VerifyBAMID and use the provided value as ground truth." }
+    contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
+    contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
+    contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
+    wgs_calling_interval_list: { type: 'File', doc: "WGS interval list used to aid scattering Haplotype caller" }
+    wgs_evaluation_interval_list: { type: 'File', doc: "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)" }
+  ```
+
+  #### Example Input
+  ```yaml
+  input_cram:
+    class: File
+    path: /path/to/input.cram
+  biospecimen_name: bio_name_test
+  output_basename: base_name_test
+  reference_tar:
+    class: File
+    path: /path/to/Homo_sapiens_assembly38.tgz
+  dbsnp_vcf:
+    class: File
+    path: /path/to/Homo_sapiens_assembly38.dbsnp138.vcf
+  contamination: 0.009684
+  wgs_calling_interval_list:
+    class: File
+    path: /path/to/wgs_calling_regions.hg38.interval_list
+  wgs_evaluation_interval_list:
+    class: File
+    path: /path/to/wgs_evaluation_regions.hg38.interval_list
+  ```
+
+  ### Outputs
+  gvcf: The germline variants calls in VCF format
+  gvcf_calling_metrics: Various metrics from the creation of the gVCF
+  verifybamid_output: If contamination is calculated rather than handed in by the user, the workflow will provide the output from verifybamid
+
+  ### Tips for running:
+  1. For contamination input, either populate the `contamination` field or provide the three contamination
+     files: `contamination_sites_bed`, `contamination_sites_mu`, and `contamination_sites_ud`. Failure to
+     provide one of these groups will result in a failed run.
+  1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
+      - contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
+      - contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
+      - contamination_sites_ud: Homo_sapiens_assembly38.contam.UD
+      - dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
+      - reference_tar: Homo_sapiens_assembly38.tgz
+  1. The input for the reference_tar must be a tar file containing the reference fasta along with its indexes.
+     The required indexes are `[.64.ann,.64.amb,.64.bwt,.64.pac,.64.sa,.dict,.fai]` and are generated by bwa, picard, and samtools.
+     Additionally, an `.64.alt` index is recommended.
+  1. If you are making your own bwa indexes make sure to use the `-6` flag to obtain the `.64` version of the
+     indexes. Indexes that do not match this naming schema will cause a failure in certain runner ecosystems.
+  1. Should you decide to create your own reference indexes and omit the ALT index file from the reference,
+     or if its naming structure mismatches the other indexes, then your alignments will be equivalent to the results you would
+     obtain if you run BWA-MEM with the -j option.
+
+  ![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_gatk_hc_wf.png?raw=true "CRAM to gVCF Workflow diagram")
+
 
 requirements:
 - class: ScatterFeatureRequirement
@@ -384,19 +460,19 @@ requirements:
 - class: SubworkflowFeatureRequirement
 - class: InlineJavascriptRequirement
   expressionLib:
-    - |-
-      //https://stackoverflow.com/a/27267762
-      var flatten = function flatten(ary) {
-          var ret = [];
-          for(var i = 0; i < ary.length; i++) {
-              if(Array.isArray(ary[i])) {
-                  ret = ret.concat(flatten(ary[i]));
-              } else {
-                  ret.push(ary[i]);
-              }
-          }
-          return ret;
-      }
+  - |-
+    //https://stackoverflow.com/a/27267762
+    var flatten = function flatten(ary) {
+        var ret = [];
+        for(var i = 0; i < ary.length; i++) {
+            if(Array.isArray(ary[i])) {
+                ret = ret.concat(flatten(ary[i]));
+            } else {
+                ret.push(ary[i]);
+            }
+        }
+        return ret;
+    }
 
 inputs:
   input_bam_list: {type: 'File[]?', doc: "List of input BAM files"}
@@ -408,12 +484,14 @@ inputs:
   reference_tar: {type: File, doc: "Tar file containing a reference fasta and, optionally,\
       \ its complete set of associated indexes (samtools, bwa, and picard)", "sbg:suggestedValue": {
       class: File, path: 5f4ffff4e4b0370371c05153, name: Homo_sapiens_assembly38.tgz}}
+  cram_reference: {type: 'File?', doc: "If aligning from cram, need to provided reference\
+      \ used to generate that cram"}
   biospecimen_name: {type: string, doc: "String name of biospcimen"}
   output_basename: {type: string, doc: "String to use as the base for output filenames"}
   dbsnp_vcf: {type: 'File?', doc: "dbSNP vcf file", "sbg:suggestedValue": {class: File,
       path: 6063901f357c3a53540ca84b, name: Homo_sapiens_assembly38.dbsnp138.vcf}}
-  dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", "sbg:suggestedValue": {class: File,
-      path: 6063901e357c3a53540ca834, name: Homo_sapiens_assembly38.dbsnp138.vcf.idx}}
+  dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", "sbg:suggestedValue": {
+      class: File, path: 6063901e357c3a53540ca834, name: Homo_sapiens_assembly38.dbsnp138.vcf.idx}}
   knownsites: {type: 'File[]', doc: "List of files containing known polymorphic sites\
       \ used to exclude regions around known polymorphisms from analysis", "sbg:suggestedValue": [
       {class: File, path: 6063901e357c3a53540ca835, name: 1000G_omni2.5.hg38.vcf.gz},
@@ -444,8 +522,8 @@ inputs:
       \ the positions to restrict the wgs metrics assessment", "sbg:suggestedValue": {
       class: File, path: 6063901c357c3a53540ca813, name: wgs_coverage_regions.hg38.interval_list}}
   wgs_evaluation_interval_list: {type: 'File?', doc: "Target intervals to restrict\
-      \ gvcf metric analysis (for VariantCallingMetrics)", "sbg:suggestedValue": {class: File,
-      path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
+      \ gvcf metric analysis (for VariantCallingMetrics)", "sbg:suggestedValue": {
+      class: File, path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
   wxs_bait_interval_list: {type: 'File?', doc: "An interval list file that contains\
       \ the locations of the WXS baits used (for HsMetrics)"}
   wxs_target_interval_list: {type: 'File?', doc: "An interval list file that contains\
@@ -576,6 +654,7 @@ steps:
       sample_name: biospecimen_name
       conditional_run: gatekeeper/scatter_bams
       min_alignment_score: min_alignment_score
+      cram_reference: cram_reference
     scatter: conditional_run
     out: [unsorted_bams] #+2 Nesting File[][][]
 
@@ -780,5 +859,5 @@ hints:
 - WXS
 - GVCF
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.7.4'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.1'
   label: github-release

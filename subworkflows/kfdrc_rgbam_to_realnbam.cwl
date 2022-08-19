@@ -10,6 +10,8 @@ inputs:
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
   sample_name: string
   min_alignment_score: int?
+  cram_reference: { type: 'File?', doc: "If aligning from cram, need to provided reference used to generate that cram" }
+
 outputs:
   unsorted_bams:
     type: File[]
@@ -19,8 +21,8 @@ steps:
   bamtofastq_chomp:
     run: ../tools/bamtofastq_chomp.cwl
     in:
-      input_bam: input_rgbam
-#      sample: sample_name
+      input_align: input_rgbam
+      reference: cram_reference
     out: [output, rg_string]
 
   expression_updatergsample:
@@ -37,7 +39,6 @@ steps:
       reads: bamtofastq_chomp/output
       interleaved:
         default: true
-#      rg: bamtofastq_chomp/rg_string
       rg: expression_updatergsample/rg_str
       min_alignment_score: min_alignment_score
     scatter: [reads]

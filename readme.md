@@ -11,7 +11,7 @@ this can be used later on for further analysis in joint trio genotyping and subs
  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-alignment-workflow) and supersedes the [old workflow](https://github.com/kids-first/kf-alignment-workflow/tree/1.0.0) and [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however outputs are considered equivalent.
 
 ## Input Agnostic Alignment Workflow
-Workflow for the alignment or realignment of input BAMs, PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+Workflow for the alignment or realignment of input SAMs/BAMs/CRAMs (Alignment/Map files, or AMs), PE reads, and/or SE reads; conditionally generate gVCF and metrics.
 
 This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
 and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
@@ -68,6 +68,7 @@ to `true`; no additonal inputs are required.
   input_se_rgs_list: { type: 'string[]?', doc: "List of RG strings to use in SE processing" }
   run_bam_processing: { type: boolean, doc: "BAM processing will be run. Requires: input_bam_list" }
   run_pe_reads_processing: { type: boolean, doc: "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list" }
+  cram_reference: { type: 'File?', doc: "If aligning from cram, need to provided reference used to generate that cram" }
   run_se_reads_processing: { type: boolean, doc: "SE reads processing will be run. Requires: input_se_reads_list, input_se_rgs_list" }
   # IF WGS or CREATE gVCF
   wgs_calling_interval_list: { type: 'File?', doc: "WGS interval list used to aid scattering Haplotype caller" }
@@ -113,18 +114,18 @@ to `true`; no additonal inputs are required.
 
 #### Detailed Input Information:
 The pipeline is build to handle three distinct input types:
-1. BAMs
+1. SAMs/BAMs/CRAMs (Alignment/Map files, or AMs)
 1. PE Fastqs
 1. SE Fastqs
 
-Additionally, the workflow supports these three in any combination. You can have PE Fastqs and BAMs,
-PE Fastqs and SE Fastqs, BAMS and PE Fastqs and SE Fastqs, etc. Each of these three classes will be
+Additionally, the workflow supports these three in any combination. You can have PE Fastqs and AMs,
+PE Fastqs and SE Fastqs, AMs and PE Fastqs and SE Fastqs, etc. Each of these three classes will be
 procsessed and aligned separately and the resulting BWA aligned bams will be merged into a final BAM
 before performing steps like BQSR and Metrics collection.
 
-##### BAM Inputs
-The BAM processing portion of the pipeline is the simplest when it comes to inputs. You may provide
-a single BAM or many BAMs. The input for BAMs is a file list. In Cavatica or other GUI interfaces,
+#####  Alignment/Map Inputs
+The Alignment/Map processing portion of the pipeline is the simplest when it comes to inputs. You may provide
+a single Alignment/Map file or many AMs. The input for AMs is a file list. In Cavatica or other GUI interfaces,
 simply select the files you wish to process. For command line interfaces such as cwltool, your input
 should look like the following.
 ```json
