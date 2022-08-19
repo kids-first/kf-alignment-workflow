@@ -23,33 +23,38 @@ arguments:
     valueFrom: |-
       set -eo pipefail
 
-      samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
+      samtools view -H $(inputs.input_align.path) | grep ^@RG > rg.txt
 
-      if [ $(inputs.input_bam.size) -gt $(inputs.max_size) ]; then
-        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) | split -dl 680000000 - reads-
+      EXT=$(inputs.input_align.nameext.toLowerCase().substr(1))
+
+      if [ $(inputs.input_align.size) -gt $(inputs.max_size) ]; then
+        bamtofastq tryoq=1 filename=$(inputs.input_align.path) inputformat=$EXT ${
+          if (inputs.reference != null){
+              return "reference=" + inputs.reference.path;
+            }
+          else{
+              return "";
+            }
+          } | split -dl 680000000 - reads-
         ls reads-* | xargs -i mv {} {}.fq
       else
-        bamtofastq tryoq=1 filename=$(inputs.input_bam.path) > reads-00.fq
+        bamtofastq tryoq=1 filename=$(inputs.input_align.path) inputformat=$EXT ${
+          if (inputs.reference != null){
+              return "reference=" + inputs.reference.path;
+            }
+          else{
+              return "";
+            }
+          } > reads-00.fq
       fi
 inputs:
-  input_bam: { type: File, doc: "Input bam file" }
-  max_size: { type: long, default: 20000000000, doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split" }
-#  sample: { type: string, doc: "String name of the sample used to relabel the rg string" }
+  input_align: { type: File, doc: "Input alignment file" }
+  max_size: { type: 'long?', default: 20000000000, doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split" }
+  reference: { type: 'File?', doc: "Fasta file if input is cram", secondaryFiles: [.fai] }
+
 outputs:
   output: { type: 'File[]', outputBinding: { glob: '*.fq' } }
   rg_string:
-#    type: string
     type: File
     outputBinding:
       glob: rg.txt
-#      loadContents: true
-#      outputEval:
-#        ${
-#          var arr = self[0].contents.split('\n')[0].split('\t');
-#          for (var i=1; i<arr.length; i++){
-#            if (arr[i].startsWith('SM')){
-#              arr[i] = 'SM:' + inputs.sample;
-#            }
-#          }
-#          return arr.join('\\t');
-#        }

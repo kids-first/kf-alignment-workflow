@@ -18,9 +18,15 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: |-
-      bamtofastq tryoq=1 filename=$(inputs.input_bam.path) > reads-00.fq
+      bamtofastq tryoq=1 inputformat=$(inputs.input_align.nameext.toLowerCase().substr(1))
+  - position: 2
+    shellQuote: false
+    valueFrom: |-
+      > reads-00.fq
 inputs:
-  input_bam: { type: File, doc: "Input bam file" }
+  input_align: { type: File, doc: "Input alignment file", inputBinding: { position: 1, prefix: "filename=", separate: false } }
+  reference: { type: 'File?', doc: "Fasta file if input is cram", secondaryFiles: [.fai],
+    inputBinding: { position: 1, prefix: "reference=", separate: false } }
 outputs:
   output: { type: 'File', outputBinding: { glob: '*.fq' } }
 

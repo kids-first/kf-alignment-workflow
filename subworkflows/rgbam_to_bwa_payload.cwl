@@ -8,6 +8,8 @@ requirements:
 inputs:
   input_rgbam: File
   sample_name: string
+  cram_reference: { type: 'File?', doc: "Fasta file if input is cram", secondaryFiles: [.fai] }
+
 outputs:
   bwa_payload:
     type:
@@ -42,7 +44,8 @@ steps:
   bamtofastq:
     run: ../tools/biobambam_bamtofastq.cwl
     in:
-      input_bam: input_rgbam
+      input_align: input_rgbam
+      reference: cram_reference
     out: [output]
 
   clt_prepare_bwa_payload:
