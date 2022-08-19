@@ -277,7 +277,9 @@ steps:
     scatter: [input_bam]
     in:
       input_bam: input_bam_list
-      reference: untar_reference/indexed_fasta
+      reference: 
+        source: [cram_reference, untar_reference/indexed_fasta]
+        pickValue: first_non_null
       max_memory: samtools_split_max_memory
       cores: samtools_split_cores
     out: [bam_files]
