@@ -22,7 +22,7 @@ arguments:
       INPUT=$(inputs.input_bam.path)
       REFERENCE_SEQUENCE=$(inputs.reference.path)
       OUTPUT=$(inputs.input_bam.nameroot).gc_bias_metrics.txt
-      SUMMARY_OUTPUT=$(inputs.input_bam.nameroot).summary_metrics.txt
+      SUMMARY_OUTPUT=$(inputs.input_bam.nameroot).gc_bias_summary_metrics.txt
       CHART_OUTPUT=$(inputs.input_bam.nameroot).gc_bias_metrics.pdf
       METRIC_ACCUMULATION_LEVEL="null"
       METRIC_ACCUMULATION_LEVEL="SAMPLE"

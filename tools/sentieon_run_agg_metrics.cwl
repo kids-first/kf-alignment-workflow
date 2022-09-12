@@ -289,7 +289,7 @@ outputs:
 - id: is_metrics
   type: File
   outputBinding:
-    glob: '*.insert_size_metrics.txt'
+    glob: '*.insert_size_metrics'
 - id: is_plot
   type: File
   outputBinding:
@@ -389,7 +389,7 @@ arguments:
   shellQuote: false
 - prefix: '--algo'
   position: 80
-  valueFrom: InsertSizeMetricAlgo $(inputs.input_bam.nameroot).insert_size_metrics.txt
+  valueFrom: InsertSizeMetricAlgo $(inputs.input_bam.nameroot).insert_size_metrics
   shellQuote: false
 - prefix: ''
   position: 110
@@ -404,7 +404,7 @@ arguments:
 - prefix: ''
   position: 130
   valueFrom: |-
-    ; sentieon plot InsertSizeMetricAlgo -o $(inputs.input_bam.nameroot).insert_size_Histogram.pdf $(inputs.input_bam.nameroot).insert_size_metrics.txt
+    ; sentieon plot InsertSizeMetricAlgo -o $(inputs.input_bam.nameroot).insert_size_Histogram.pdf $(inputs.input_bam.nameroot).insert_size_metrics
   shellQuote: false
 - prefix: ''
   position: 140
