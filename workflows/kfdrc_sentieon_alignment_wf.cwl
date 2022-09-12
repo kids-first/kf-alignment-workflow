@@ -369,6 +369,7 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam: sentieon_markdups/out_alignments
+      prefix: output_basename
       known_sites: index_knownsites/output
     out: [output_reads, recal_table]
 

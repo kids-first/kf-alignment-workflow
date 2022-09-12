@@ -121,7 +121,7 @@ outputs:
 - id: output_reads
   type: File
   outputBinding:
-    glob: "*.recalibrated.*am"
+    glob: "*.*am"
   secondaryFiles:
     - pattern: .bai
       required: false 
@@ -146,15 +146,15 @@ arguments:
         var ext = inputs.output_type
         if (ext === "BAM")
         {
-            var out_extension = ".recalibrated.bam"
+            var out_extension = ".bam"
         }
         else if (ext === "CRAM")
         {
-            var out_extension = ".recalibrated.cram"
+            var out_extension = ".cram"
         }
         else
         {
-            var out_extension = ".recalibrated".concat(inputs.input_bam.nameext.toLowerCase())
+            var out_extension = inputs.input_bam.nameext.toLowerCase()
         }
         if(inputs.prefix)
         {
