@@ -21,7 +21,7 @@ arguments:
     valueFrom: >-
       INPUT=$(inputs.input_bam.path)
       REFERENCE_SEQUENCE=$(inputs.reference.path)
-      OUTPUT=$(inputs.input_bam.nameroot).alignmentsummary_metrics
+      OUTPUT=$(inputs.input_bam.nameroot).alignment_summary_metrics
       METRIC_ACCUMULATION_LEVEL="null"
       METRIC_ACCUMULATION_LEVEL="SAMPLE"
       METRIC_ACCUMULATION_LEVEL="LIBRARY"
@@ -31,4 +31,4 @@ inputs:
   reference: { type: File, secondaryFiles: [.fai], doc: "Reference fasta with dict and fai indexes" }
   conditional_run: { type: int, doc: "Placeholder variable to allow conditional running" } 
 outputs:
-  output: { type: File, outputBinding: { glob: '*.alignmentsummary_metrics' } }
+  output: { type: File, outputBinding: { glob: '*.alignment_summary_metrics' } }
