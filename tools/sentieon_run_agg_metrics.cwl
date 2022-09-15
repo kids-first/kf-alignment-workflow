@@ -245,7 +245,7 @@ outputs:
 - id: as_output
   type: File
   outputBinding:
-    glob: '*.alignmentsummary_metrics'
+    glob: '*.alignment_summary_metrics'
 - id: sama_bait_bias_detail_metrics
   type: File
   outputBinding:
@@ -325,7 +325,7 @@ arguments:
     ${
         var AlignmentStat_opt = ""
         if (inputs.adapter_seq) AlignmentStat_opt = "--adapter_seq " + inputs.adapter_seq + " "
-        return "AlignmentStat " + AlignmentStat_opt + inputs.input_bam.nameroot + ".alignmentsummary_metrics"
+        return "AlignmentStat " + AlignmentStat_opt + inputs.input_bam.nameroot + ".alignment_summary_metrics"
     }
   shellQuote: false
 - prefix: '--algo'
