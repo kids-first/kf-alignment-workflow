@@ -56,7 +56,7 @@ steps:
   gatk_haplotypecaller:
     hints:
       - class: sbg:AWSInstanceType
-        value: c5.9xlarge
+        value: c5.4xlarge
     run: ../tools/gatk_haplotypecaller.cwl
     in:
       contamination: verifybamid_checkcontam_conditional/contamination
