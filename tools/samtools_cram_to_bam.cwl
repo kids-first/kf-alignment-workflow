@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 4000
+    ramMin: 16000
     coresMin: $(inputs.threads)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.8-dev'
@@ -19,7 +19,7 @@ arguments:
 inputs:
   input_cram: File
   output_basename: string
-  threads: { type: 'int?', doc: "num threads to use", default: 16}
+  threads: { type: 'int?', doc: "num threads to use", default: 8}
   reference: {type: File, secondaryFiles: [.fai]}
 outputs:
   output:

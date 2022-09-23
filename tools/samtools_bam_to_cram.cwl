@@ -10,7 +10,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 4000
+    ramMin: 16000
     coresMin: $(inputs.threads)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.8-dev'
@@ -24,6 +24,6 @@ arguments:
 inputs:
   reference: {type: File, secondaryFiles: [.fai], doc: "Reference fasta with associated fai index"}
   input_bam: {type: File, secondaryFiles: [^.bai], doc: "Input bam file"}
-  threads: { type: 'int?', doc: "num threads to use", default: 16}
+  threads: { type: 'int?', doc: "num threads to use", default: 8}
 outputs:
   output: { type: File, outputBinding: { glob: '*.cram' }, secondaryFiles: [.crai] }
