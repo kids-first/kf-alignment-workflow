@@ -20,7 +20,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       -C -T $(inputs.reference.path) -@ $(inputs.threads) -o $(inputs.input_bam.nameroot).cram $(inputs.input_bam.path)
-      && samtools index $(inputs.input_bam.nameroot).cram
+      && samtools index -@ $(inputs.threads) $(inputs.input_bam.nameroot).cram
 inputs:
   reference: {type: File, secondaryFiles: [.fai], doc: "Reference fasta with associated fai index"}
   input_bam: {type: File, secondaryFiles: [^.bai], doc: "Input bam file"}
