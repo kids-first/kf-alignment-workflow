@@ -859,5 +859,5 @@ hints:
 - WXS
 - GVCF
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.1'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.2'
   label: github-release
