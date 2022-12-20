@@ -12,6 +12,7 @@ inputs:
   sample_name: string
   min_alignment_score: int?
   cram_reference: { type: 'File?', doc: "If aligning from cram, need to provided reference used to generate that cram" }
+  bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
 
 outputs:
   unsorted_bams:
@@ -40,5 +41,6 @@ steps:
       input_rgbam: samtools_split/bam_files
       min_alignment_score: min_alignment_score
       cram_reference: cram_reference
+      bamtofastq_cpu: bamtofastq_cpu
     scatter: [input_rgbam]
     out: [unsorted_bams] #+1 Nesting File[][]

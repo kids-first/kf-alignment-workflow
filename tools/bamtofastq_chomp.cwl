@@ -12,7 +12,8 @@ doc: |-
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
-    ramMin: 1000
+    ramMin: $(inputs.ram * 1000)
+    coresMin: $(inputs.cpu)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/bwa-bundle:dev'
   - class: InlineJavascriptRequirement
@@ -51,6 +52,8 @@ inputs:
   input_align: { type: File, doc: "Input alignment file" }
   max_size: { type: 'long?', default: 20000000000, doc: "The maximum size (in bytes) that an input bam can be before the FASTQ is split" }
   reference: { type: 'File?', doc: "Fasta file if input is cram", secondaryFiles: [.fai] }
+  cpu: { type: 'int?', default: 1, doc: "CPUs to allocate to this task." }
+  ram: { type: 'int?', default: 2, doc: "GB of RAM to allocate to this task." }
 
 outputs:
   output: { type: 'File[]', outputBinding: { glob: '*.fq' } }

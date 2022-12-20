@@ -89,6 +89,7 @@ doc: |
     run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
     # ADVANCED
     min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
+    bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
   ```
 
   ### Outputs:
@@ -360,6 +361,13 @@ doc: |
      failing or generating erroneous files.
   1. Turning off gVCF creation and metrics collection for a minimal successful run.
   1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
+  1. For large BAM inputs, users may encounter a scenario where jobs fail during
+     the bamtofastq step. The given error will recommend that users try increasing
+     disk space. Increasing the disk space will solve the error for all but the
+     largest inputs. For those extremely large inputs with many read groups that
+     continue to get this error, it is recommended that users increase the value for
+     `bamtofastq_cpu`. Increasing this value will decrease the number of concurrent
+     bamtofastq jobs that run on the same instance.
   ```yaml
   contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
   contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
@@ -452,8 +460,6 @@ doc: |
      obtain if you run BWA-MEM with the -j option.
 
   ![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_gatk_hc_wf.png?raw=true "CRAM to gVCF Workflow diagram")
-
-
 requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
@@ -548,7 +554,7 @@ inputs:
       \ wgs_evaluation_interval_list"}
   min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output\
       \ alignment with score lower than INT. This option only affects output."}
-
+  bamtofastq_cpu: {type: 'int?', doc: "CPUs to allocate to bamtofastq"}
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned\
       \ Reads File"}
@@ -606,14 +612,12 @@ outputs:
       \ idxstats of the realigned BAM file."}
   xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text\
       \ file containing X and Y reads statistics generated from idxstats."}
-
 steps:
   untar_reference:
     run: ../tools/untar_indexed_reference.cwl
     in:
       reference_tar: reference_tar
     out: [fasta, fai, dict, alt, amb, ann, bwt, pac, sa]
-
   bundle_secondaries:
     run: ../tools/bundle_secondaryfiles.cwl
     in:
@@ -623,7 +627,6 @@ steps:
           untar_reference/ann, untar_reference/bwt, untar_reference/pac, untar_reference/sa]
         linkMerge: merge_flattened
     out: [output]
-
   index_knownsites:
     run: ../tools/tabix_index.cwl
     in:
@@ -632,7 +635,6 @@ steps:
     scatter: [input_file, input_index]
     scatterMethod: dotproduct
     out: [output]
-
   gatekeeper:
     run: ../tools/gatekeeper.cwl
     in:
@@ -645,7 +647,6 @@ steps:
       run_gvcf_processing: run_gvcf_processing
     out: [scatter_bams, scatter_pe_reads, scatter_se_reads, scatter_gvcf, scatter_hs_metrics,
       scatter_wgs_metrics, scatter_agg_metrics]
-
   process_bams:
     run: ../subworkflows/kfdrc_process_bamlist.cwl
     in:
@@ -655,6 +656,7 @@ steps:
       conditional_run: gatekeeper/scatter_bams
       min_alignment_score: min_alignment_score
       cram_reference: cram_reference
+      bamtofastq_cpu: bamtofastq_cpu
     scatter: conditional_run
     out: [unsorted_bams] #+2 Nesting File[][][]
 
@@ -693,7 +695,6 @@ steps:
           $(flatten(self))
       base_file_name: output_basename
     out: [merged_bam]
-
   sambamba_sort:
     hints:
     - class: "sbg:AWSInstanceType"
@@ -703,13 +704,11 @@ steps:
       bam: sambamba_merge/merged_bam
       base_file_name: output_basename
     out: [sorted_bam]
-
   python_createsequencegroups:
     run: ../tools/python_createsequencegroups.cwl
     in:
       ref_dict: untar_reference/dict
     out: [sequence_intervals, sequence_intervals_with_unmapped]
-
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
@@ -719,14 +718,12 @@ steps:
       sequence_interval: python_createsequencegroups/sequence_intervals
     scatter: [sequence_interval]
     out: [output]
-
   gatk_gatherbqsrreports:
     run: ../tools/gatk_gatherbqsrreports.cwl
     in:
       input_brsq_reports: gatk_baserecalibrator/output
       output_basename: output_basename
     out: [output]
-
   gatk_applybqsr:
     run: ../tools/gatk_applybqsr.cwl
     in:
@@ -736,21 +733,18 @@ steps:
       sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
     out: [recalibrated_bam]
-
   picard_gatherbamfiles:
     run: ../tools/picard_gatherbamfiles.cwl
     in:
       input_bam: gatk_applybqsr/recalibrated_bam
       output_bam_basename: output_basename
     out: [output]
-
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
     in:
       input_bam: picard_gatherbamfiles/output
       reference: bundle_secondaries/output
     out: [output]
-
   picard_collecthsmetrics:
     run: ../tools/picard_collecthsmetrics_conditional.cwl
     in:
@@ -761,7 +755,6 @@ steps:
       conditional_run: gatekeeper/scatter_hs_metrics
     scatter: conditional_run
     out: [output]
-
   picard_collectwgsmetrics:
     run: ../tools/picard_collectwgsmetrics_conditional.cwl
     in:
@@ -771,7 +764,6 @@ steps:
       conditional_run: gatekeeper/scatter_wgs_metrics
     scatter: conditional_run
     out: [output]
-
   picard_collectalignmentsummarymetrics:
     run: ../tools/picard_collectalignmentsummarymetrics_conditional.cwl
     in:
@@ -780,7 +772,6 @@ steps:
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [output]
-
   picard_collectgcbiasmetrics:
     run: ../tools/picard_collectgcbiasmetrics_conditional.cwl
     in:
@@ -789,7 +780,6 @@ steps:
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [detail, summary, chart]
-
   picard_collectinsertsizemetrics:
     run: ../tools/picard_collectinsertsizemetrics_conditional.cwl
     in:
@@ -798,7 +788,6 @@ steps:
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [metrics, plot]
-
   picard_collectsequencingartifactmetrics:
     run: ../tools/picard_collectsequencingartifactmetrics_conditional.cwl
     in:
@@ -808,7 +797,6 @@ steps:
     scatter: conditional_run
     out: [bait_bias_detail_metrics, bait_bias_summary_metrics, error_summary_metrics,
       pre_adapter_detail_metrics, pre_adapter_summary_metrics]
-
   picard_qualityscoredistribution:
     run: ../tools/picard_qualityscoredistribution_conditional.cwl
     in:
@@ -817,14 +805,12 @@ steps:
       conditional_run: gatekeeper/scatter_agg_metrics
     scatter: conditional_run
     out: [metrics, chart]
-
   samtools_idxstats_xy_ratio:
     run: ../tools/samtools_idxstats_xy_ratio.cwl
     in:
       run_idxstats: run_sex_metrics
       input_bam: picard_gatherbamfiles/output
     out: [output, ratio]
-
   generate_gvcf:
     run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
     in:
@@ -843,8 +829,6 @@ steps:
       conditional_run: gatekeeper/scatter_gvcf
     scatter: conditional_run
     out: [verifybamid_output, gvcf, gvcf_calling_metrics]
-
-
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
@@ -859,5 +843,5 @@ hints:
 - WXS
 - GVCF
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.2'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.3'
   label: github-release

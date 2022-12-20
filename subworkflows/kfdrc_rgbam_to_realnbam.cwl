@@ -11,6 +11,7 @@ inputs:
   sample_name: string
   min_alignment_score: int?
   cram_reference: { type: 'File?', doc: "If aligning from cram, need to provided reference used to generate that cram" }
+  bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
 
 outputs:
   unsorted_bams:
@@ -23,6 +24,7 @@ steps:
     in:
       input_align: input_rgbam
       reference: cram_reference
+      cpu: bamtofastq_cpu
     out: [output, rg_string]
 
   expression_updatergsample:

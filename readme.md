@@ -84,6 +84,7 @@ to `true`; no additonal inputs are required.
   run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
   # ADVANCED
   min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
+  bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
 ```
 
 ### Outputs:
@@ -355,6 +356,13 @@ Homo_sapiens_assembly38.fasta.fai
    failing or generating erroneous files.
 1. Turning off gVCF creation and metrics collection for a minimal successful run.
 1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
+1. For large BAM inputs, users may encounter a scenario where jobs fail during
+   the bamtofastq step. The given error will recommend that users try increasing
+   disk space. Increasing the disk space will solve the error for all but the
+   largest inputs. For those extremely large inputs with many read groups that
+   continue to get this error, it is recommended that users increase the value for
+   `bamtofastq_cpu`. Increasing this value will decrease the number of concurrent
+   bamtofastq jobs that run on the same instance.
 ```yaml
 contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
 contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
