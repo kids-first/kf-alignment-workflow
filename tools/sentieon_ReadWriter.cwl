@@ -105,6 +105,9 @@ inputs:
   type: string
   inputBinding:
     position: 150
+- id: rm_cram_bai
+  doc: BAI files are generated for CRAM files. If you don't want them, set this option.
+  type: boolean?
 - id: cpu_per_job
   label: CPU per job
   doc: CPU per job
@@ -132,3 +135,7 @@ arguments:
 - prefix: --algo
   position: 100
   valueFrom: ReadWriter
+- position: 999
+  shellQuote: false
+  valueFrom: |
+    $(inputs.rm_cram_bai ? "&& rm *cram.bai" : "")

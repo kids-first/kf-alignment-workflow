@@ -384,6 +384,8 @@ steps:
       output_file_name:
         source: sentieon_bqsr/output_reads
         valueFrom: $(self.nameroot+".cram")
+      rm_cram_bai:
+        valueFrom: $(1 == 1)
     out: [output_reads]
 
   sentieon_hsmetrics:
