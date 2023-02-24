@@ -833,7 +833,7 @@ $namespaces:
   sbg: https://sevenbridges.com
 hints:
 - class: "sbg:maxNumberOfParallelInstances"
-  value: 6
+  value: 4
 "sbg:license": Apache License 2.0
 "sbg:publisher": KFDRC
 "sbg:categories":
@@ -843,5 +843,5 @@ hints:
 - WXS
 - GVCF
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.3'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.9.0'
   label: github-release
