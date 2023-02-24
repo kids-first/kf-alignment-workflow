@@ -1,9 +1,9 @@
 cwlVersion: v1.2
 class: Workflow
 id: kfdrc-sentieon-alignment-workflow
-label: Kids First DRC Sentieon Alignment and GATK HaplotypeCaller Workflow
+label: Kids First DRC Sentieon Alignment and gVCF Workflow
 doc: |
-  # Kids First Data Resource Center Sentieon Short Reads Alignment and GATK Haplotyper Workflow
+  # Kids First Data Resource Center Sentieon Short Reads Alignment and gVCF Workflow
 
   <p align="center">
     <img src="https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png">
@@ -77,11 +77,20 @@ doc: |
   | Bam to Cram                | samtools view         | Sentieon ReadWriter               |
   | Metrics                    | Picard                | Sentieon                          |
 
-  ## GATK Haplotyper gVCF Creation
+  ## Sentieon gVCF Creation: Similarities and Differences
 
-  After the CRAMs have been generated the two workflows rejoin and use identical
-  processes to generate the gVCF. For more information on the gVCF creation,
-  please see https://github.com/kids-first/kf-alignment-workflow#kfdrc-gatk-haplotypecaller-cram-to-gvcf-workflow
+  After the creation of a recalibrated BAM, if the user wishes, a gVCF file and
+  associated metrics are generated. The Sentieon approach is to run Haplotyper on
+  the recalibrated reads. Like base recalibration, these steps are accomplished
+  without scattering and therefore no additional merging steps are required.
+  Metrics collection and contamination estimation are unchanged.
+
+  | Step                       | KFDRC GATK                          | KFDRC Sentieon                      |
+  |----------------------------|-------------------------------------|-------------------------------------|
+  | Contamination Calculation  | VerifyBamID                         | VerifyBamID                         |
+  | gVCF Calling               | GATK HaplotypeCaller                | Senteion Haplotyper                 |
+  | Gather VCFs                | Picard MergeVcfs                    | No splitting occurs in Sentieon     |
+  | Metrics                    | Picard CollectVariantCallingMetrics | Picard CollectVariantCallingMetrics |
 
   ## Basic Info
   - [D3b dockerfiles](https://github.com/d3b-center/bixtools)
@@ -94,16 +103,14 @@ doc: |
   - Cavatica: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
   - Sentieon: https://support.sentieon.com/manual/DNAseq_usage/dnaseq/
   - Broad Institute Goolge Cloud: https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0/
-
 requirements:
 - class: ScatterFeatureRequirement
 - class: StepInputExpressionRequirement
 - class: MultipleInputFeatureRequirement
 - class: SubworkflowFeatureRequirement
 - class: InlineJavascriptRequirement
-
 inputs:
-  sentieon_license: {type: 'string?', default: "10.5.59.108:8990", doc: "License server\
+  sentieon_license: {type: 'string?', default: "10.5.64.221:8990", doc: "License server\
       \ host and port"}
   input_bam_list: {type: 'File[]?', doc: "List of input BAM files"}
   input_pe_reads_list: {type: 'File[]?', doc: "List of input R1 paired end fastq reads"}
@@ -145,9 +152,6 @@ inputs:
   contamination_sites_ud: {type: 'File?', doc: ".UD matrix file from SVD result of\
       \ genotype matrix", "sbg:suggestedValue": {class: File, path: 6063901f357c3a53540ca84f,
       name: Homo_sapiens_assembly38.contam.UD}}
-  wgs_calling_interval_list: {type: 'File?', doc: "WGS interval list used to aid scattering\
-      \ Haplotype caller", "sbg:suggestedValue": {class: File, path: 60639018357c3a53540ca7df,
-      name: wgs_calling_regions.hg38.interval_list}}
   wgs_coverage_interval_list: {type: 'File?', doc: "An interval list file that contains\
       \ the positions to restrict the wgs metrics assessment", "sbg:suggestedValue": {
       class: File, path: 6063901c357c3a53540ca813, name: wgs_coverage_regions.hg38.interval_list}}
@@ -158,12 +162,6 @@ inputs:
       \ the locations of the WXS baits used (for HsMetrics)"}
   wxs_target_interval_list: {type: 'File?', doc: "An interval list file that contains\
       \ the locations of the WXS targets (for HsMetrics)"}
-  run_bam_processing: {type: boolean, doc: "BAM processing will be run. Requires:\
-      \ input_bam_list"}
-  run_pe_reads_processing: {type: boolean, doc: "PE reads processing will be run.\
-      \ Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list"}
-  run_se_reads_processing: {type: boolean, doc: "SE reads processing will be run.\
-      \ Requires: input_se_reads_list, input_se_rgs_list"}
   run_hs_metrics: {type: boolean, doc: "HsMetrics will be collected. Only recommended\
       \ for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list"}
   run_wgs_metrics: {type: boolean, doc: "WgsMetrics will be collected. Only recommended\
@@ -172,29 +170,27 @@ inputs:
       \ QualityScoreDistribution, and SequencingArtifactMetrics will be collected.\
       \ Recommended for both WXS and WGS inputs."}
   run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios\
-      \ calculated"}
+      \ calculated."}
   run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,\
-      \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,\
-      \ wgs_evaluation_interval_list"}
+      \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, and\
+      \ wgs_evaluation_interval_list."}
   min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output\
       \ alignment with score lower than INT. This option only affects output."}
   samtools_split_max_memory: {type: 'int?', default: 36, doc: "GB of RAM to allocate\
       \ to samtools split."}
   samtools_split_cores: {type: 'int?', default: 36, doc: "Minimum reserved number\
       \ of CPU cores for samtools split."}
-
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned\
       \ Reads File"}
-  gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated\
+  gvcf: {type: 'File?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated\
       \ from the realigned alignment file."}
-  verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output,
+  verifybamid_output: {type: 'File?', outputSource: generate_gvcf/verifybamid_output,
     doc: "Ouput from VerifyBamID that is used to calculate contamination."}
   bqsr_report: {type: File, outputSource: sentieon_bqsr/recal_table, doc: "Recalibration\
       \ report from BQSR."}
-  gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}],
-    outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF\
-      \ calling quality."}
+  gvcf_calling_metrics: {type: 'File[]?', outputSource: generate_gvcf/gvcf_calling_metrics,
+    doc: "General metrics for gVCF calling quality."}
   hs_metrics: {type: 'File?', outputSource: sentieon_hsmetrics/hs_output, doc: "Sentieon's\
       \ Picard-like CollectHsMetrics metrics for the analysis of target-capture sequencing\
       \ experiments."}
@@ -241,14 +237,12 @@ outputs:
       \ idxstats of the realigned BAM file."}
   xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text\
       \ file containing X and Y reads statistics generated from idxstats."}
-
 steps:
   untar_reference:
     run: ../tools/untar_indexed_reference_2.cwl
     in:
       reference_tar: reference_tar
     out: [indexed_fasta, dict]
-
   index_knownsites:
     run: ../tools/tabix_index.cwl
     in:
@@ -257,33 +251,18 @@ steps:
     scatter: [input_file, input_index]
     scatterMethod: dotproduct
     out: [output]
-
-  gatekeeper:
-    run: ../tools/gatekeeper.cwl
-    in:
-      run_bam_processing: run_bam_processing
-      run_pe_reads_processing: run_pe_reads_processing
-      run_se_reads_processing: run_se_reads_processing
-      run_hs_metrics: run_hs_metrics
-      run_wgs_metrics: run_wgs_metrics
-      run_agg_metrics: run_agg_metrics
-      run_gvcf_processing: run_gvcf_processing
-    out: [scatter_bams, scatter_pe_reads, scatter_se_reads, scatter_gvcf, scatter_hs_metrics,
-      scatter_wgs_metrics, scatter_agg_metrics]
-
   samtools_split:
     run: ../tools/samtools_split.cwl
     when: $(inputs.input_bam != null)
     scatter: [input_bam]
     in:
       input_bam: input_bam_list
-      reference: 
+      reference:
         source: [cram_reference, untar_reference/indexed_fasta]
         pickValue: first_non_null
       max_memory: samtools_split_max_memory
       cores: samtools_split_cores
     out: [bam_files]
-
   flatten_split_rgbams:
     run: ../tools/clt_flatten_filelist.cwl
     when: $(inputs.input_files != null)
@@ -292,7 +271,6 @@ steps:
       max_memory: samtools_split_max_memory
       cores: samtools_split_cores
     out: [output_files]
-
   prepare_bam_bwa_payloads:
     hints:
     - class: "sbg:AWSInstanceType"
@@ -305,7 +283,6 @@ steps:
       sample_name: biospecimen_name
       cram_reference: cram_reference
     out: [bwa_payload]
-
   prepare_pe_fq_bwa_payloads:
     run: ../tools/clt_prepare_bwa_payload.cwl
     when: $(inputs.reads != null)
@@ -316,7 +293,6 @@ steps:
       mates: input_pe_mates_list
       rg_str: input_pe_rgs_list
     out: [bwa_payload]
-
   prepare_se_fq_bwa_payloads:
     run: ../tools/clt_prepare_bwa_payload.cwl
     when: $(inputs.reads != null)
@@ -326,7 +302,6 @@ steps:
       reads: input_se_reads_list
       rg_str: input_se_rgs_list
     out: [bwa_payload]
-
   sentieon_bwa_mem_payloads:
     run: ../subworkflows/bwa_payload_to_realn_bam.cwl
     when: $(inputs.bwa_payload != null)
@@ -341,7 +316,6 @@ steps:
         linkMerge: merge_flattened
         pickValue: all_non_null
     out: [realgn_bam]
-
   sentieon_readwriter_merge_bams:
     run: ../tools/sentieon_ReadWriter.cwl
     in:
@@ -352,7 +326,6 @@ steps:
         source: output_basename
         valueFrom: $(self+".aligned.sorted.bam")
     out: [output_reads]
-
   sentieon_markdups:
     run: ../tools/sentieon_dedup.cwl
     in:
@@ -362,7 +335,6 @@ steps:
         source: sentieon_readwriter_merge_bams/output_reads
         valueFrom: $([self])
     out: [metrics_file, out_alignments]
-
   sentieon_bqsr:
     run: ../tools/sentieon_bqsr.cwl
     in:
@@ -372,7 +344,6 @@ steps:
       prefix: output_basename
       known_sites: index_knownsites/output
     out: [output_reads, recal_table]
-
   sentieon_readwriter_bam_to_cram:
     run: ../tools/sentieon_ReadWriter.cwl
     in:
@@ -387,7 +358,6 @@ steps:
       rm_cram_bai:
         valueFrom: $(1 == 1)
     out: [output_reads]
-
   sentieon_hsmetrics:
     run: ../tools/sentieon_HsMetricAlgo.cwl
     when: $(inputs.conditional == true)
@@ -399,7 +369,6 @@ steps:
       baits_list: wxs_bait_interval_list
       conditional: run_hs_metrics
     out: [hs_output]
-
   sentieon_wgsmetrics:
     run: ../tools/sentieon_WgsMetricsAlgo.cwl
     when: $(inputs.conditional == true)
@@ -410,7 +379,6 @@ steps:
       interval: wgs_coverage_interval_list
       conditional: run_wgs_metrics
     out: [wgs_output]
-
   sentieon_aggmetrics:
     run: ../tools/sentieon_run_agg_metrics.cwl
     when: $(inputs.conditional == true)
@@ -426,38 +394,32 @@ steps:
       sama_pre_adapter_summary_metrics, bdbc_output, gc_bias_chart, gc_bias_detail,
       gc_bias_summary, is_metrics, is_plot, mqbc_output, mqbc_plot, qd_chart, qd_metrics,
       qy_output]
-
   samtools_idxstats_xy_ratio:
     run: ../tools/samtools_idxstats_xy_ratio.cwl
     in:
       run_idxstats: run_sex_metrics
       input_bam: sentieon_bqsr/output_reads
     out: [output, ratio]
-
   generate_gvcf:
-    run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
+    run: ../workflows/kfdrc_sentieon_gvcf_wf.cwl
+    when: $(inputs.conditional != false)
     in:
-      biospecimen_name: biospecimen_name
       contamination_sites_bed: contamination_sites_bed
       contamination_sites_mu: contamination_sites_mu
       contamination_sites_ud: contamination_sites_ud
-      input_bam: sentieon_bqsr/output_reads
-      indexed_reference_fasta: untar_reference/indexed_fasta
+      input_reads: sentieon_bqsr/output_reads
+      reference_tar: reference_tar
       output_basename: output_basename
       dbsnp_vcf: dbsnp_vcf
       dbsnp_idx: dbsnp_idx
-      reference_dict: untar_reference/dict
-      wgs_calling_interval_list: wgs_calling_interval_list
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
-      conditional_run: gatekeeper/scatter_gvcf
-    scatter: conditional_run
+      conditional: run_gvcf_processing
     out: [verifybamid_output, gvcf, gvcf_calling_metrics]
-
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
 - class: "sbg:maxNumberOfParallelInstances"
-  value: 6
+  value: 4
 "sbg:license": Apache License 2.0
 "sbg:publisher": KFDRC
 "sbg:categories":
@@ -467,7 +429,6 @@ hints:
 - WXS
 - GVCF
 - SENTIEON
-- GATK
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.8.4'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.9.0'
   label: github-release

@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 id: verifybamid_contamination_conditional
 doc: |-
@@ -33,7 +33,7 @@ arguments:
       --BedPath $(inputs.contamination_sites_bed ? inputs.contamination_sites_bed.path : '')
       1>/dev/null
 inputs:
-  input_bam: { type: 'File', secondaryFiles: [^.bai], doc: "Input bam file" }
+  input_bam: { type: 'File', secondaryFiles: [{pattern: '.bai', required: false},{pattern: '^.bai', required: false},{pattern: '.crai', required: false},{pattern: '^.crai', required: false}], doc: "Input bam or cram file" }
   ref_fasta: { type: 'File', secondaryFiles: [.fai], doc: "Reference fasta and fai index" }
   contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
   contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }

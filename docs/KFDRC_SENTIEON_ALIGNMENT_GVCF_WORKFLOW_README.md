@@ -1,4 +1,4 @@
-# Kids First Data Resource Center Sentieon Short Reads Alignment and GATK Haplotyper Workflow
+# Kids First Data Resource Center Sentieon Short Reads Alignment and gVCF Workflow
 
 <p align="center">
   <img src="https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png">
@@ -72,11 +72,20 @@ that match our existing Picard metrics suite.
 | Bam to Cram                | samtools view         | Sentieon ReadWriter               |
 | Metrics                    | Picard                | Sentieon                          |
 
-## GATK Haplotyper gVCF Creation
+## Sentieon gVCF Creation: Similarities and Differences
 
-After the CRAMs have been generated the two workflows rejoin and use identical
-processes to generate the gVCF. For more information on the gVCF creation,
-please see https://github.com/kids-first/kf-alignment-workflow#kfdrc-gatk-haplotypecaller-cram-to-gvcf-workflow
+After the creation of a recalibrated BAM, if the user wishes, a gVCF file and
+associated metrics are generated. The Sentieon approach is to run Haplotyper on
+the recalibrated reads. Like base recalibration, these steps are accomplished
+without scattering and therefore no additional merging steps are required.
+Metrics collection and contamination estimation are unchanged.
+
+| Step                       | KFDRC GATK                          | KFDRC Sentieon                      |
+|----------------------------|-------------------------------------|-------------------------------------|
+| Contamination Calculation  | VerifyBamID                         | VerifyBamID                         |
+| gVCF Calling               | GATK HaplotypeCaller                | Senteion Haplotyper                 |
+| Gather VCFs                | Picard MergeVcfs                    | No splitting occurs in Sentieon     |
+| Metrics                    | Picard CollectVariantCallingMetrics | Picard CollectVariantCallingMetrics |
 
 ## Basic Info
 - [D3b dockerfiles](https://github.com/d3b-center/bixtools)
