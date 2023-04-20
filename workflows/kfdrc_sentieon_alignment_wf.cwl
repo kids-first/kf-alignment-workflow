@@ -332,8 +332,8 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       in_alignments:
-        source: sentieon_readwriter_merge_bams/output_reads
-        valueFrom: $([self])
+        source: [sentieon_readwriter_merge_bams/output_reads]
+        linkMerge: merge_nested
     out: [metrics_file, out_alignments]
   sentieon_bqsr:
     run: ../tools/sentieon_bqsr.cwl
@@ -350,8 +350,8 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam:
-        source: sentieon_bqsr/output_reads
-        valueFrom: $([self])
+        source: [sentieon_bqsr/output_reads]
+        linkMerge: merge_nested
       output_file_name:
         source: sentieon_bqsr/output_reads
         valueFrom: $(self.nameroot+".cram")

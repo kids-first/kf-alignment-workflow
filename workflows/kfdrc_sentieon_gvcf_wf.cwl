@@ -111,13 +111,14 @@ steps:
     out: [indexed_fasta, dict]
   sentieon_readwriter_bam_to_cram:
     run: ../tools/sentieon_ReadWriter.cwl
-    when: $(inputs.enable_tool == true)
+    when: |
+      $(inputs.enable_tool == true && (inputs.input_bam.isArray ? inputs.input_bam[0].nameext != '.bam' : inputs.input_bam.nameext != '.bam'))
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam:
-        source: input_reads
-        valueFrom: $([self])
+        source: [input_reads]
+        linkMerge: merge_nested
       output_file_name:
         source: input_reads
         valueFrom: $(self.nameroot+".bam")
@@ -128,7 +129,9 @@ steps:
     run: ../tools/samtools_idxstats_xy_ratio.cwl
     in:
       run_idxstats: run_sex_metrics
-      input_bam: sentieon_readwriter_bam_to_cram/output_reads
+      input_bam:
+        source: [sentieon_readwriter_bam_to_cram/output_reads, input_reads]
+        pickValue: first_non_null
     out: [output, ratio]
   verifybamid_checkcontam_conditional:
     run: ../tools/verifybamid_contamination_conditional.cwl
@@ -150,8 +153,8 @@ steps:
         valueFrom: $(self).g.vcf.gz
       indexed_reference_fasta: untar_reference/indexed_fasta
       input_reads:
-        source: input_reads
-        valueFrom: $([self])
+        source: [input_reads]
+        linkMerge: merge_nested
       qual_cal:
         source: recal_table
         valueFrom: |
