@@ -108,6 +108,8 @@ inputs:
 - id: rm_cram_bai
   doc: BAI files are generated for CRAM files. If you don't want them, set this option.
   type: boolean?
+- id: enable_tool
+  type: boolean?
 - id: cpu_per_job
   label: CPU per job
   doc: CPU per job

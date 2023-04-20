@@ -414,7 +414,9 @@ steps:
       dbsnp_idx: dbsnp_idx
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
       conditional: run_gvcf_processing
-    out: [verifybamid_output, gvcf, gvcf_calling_metrics]
+      run_sex_metrics:
+        valueFrom: $(1 == 0)
+    out: [verifybamid_output, gvcf, gvcf_calling_metrics, idxstats, xy_ratio]
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
