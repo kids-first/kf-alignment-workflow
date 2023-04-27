@@ -1,0 +1,36 @@
+cwlVersion: v1.0
+class: CommandLineTool
+id: bedtools_intersect
+doc: "Subset VCF with bedtools intersect. Can add -v flag for negative selection"
+requirements:
+  - class: ShellCommandRequirement
+  - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    ramMin: 8000
+    coresMin: 4
+  - class: DockerRequirement
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/vcfutils:latest'
+
+baseCommand: [bedtools, intersect]
+arguments:
+  - position: 2
+    shellQuote: false
+    valueFrom: >-
+      -wa -header | bgzip -c -@ 4 > $(inputs.output_basename).bed_intersect.vcf.gz
+      && tabix $(inputs.output_basename).bed_intersect.vcf.gz
+
+inputs:
+    input_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "Input VCF file.",
+      inputBinding: { position: 1, prefix: "-a" } }
+    input_bed_file: { type: File, doc: "bed intervals to intersect with.",
+      inputBinding: { position: 1, prefix: "-b" } }
+    output_basename: string
+    inverse: {type: 'boolean?', doc: "Select whatever is NOT in the interval bed file",
+      inputBinding: { position: 1, prefix: "-v"} }
+
+outputs:
+  intersected_vcf:
+    type: File
+    outputBinding:
+      glob: '*.bed_intersect.vcf.gz'
+    secondaryFiles: ['.tbi']
