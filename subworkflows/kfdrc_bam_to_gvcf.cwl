@@ -21,6 +21,7 @@ inputs:
   reference_dict: File
   wgs_evaluation_interval_list: File
   conditional_run: int
+  sample_ploidy: { type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy" }
 
 outputs:
   verifybamid_output: {type: File, outputSource: verifybamid_checkcontam_conditional/output}
@@ -63,6 +64,7 @@ steps:
       input_bam: input_bam
       interval_list: picard_intervallisttools/output
       reference: indexed_reference_fasta
+      sample_ploidy: sample_ploidy
     scatter: [interval_list]
     out: [output]
 
