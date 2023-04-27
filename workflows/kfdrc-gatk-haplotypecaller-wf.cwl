@@ -113,6 +113,7 @@ inputs:
       class: File, path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
   run_sex_metrics: {type: 'boolean?', default: false, doc: "idxstats will be collected\
       \ and X/Y ratios calculated"}
+  sample_ploidy: { type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy" }
 outputs:
   gvcf: {type: File, outputSource: generate_gvcf/gvcf}
   gvcf_calling_metrics: {type: 'File[]', outputSource: generate_gvcf/gvcf_calling_metrics}
@@ -158,6 +159,7 @@ steps:
         valueFrom: $(1)
       contamination: contamination
       biospecimen_name: biospecimen_name
+      sample_ploidy: sample_ploidy
     out: [verifybamid_output, gvcf, gvcf_calling_metrics]
 $namespaces:
   sbg: https://sevenbridges.com
