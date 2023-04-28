@@ -16,16 +16,17 @@ arguments:
   - position: 2
     shellQuote: false
     valueFrom: >-
-      -wa -header > $(output_basename).bed_intersect.vcf.gz
+      -wa -header | bgzip -c -@ 4 > $(inputs.output_basename).bed_intersect.vcf.gz
+      && tabix $(inputs.output_basename).bed_intersect.vcf.gz
 
 inputs:
     input_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "Input VCF file.",
       inputBinding: { position: 1, prefix: "-a" } }
-    input_bed_file: { type: File, secondaryFiles: ['.tbi'], doc: "bed intervals to intersect with.",
+    input_bed_file: { type: File, doc: "bed intervals to intersect with.",
       inputBinding: { position: 1, prefix: "-b" } }
     output_basename: string
     inverse: {type: 'boolean?', doc: "Select whatever is NOT in the interval bed file",
-      inputBinding: { position: 1, prefix: " -v"} }
+      inputBinding: { position: 1, prefix: "-v"} }
 
 outputs:
   intersected_vcf:

@@ -12,8 +12,8 @@ inputs:
   contamination_sites_bed: File
   contamination_sites_mu: File
   contamination_sites_ud: File
-  input_bam: File
-  indexed_reference_fasta: File
+  input_bam: { type: File, secondaryFiles: ['^.bai'] }
+  indexed_reference_fasta: { type: File, secondaryFiles: ['.fai', '^.dict'] }
   output_basename: string
   wgs_calling_interval_list: File
   dbsnp_vcf: File
