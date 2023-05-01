@@ -19,6 +19,7 @@ inputs:
     secondaryFiles: ['.fai', '^.dict']} 
   reference_dict: {type: 'File?', "sbg:suggestedValue": {class: File, path: 60639019357c3a53540ca7e7,
       name: Homo_sapiens_assembly38.dict}}
+  region: { type: 'string?', doc: "Specific region to pull, in format 'chr21' or 'chr3:1-1000'" }
   dbsnp_vcf: {type: 'File', doc: "dbSNP vcf file", "sbg:suggestedValue": {class: File,
       path: 6063901f357c3a53540ca84b, name: Homo_sapiens_assembly38.dbsnp138.vcf}}
   dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", "sbg:suggestedValue": {
@@ -64,6 +65,7 @@ steps:
       input_cram: input_cram
       output_basename: output_basename
       reference: reference_fasta
+      region: region
       threads:
         valueFrom: ${ return 16 }
     out: [output]
