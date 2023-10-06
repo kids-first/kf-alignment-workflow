@@ -109,28 +109,29 @@ steps:
     in:
       reference_tar: reference_tar
     out: [indexed_fasta, dict]
-  sentieon_readwriter_bam_to_cram:
+  sentieon_readwriter_cram_to_bam:
     run: ../tools/sentieon_ReadWriter.cwl
     when: |
-      $(inputs.enable_tool == true && (inputs.input_bam.isArray ? inputs.input_bam[0].nameext != '.bam' : inputs.input_bam.nameext != '.bam'))
+      $(inputs.enable_tool && inputs.input_bam.nameext != '.bam')
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam:
-        source: [input_reads]
-        linkMerge: merge_nested
+        source: input_reads
+        valueFrom: |
+          $(self ? [self] : self)
       output_file_name:
         source: input_reads
-        valueFrom: $(self.nameroot+".bam")
+        valueFrom: $(self.nameroot).bam
       enable_tool: run_sex_metrics
     out: [output_reads]
   samtools_idxstats_xy_ratio:
-    when: $(inputs.run_idxstats == true)
+    when: $(inputs.run_idxstats)
     run: ../tools/samtools_idxstats_xy_ratio.cwl
     in:
       run_idxstats: run_sex_metrics
       input_bam:
-        source: [sentieon_readwriter_bam_to_cram/output_reads, input_reads]
+        source: [sentieon_readwriter_cram_to_bam/output_reads, input_reads]
         pickValue: first_non_null
     out: [output, ratio]
   verifybamid_checkcontam_conditional:
@@ -153,12 +154,13 @@ steps:
         valueFrom: $(self).g.vcf.gz
       indexed_reference_fasta: untar_reference/indexed_fasta
       input_reads:
-        source: [input_reads]
-        linkMerge: merge_nested
+        source: input_reads
+        valueFrom: |
+          $(self ? [self] : self)
       qual_cal:
         source: recal_table
         valueFrom: |
-          $( self != null ? [self] : null )
+          $(self ? [self] : self)
       dbsnp: index_dbsnp/output
       emit_mode:
         source: conditional

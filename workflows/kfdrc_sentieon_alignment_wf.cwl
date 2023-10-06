@@ -324,7 +324,7 @@ steps:
       input_bam: sentieon_bwa_mem_payloads/realgn_bam
       output_file_name:
         source: output_basename
-        valueFrom: $(self+".aligned.sorted.bam")
+        valueFrom: $(self).aligned.sorted.bam
     out: [output_reads]
   sentieon_markdups:
     run: ../tools/sentieon_dedup.cwl
@@ -332,8 +332,9 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       in_alignments:
-        source: [sentieon_readwriter_merge_bams/output_reads]
-        linkMerge: merge_nested
+        source: sentieon_readwriter_merge_bams/output_reads
+        valueFrom: |
+          $(self ? [self] : self)
     out: [metrics_file, out_alignments]
   sentieon_bqsr:
     run: ../tools/sentieon_bqsr.cwl
@@ -350,11 +351,12 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       input_bam:
-        source: [sentieon_bqsr/output_reads]
-        linkMerge: merge_nested
+        source: sentieon_bqsr/output_reads
+        valueFrom: |
+          $(self ? [self] : self)
       output_file_name:
         source: sentieon_bqsr/output_reads
-        valueFrom: $(self.nameroot+".cram")
+        valueFrom: $(self.nameroot).cram
       rm_cram_bai:
         valueFrom: $(1 == 1)
     out: [output_reads]
