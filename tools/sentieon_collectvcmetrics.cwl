@@ -50,7 +50,7 @@ inputs:
   read_filter: { type: 'string?', inputBinding: { position: 2, prefix: "--read_filter"}, doc: "Read filter name and params" }
 
   # CollectVCMetrics Arguments
-  dbsnp: { type: 'File?', secondaryFiles: [{ pattern: '.tbi', required: false }], inputBinding: { position: 12, prefix: "--dbsnp"}, doc: "dbSNP file", "sbg:fileTypes": "VCF, VCF.GZ" }
+  dbsnp: { type: 'File?', secondaryFiles: [{ pattern: '.idx', required: false }, { pattern: '.tbi', required: false }], inputBinding: { position: 12, prefix: "--dbsnp"}, doc: "dbSNP file", "sbg:fileTypes": "VCF, VCF.GZ" }
   vcf: { type: 'File?', secondaryFiles: [{ pattern: '.tbi', required: false }], inputBinding: { position: 12, prefix: "--vcf"}, doc: "Input VCF file for analysis" }
 
   conditional: { type: 'boolean?', doc: "Hook to disable this tool when wrapped in a workflow" }
