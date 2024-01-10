@@ -24,7 +24,7 @@ arguments:
       set -eo pipefail
       RG_NUM=`samtools view -H $(inputs.input_bam.path) | grep -c ^@RG`
       if [ $RG_NUM != 1 ]; then
-        samtools split -f '%!.bam' -@ $(inputs.cores) --reference $(inputs.reference.path) $(inputs.input_bam.path)
+        samtools split -f '%*_%#.bam' -@ $(inputs.cores) --reference $(inputs.reference.path) $(inputs.input_bam.path)
       fi
 inputs:
   input_bam: { type: File, doc: "Input bam file" }

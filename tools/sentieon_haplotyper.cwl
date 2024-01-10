@@ -58,7 +58,7 @@ inputs:
 
   # Haplotyper Arguments
   annotation: { type: 'string?', inputBinding: { position: 12, prefix: "--annotation"}, doc: "Annotations to include, or exclude using '!' prefix" }
-  dbsnp: { type: 'File?', secondaryFiles: [{ pattern: '.tbi', required: false }], inputBinding: { position: 12, prefix: "--dbsnp"}, doc: "dbSNP file", "sbg:fileTypes": "VCF, VCF.GZ" }
+  dbsnp: { type: 'File?', secondaryFiles: [{ pattern: '.idx', required: false }, { pattern: '.tbi', required: false }], inputBinding: { position: 12, prefix: "--dbsnp"}, doc: "dbSNP file", "sbg:fileTypes": "VCF, VCF.GZ" }
   call_conf: { type: 'int?', inputBinding: { position: 12, prefix: "--call_conf"}, doc: "Call confidence level (default: 30)" }
   emit_conf: { type: 'int?', inputBinding: { position: 12, prefix: "--emit_conf"}, doc: "Emit confidence level (default: 30)" }
   emit_mode: { type: 'string?', inputBinding: { position: 12, prefix: "--emit_mode"}, doc: "Emit mode: variant, confident, all or gvcf (default: variant)" }

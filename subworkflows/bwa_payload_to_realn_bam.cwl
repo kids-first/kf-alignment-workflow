@@ -96,6 +96,8 @@ steps:
         source: bwa_payload
         valueFrom: $(self.interleaved)
       min_alignment_score: min_alignment_score
+      chunk_size:
+        valueFrom: $(10000000)
       cpu_per_job: cpu_per_job
       mem_per_job: mem_per_job
     out: [output]
