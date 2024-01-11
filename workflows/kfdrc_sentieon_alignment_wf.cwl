@@ -174,6 +174,11 @@ inputs:
   run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,\
       \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, and\
       \ wgs_evaluation_interval_list."}
+  cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
+  cutadapt_r2_adapter: { type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove it from read2" }
+  cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
+  cutadapt_quality_base: { type: 'int?', doc: "If adapter trimming, use this value as the base quality score. Defaults to 33 but very old reads might need this value set to 64" }
+  cutadapt_quality_cutoff: { type: 'string?', doc: "If adapter trimming, remove bases from the 3'/5' that fail to meet this cutoff value. If you specify a single cutoff value, the 3' end of each read is trimmed. If you specify two cutoff values separated by a comma, the first value will be trimmed from the 5' and the second value will be trimmed from the 3'" }
   min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output\
       \ alignment with score lower than INT. This option only affects output."}
   samtools_split_max_memory: {type: 'int?', default: 36, doc: "GB of RAM to allocate\
@@ -309,13 +314,18 @@ steps:
     in:
       sentieon_license: sentieon_license
       indexed_reference_fasta: untar_reference/indexed_fasta
+      cutadapt_r1_adapter: cutadapt_r1_adapter
+      cutadapt_r2_adapter: cutadapt_r2_adapter
+      cutadapt_min_len: cutadapt_min_len
+      cutadapt_quality_base: cutadapt_quality_base
+      cutadapt_quality_cutoff: cutadapt_quality_cutoff
       min_alignment_score: min_alignment_score
       bwa_payload:
         source: [prepare_bam_bwa_payloads/bwa_payload, prepare_pe_fq_bwa_payloads/bwa_payload,
           prepare_se_fq_bwa_payloads/bwa_payload]
         linkMerge: merge_flattened
         pickValue: all_non_null
-    out: [realgn_bam]
+    out: [realgn_bam, cutadapt_stats]
   sentieon_readwriter_merge_bams:
     run: ../tools/sentieon_ReadWriter.cwl
     in:
