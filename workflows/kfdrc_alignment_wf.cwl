@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: Workflow
 id: kfdrc-alignment-workflow
 label: Kids First DRC Alignment and GATK HaplotypeCaller Workflow
-doc: |
+doc: |+
   # Kids First Data Resource Center Alignment and GATK HaplotypeCaller Workflows
 
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
@@ -88,6 +88,11 @@ doc: |
     run_agg_metrics: { type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics, QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended for both WXS and WGS inputs." }
     run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated"}
     # ADVANCED
+    cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
+    cutadapt_r2_adapter: { type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove it from read2" }
+    cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
+    cutadapt_quality_base: { type: 'int?', doc: "If adapter trimming, use this value as the base quality score. Defaults to 33 but very old reads might need this value set to 64" }
+    cutadapt_quality_cutoff: { type: 'string?', doc: "If adapter trimming, remove bases from the 3'/5' that fail to meet this cutoff value. If you specify a single cutoff value, the 3' end of each read is trimmed. If you specify two cutoff values separated by a comma, the first value will be trimmed from the 5' and the second value will be trimmed from the 3'" }
     min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
     bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
   ```
@@ -388,78 +393,6 @@ doc: |
 
   ![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_alignment_gatk_hc_cyoa_wf.png?raw=true "BAM to CRAM to gVCF Workflow diagram")
 
-  ## KFDRC GATK HaplotypeCaller CRAM to gVCF Workflow
-
-  This workflow taks a CRAM file, converts it to a BAM, determines a contamination value, then runs
-  GATK HaplotypeCaller to generate a gVCF, gVCF calling metrics, and, if no contamination value is provided,
-  the VerifyBAMID output.
-
-  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-gatk-haplotypecaller-workflow)
-
-  ### Inputs
-  ```yaml
-  inputs:
-    input_cram: { type: 'File', doc: "Input CRAM file" }
-    biospecimen_name: { type: 'string', doc: "String name of biospcimen" }
-    output_basename: { type: 'string', doc: "String to use as the base for output filenames" }
-    reference_tar: { type: 'File', doc: "Tar file containing a reference fasta and, optionally, its complete set of associated indexes (samtools, bwa, and picard)" }
-    dbsnp_vcf: { type: 'File', doc: "dbSNP vcf file" }
-    dbsnp_idx: { type: 'File?', doc: "dbSNP vcf index file" }
-    contamination: { type: 'float?', doc: "Precalculated contamination value. Providing the value here will skip the run of VerifyBAMID and use the provided value as ground truth." }
-    contamination_sites_bed: { type: 'File?', doc: ".Bed file for markers used in this analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)" }
-    contamination_sites_mu: { type: 'File?', doc: ".mu matrix file of genotype matrix" }
-    contamination_sites_ud: { type: 'File?', doc: ".UD matrix file from SVD result of genotype matrix" }
-    wgs_calling_interval_list: { type: 'File', doc: "WGS interval list used to aid scattering Haplotype caller" }
-    wgs_evaluation_interval_list: { type: 'File', doc: "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)" }
-  ```
-
-  #### Example Input
-  ```yaml
-  input_cram:
-    class: File
-    path: /path/to/input.cram
-  biospecimen_name: bio_name_test
-  output_basename: base_name_test
-  reference_tar:
-    class: File
-    path: /path/to/Homo_sapiens_assembly38.tgz
-  dbsnp_vcf:
-    class: File
-    path: /path/to/Homo_sapiens_assembly38.dbsnp138.vcf
-  contamination: 0.009684
-  wgs_calling_interval_list:
-    class: File
-    path: /path/to/wgs_calling_regions.hg38.interval_list
-  wgs_evaluation_interval_list:
-    class: File
-    path: /path/to/wgs_evaluation_regions.hg38.interval_list
-  ```
-
-  ### Outputs
-  gvcf: The germline variants calls in VCF format
-  gvcf_calling_metrics: Various metrics from the creation of the gVCF
-  verifybamid_output: If contamination is calculated rather than handed in by the user, the workflow will provide the output from verifybamid
-
-  ### Tips for running:
-  1. For contamination input, either populate the `contamination` field or provide the three contamination
-     files: `contamination_sites_bed`, `contamination_sites_mu`, and `contamination_sites_ud`. Failure to
-     provide one of these groups will result in a failed run.
-  1. Suggested reference inputs (available from the [Broad Resource Bundle](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)):
-      - contamination_sites_bed: Homo_sapiens_assembly38.contam.bed
-      - contamination_sites_mu: Homo_sapiens_assembly38.contam.mu
-      - contamination_sites_ud: Homo_sapiens_assembly38.contam.UD
-      - dbsnp_vcf: Homo_sapiens_assembly38.dbsnp138.vcf
-      - reference_tar: Homo_sapiens_assembly38.tgz
-  1. The input for the reference_tar must be a tar file containing the reference fasta along with its indexes.
-     The required indexes are `[.64.ann,.64.amb,.64.bwt,.64.pac,.64.sa,.dict,.fai]` and are generated by bwa, picard, and samtools.
-     Additionally, an `.64.alt` index is recommended.
-  1. If you are making your own bwa indexes make sure to use the `-6` flag to obtain the `.64` version of the
-     indexes. Indexes that do not match this naming schema will cause a failure in certain runner ecosystems.
-  1. Should you decide to create your own reference indexes and omit the ALT index file from the reference,
-     or if its naming structure mismatches the other indexes, then your alignments will be equivalent to the results you would
-     obtain if you run BWA-MEM with the -j option.
-
-  ![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_gatk_hc_wf.png?raw=true "CRAM to gVCF Workflow diagram")
 requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
@@ -487,136 +420,145 @@ inputs:
   input_pe_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in PE processing"}
   input_se_reads_list: {type: 'File[]?', doc: "List of input singlie end fastq reads"}
   input_se_rgs_list: {type: 'string[]?', doc: "List of RG strings to use in SE processing"}
-  reference_tar: {type: File, doc: "Tar file containing a reference fasta and, optionally,\
-      \ its complete set of associated indexes (samtools, bwa, and picard)", "sbg:suggestedValue": {
+  reference_tar: {type: File, doc: "Tar file containing a reference fasta and, optionally,
+      its complete set of associated indexes (samtools, bwa, and picard)", "sbg:suggestedValue": {
       class: File, path: 5f4ffff4e4b0370371c05153, name: Homo_sapiens_assembly38.tgz}}
-  cram_reference: {type: 'File?', doc: "If aligning from cram, need to provided reference\
-      \ used to generate that cram"}
+  cram_reference: {type: 'File?', doc: "If aligning from cram, need to provided reference
+      used to generate that cram"}
   biospecimen_name: {type: string, doc: "String name of biospcimen"}
   output_basename: {type: string, doc: "String to use as the base for output filenames"}
   dbsnp_vcf: {type: 'File?', doc: "dbSNP vcf file", "sbg:suggestedValue": {class: File,
       path: 6063901f357c3a53540ca84b, name: Homo_sapiens_assembly38.dbsnp138.vcf}}
   dbsnp_idx: {type: 'File?', doc: "dbSNP vcf index file", "sbg:suggestedValue": {
       class: File, path: 6063901e357c3a53540ca834, name: Homo_sapiens_assembly38.dbsnp138.vcf.idx}}
-  knownsites: {type: 'File[]', doc: "List of files containing known polymorphic sites\
-      \ used to exclude regions around known polymorphisms from analysis", "sbg:suggestedValue": [
+  knownsites: {type: 'File[]', doc: "List of files containing known polymorphic sites
+      used to exclude regions around known polymorphisms from analysis", "sbg:suggestedValue": [
       {class: File, path: 6063901e357c3a53540ca835, name: 1000G_omni2.5.hg38.vcf.gz},
       {class: File, path: 6063901c357c3a53540ca80f, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz},
       {class: File, path: 60639017357c3a53540ca7d0, name: Homo_sapiens_assembly38.known_indels.vcf.gz},
       {class: File, path: 6063901a357c3a53540ca7f3, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz}]}
-  knownsites_indexes: {type: 'File[]?', doc: "Corresponding indexes for the knownsites.\
-      \ File position in list must match with its corresponding VCF's position in\
-      \ the knownsites file list. For example, if the first file in the knownsites\
-      \ list is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be\
-      \ 1000G_omni2.5.hg38.vcf.gz.tbi. Optional, but will save time/cost on indexing.",
-    "sbg:suggestedValue": [{class: File, path: 60639016357c3a53540ca7b1, name: 1000G_omni2.5.hg38.vcf.gz.tbi},
-      {class: File, path: 6063901e357c3a53540ca845, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi},
+  knownsites_indexes: {type: 'File[]?', doc: "Corresponding indexes for the knownsites.
+      File position in list must match with its corresponding VCF's position in the
+      knownsites file list. For example, if the first file in the knownsites list
+      is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be 1000G_omni2.5.hg38.vcf.gz.tbi.
+      Optional, but will save time/cost on indexing.", "sbg:suggestedValue": [{class: File,
+        path: 60639016357c3a53540ca7b1, name: 1000G_omni2.5.hg38.vcf.gz.tbi}, {class: File,
+        path: 6063901e357c3a53540ca845, name: 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi},
       {class: File, path: 6063901c357c3a53540ca80d, name: Homo_sapiens_assembly38.known_indels.vcf.gz.tbi},
       {class: File, path: 6063901c357c3a53540ca806, name: Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi}]}
-  contamination_sites_bed: {type: 'File?', doc: ".bed file for markers used in this\
-      \ analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)", "sbg:suggestedValue": {
+  contamination_sites_bed: {type: 'File?', doc: ".bed file for markers used in this
+      analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)", "sbg:suggestedValue": {
       class: File, path: 6063901e357c3a53540ca833, name: Homo_sapiens_assembly38.contam.bed}}
   contamination_sites_mu: {type: 'File?', doc: ".mu matrix file of genotype matrix",
     "sbg:suggestedValue": {class: File, path: 60639017357c3a53540ca7cd, name: Homo_sapiens_assembly38.contam.mu}}
-  contamination_sites_ud: {type: 'File?', doc: ".UD matrix file from SVD result of\
-      \ genotype matrix", "sbg:suggestedValue": {class: File, path: 6063901f357c3a53540ca84f,
+  contamination_sites_ud: {type: 'File?', doc: ".UD matrix file from SVD result of
+      genotype matrix", "sbg:suggestedValue": {class: File, path: 6063901f357c3a53540ca84f,
       name: Homo_sapiens_assembly38.contam.UD}}
-  wgs_calling_interval_list: {type: 'File?', doc: "WGS interval list used to aid scattering\
-      \ Haplotype caller", "sbg:suggestedValue": {class: File, path: 60639018357c3a53540ca7df,
+  wgs_calling_interval_list: {type: 'File?', doc: "WGS interval list used to aid scattering
+      Haplotype caller", "sbg:suggestedValue": {class: File, path: 60639018357c3a53540ca7df,
       name: wgs_calling_regions.hg38.interval_list}}
-  wgs_coverage_interval_list: {type: 'File?', doc: "An interval list file that contains\
-      \ the positions to restrict the wgs metrics assessment", "sbg:suggestedValue": {
+  wgs_coverage_interval_list: {type: 'File?', doc: "An interval list file that contains
+      the positions to restrict the wgs metrics assessment", "sbg:suggestedValue": {
       class: File, path: 6063901c357c3a53540ca813, name: wgs_coverage_regions.hg38.interval_list}}
-  wgs_evaluation_interval_list: {type: 'File?', doc: "Target intervals to restrict\
-      \ gvcf metric analysis (for VariantCallingMetrics)", "sbg:suggestedValue": {
-      class: File, path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
-  wxs_bait_interval_list: {type: 'File?', doc: "An interval list file that contains\
-      \ the locations of the WXS baits used (for HsMetrics)"}
-  wxs_target_interval_list: {type: 'File?', doc: "An interval list file that contains\
-      \ the locations of the WXS targets (for HsMetrics)"}
-  run_bam_processing: {type: boolean, doc: "BAM processing will be run. Requires:\
-      \ input_bam_list"}
-  run_pe_reads_processing: {type: boolean, doc: "PE reads processing will be run.\
-      \ Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list"}
-  run_se_reads_processing: {type: boolean, doc: "SE reads processing will be run.\
-      \ Requires: input_se_reads_list, input_se_rgs_list"}
-  run_hs_metrics: {type: boolean, doc: "HsMetrics will be collected. Only recommended\
-      \ for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list"}
-  run_wgs_metrics: {type: boolean, doc: "WgsMetrics will be collected. Only recommended\
-      \ for WGS inputs. Requires: wgs_coverage_interval_list"}
-  run_agg_metrics: {type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics,\
-      \ QualityScoreDistribution, and SequencingArtifactMetrics will be collected.\
-      \ Recommended for both WXS and WGS inputs."}
-  run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios\
-      \ calculated"}
-  run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,\
-      \ contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,\
-      \ wgs_evaluation_interval_list"}
-  cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
-  cutadapt_r2_adapter: { type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove it from read2" }
-  cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
-  cutadapt_quality_base: { type: 'int?', doc: "If adapter trimming, use this value as the base quality score. Defaults to 33 but very old reads might need this value set to 64" }
-  cutadapt_quality_cutoff: { type: 'string?', doc: "If adapter trimming, remove bases from the 3'/5' that fail to meet this cutoff value. If you specify a single cutoff value, the 3' end of each read is trimmed. If you specify two cutoff values separated by a comma, the first value will be trimmed from the 5' and the second value will be trimmed from the 3'" }
-  min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output\
-      \ alignment with score lower than INT. This option only affects output."}
+  wgs_evaluation_interval_list: {type: 'File?', doc: "Target intervals to restrict
+      gvcf metric analysis (for VariantCallingMetrics)", "sbg:suggestedValue": {class: File,
+      path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
+  wxs_bait_interval_list: {type: 'File?', doc: "An interval list file that contains
+      the locations of the WXS baits used (for HsMetrics)"}
+  wxs_target_interval_list: {type: 'File?', doc: "An interval list file that contains
+      the locations of the WXS targets (for HsMetrics)"}
+  run_bam_processing: {type: boolean, doc: "BAM processing will be run. Requires:
+      input_bam_list"}
+  run_pe_reads_processing: {type: boolean, doc: "PE reads processing will be run.
+      Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list"}
+  run_se_reads_processing: {type: boolean, doc: "SE reads processing will be run.
+      Requires: input_se_reads_list, input_se_rgs_list"}
+  run_hs_metrics: {type: boolean, doc: "HsMetrics will be collected. Only recommended
+      for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list"}
+  run_wgs_metrics: {type: boolean, doc: "WgsMetrics will be collected. Only recommended
+      for WGS inputs. Requires: wgs_coverage_interval_list"}
+  run_agg_metrics: {type: boolean, doc: "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics,
+      QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended
+      for both WXS and WGS inputs."}
+  run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios
+      calculated"}
+  run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf,
+      contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list,
+      wgs_evaluation_interval_list"}
+  cutadapt_r1_adapter: {type: 'string?', doc: "If read1 reads have an adapter, provide
+      regular 3' adapter sequence here to remove it from read1"}
+  cutadapt_r2_adapter: {type: 'string?', doc: "If read2 reads have an adapter, provide
+      regular 3' adapter sequence here to remove it from read2"}
+  cutadapt_min_len: {type: 'int?', doc: "If adapter trimming, discard reads/read-pairs
+      where the read length is less than this value. Set to 0 to turn off"}
+  cutadapt_quality_base: {type: 'int?', doc: "If adapter trimming, use this value
+      as the base quality score. Defaults to 33 but very old reads might need this
+      value set to 64"}
+  cutadapt_quality_cutoff: {type: 'string?', doc: "If adapter trimming, remove bases
+      from the 3'/5' that fail to meet this cutoff value. If you specify a single
+      cutoff value, the 3' end of each read is trimmed. If you specify two cutoff
+      values separated by a comma, the first value will be trimmed from the 5' and
+      the second value will be trimmed from the 3'"}
+  min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output
+      alignment with score lower than INT. This option only affects output."}
   bamtofastq_cpu: {type: 'int?', doc: "CPUs to allocate to bamtofastq"}
 outputs:
-  cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned\
-      \ Reads File"}
-  gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated\
-      \ from the realigned alignment file."}
+  cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned
+      Reads File"}
+  gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated
+      from the realigned alignment file."}
   verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output,
     doc: "Ouput from VerifyBamID that is used to calculate contamination."}
-  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration\
-      \ report from BQSR."}
+  bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration
+      report from BQSR."}
   gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}],
-    outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF\
-      \ calling quality."}
-  hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output, doc: "Picard\
-      \ CollectHsMetrics metrics for the analysis of target-capture sequencing experiments."}
-  wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output, doc: "Picard\
-      \ CollectWgsMetrics metrics for evaluating the performance of whole genome sequencing\
-      \ experiments."}
+    outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF
+      calling quality."}
+  hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output, doc: "Picard
+      CollectHsMetrics metrics for the analysis of target-capture sequencing experiments."}
+  wgs_metrics: {type: 'File[]?', outputSource: picard_collectwgsmetrics/output, doc: "Picard
+      CollectWgsMetrics metrics for evaluating the performance of whole genome sequencing
+      experiments."}
   alignment_metrics: {type: 'File[]?', outputSource: picard_collectalignmentsummarymetrics/output,
-    doc: "Picard CollectAlignmentSummaryMetrics high level metrics about the alignment\
-      \ of reads within a SAM file."}
+    doc: "Picard CollectAlignmentSummaryMetrics high level metrics about the alignment
+      of reads within a SAM file."}
   gc_bias_detail: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/detail,
-    doc: "Picard CollectGcBiasMetrics detailed metrics about reads that fall within\
-      \ windows of a certain GC bin on the reference genome."}
+    doc: "Picard CollectGcBiasMetrics detailed metrics about reads that fall within
+      windows of a certain GC bin on the reference genome."}
   gc_bias_summary: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/summary,
-    doc: "Picard CollectGcBiasMetrics high level metrics that capture how biased the\
-      \ coverage in a certain lane is."}
+    doc: "Picard CollectGcBiasMetrics high level metrics that capture how biased the
+      coverage in a certain lane is."}
   gc_bias_chart: {type: 'File[]?', outputSource: picard_collectgcbiasmetrics/chart,
     doc: "Picard CollectGcBiasMetrics plot of GC bias."}
   insert_metrics: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/metrics,
-    doc: "Picard CollectInsertSizeMetrics metrics about the insert size distribution\
-      \ of a paired-end library."}
+    doc: "Picard CollectInsertSizeMetrics metrics about the insert size distribution
+      of a paired-end library."}
   insert_plot: {type: 'File[]?', outputSource: picard_collectinsertsizemetrics/plot,
     doc: "Picard CollectInsertSizeMetrics insert size distribution plotted."}
   artifact_bait_bias_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_detail_metrics,
-    doc: "Picard CollectSequencingArtifactMetrics bait bias artifacts broken down\
-      \ by context."}
+    doc: "Picard CollectSequencingArtifactMetrics bait bias artifacts broken down
+      by context."}
   artifact_bait_bias_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/bait_bias_summary_metrics,
-    doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single bait\
-      \ bias artifact."}
+    doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single bait
+      bias artifact."}
   artifact_error_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/error_summary_metrics,
-    doc: "Picard CollectSequencingArtifactMetrics summary metrics as a roll up of\
-      \ the context-specific error rates, to provide global error rates per type of\
-      \ base substitution."}
+    doc: "Picard CollectSequencingArtifactMetrics summary metrics as a roll up of
+      the context-specific error rates, to provide global error rates per type of
+      base substitution."}
   artifact_pre_adapter_detail_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_detail_metrics,
-    doc: "Picard CollectSequencingArtifactMetrics pre-adapter artifacts broken down\
-      \ by context."}
+    doc: "Picard CollectSequencingArtifactMetrics pre-adapter artifacts broken down
+      by context."}
   artifact_pre_adapter_summary_metrics: {type: 'File[]?', outputSource: picard_collectsequencingartifactmetrics/pre_adapter_summary_metrics,
-    doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single pre-adapter\
-      \ artifact."}
+    doc: "Picard CollectSequencingArtifactMetrics summary analysis of a single pre-adapter
+      artifact."}
   qual_metrics: {type: 'File[]?', outputSource: picard_qualityscoredistribution/metrics,
     doc: "Quality metrics for the realigned CRAM."}
   qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart,
     doc: "Visualization of quality metrics."}
-  idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output, doc: "samtools\
-      \ idxstats of the realigned BAM file."}
-  xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text\
-      \ file containing X and Y reads statistics generated from idxstats."}
+  idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output, doc: "samtools
+      idxstats of the realigned BAM file."}
+  xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text
+      file containing X and Y reads statistics generated from idxstats."}
 steps:
   untar_reference:
     run: ../tools/untar_indexed_reference.cwl
@@ -862,5 +804,5 @@ hints:
 - WXS
 - GVCF
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.9.0'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.10.0'
   label: github-release
