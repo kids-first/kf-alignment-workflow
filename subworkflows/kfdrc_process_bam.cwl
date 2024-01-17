@@ -4,12 +4,14 @@ id: kfdrc_process_bam
 requirements:
   - class: ScatterFeatureRequirement
   - class: SubworkflowFeatureRequirement
+  - class: InlineJavascriptRequirement
 inputs:
   input_bam: File
   indexed_reference_fasta:
     type: File
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '.64.alt', '^.dict']
   sample_name: string
+  output_basename: { type: 'string?' }
   cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
   cutadapt_r2_adapter: { type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove it from read2" }
   cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
@@ -52,6 +54,7 @@ steps:
       indexed_reference_fasta: indexed_reference_fasta
       sample_name: sample_name
       input_rgbam: samtools_split/bam_files
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_r2_adapter: cutadapt_r2_adapter
       cutadapt_min_len: cutadapt_min_len

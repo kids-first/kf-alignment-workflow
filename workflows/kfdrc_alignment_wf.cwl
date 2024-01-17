@@ -507,6 +507,7 @@ outputs:
       Reads File"}
   gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated
       from the realigned alignment file."}
+  cutadapt_stats: { type: 'File[]?', outputSource: collect_cutadapt_stats/out_filelist }
   verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output,
     doc: "Ouput from VerifyBamID that is used to calculate contamination."}
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration
@@ -601,6 +602,7 @@ steps:
       indexed_reference_fasta: bundle_secondaries/output
       sample_name: biospecimen_name
       conditional_run: gatekeeper/scatter_bams
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_r2_adapter: cutadapt_r2_adapter
       cutadapt_min_len: cutadapt_min_len
@@ -610,7 +612,7 @@ steps:
       cram_reference: cram_reference
       bamtofastq_cpu: bamtofastq_cpu
     scatter: conditional_run
-    out: [unsorted_bams] #+2 Nesting File[][][]
+    out: [unsorted_bams, cutadapt_stats] #+2 Nesting File[][][]
 
   process_pe_reads:
     run: ../subworkflows/kfdrc_process_pe_readslist2.cwl
@@ -620,6 +622,7 @@ steps:
       input_pe_mates_list: input_pe_mates_list
       input_pe_rgs_list: input_pe_rgs_list
       conditional_run: gatekeeper/scatter_pe_reads
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_r2_adapter: cutadapt_r2_adapter
       cutadapt_min_len: cutadapt_min_len
@@ -636,6 +639,7 @@ steps:
       input_se_reads_list: input_se_reads_list
       input_se_rgs_list: input_se_rgs_list
       conditional_run: gatekeeper/scatter_se_reads
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_min_len: cutadapt_min_len
       cutadapt_quality_base: cutadapt_quality_base
@@ -643,6 +647,40 @@ steps:
       min_alignment_score: min_alignment_score
     scatter: conditional_run
     out: [unsorted_bams, cutadapt_stats] #+0 Nesting File[]
+
+  collect_cutadapt_stats:
+    run:
+      class: CommandLineTool
+      cwlVersion: v1.2
+      baseCommand: [echo, done]
+      requirements:
+      - class: InlineJavascriptRequirement
+        expressionLib:
+        - |-
+          //https://stackoverflow.com/a/27267762
+          var flatten = function flatten(ary) {
+              var ret = [];
+              for(var i = 0; i < ary.length; i++) {
+                  if(Array.isArray(ary[i])) {
+                      ret = ret.concat(flatten(ary[i]));
+                  } else {
+                      ret.push(ary[i]);
+                  }
+              }
+              return ret;
+          }
+      inputs:
+        in_filelist: { type: 'Any?' }
+      outputs:
+        out_filelist:
+          type: File[]
+          outputBinding:
+            outputEval: $(flatten(inputs.in_filelist))
+    when: $(inputs.in_filelist.some(function(e) { return e != null }))
+    in:
+      in_filelist:
+        source: [process_bams/cutadapt_stats, process_pe_reads/cutadapt_stats, process_se_reads/cutadapt_stats]
+    out: [out_filelist]
 
   sambamba_merge:
     hints:

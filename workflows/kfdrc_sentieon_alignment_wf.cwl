@@ -201,6 +201,7 @@ outputs:
       from the realigned alignment file."}
   verifybamid_output: {type: 'File?', outputSource: generate_gvcf/verifybamid_output,
     doc: "Ouput from VerifyBamID that is used to calculate contamination."}
+  cutadapt_stats: {type: 'File[]?', outputSource: sentieon_bwa_mem_payloads/cutadapt_stats, doc: "Stats from Cutadapt activity on inputs."}
   bqsr_report: {type: File, outputSource: sentieon_bqsr/recal_table, doc: "Recalibration
       report from BQSR."}
   gvcf_calling_metrics: {type: 'File[]?', outputSource: generate_gvcf/gvcf_calling_metrics,
@@ -323,6 +324,7 @@ steps:
     in:
       sentieon_license: sentieon_license
       indexed_reference_fasta: untar_reference/indexed_fasta
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_r2_adapter: cutadapt_r2_adapter
       cutadapt_min_len: cutadapt_min_len
