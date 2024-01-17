@@ -13,6 +13,7 @@ inputs:
   indexed_reference_fasta:
     type: File
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '^.dict', '.fai']
+  output_basename: { type: 'string?' }
   min_alignment_score: int?
   cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
   cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
@@ -36,6 +37,7 @@ steps:
       input_se_reads: input_se_reads_list
       input_se_rgs: input_se_rgs_list
       min_alignment_score: min_alignment_score
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_min_len: cutadapt_min_len
       cutadapt_quality_base: cutadapt_quality_base

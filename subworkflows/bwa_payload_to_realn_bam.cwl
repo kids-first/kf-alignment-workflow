@@ -24,6 +24,7 @@ inputs:
           type: string
         interleaved:
           type: boolean
+  output_basename: { type: 'string?' }
   cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
   cutadapt_r2_adapter: { type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove it from read2" }
   cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
@@ -64,6 +65,15 @@ steps:
         source: bwa_payload
         valueFrom: |
           $(self.mates_file != null ? "TRIMMED." + self.mates_file.basename : null)
+      outputname_stats:
+        source: [output_basename, bwa_payload]
+        valueFrom: |
+          ${
+            var basename = self[0];
+            var rg_id = self[1].rg_str.match(/ID:[A-Za-z0-9-_/]*?([A-Za-z0-9-_]*)\\t/);
+            var reads_name = self[1].reads_file.basename.replace(/.f(ast)?[aq](\.gz)?$/,"");
+            return [basename, (rg_id != null ? rg_id[1] : "UNKNOWN"),  reads_name, "cutadapt_stats.txt"].join('.');
+          }
     out: [ trimmed_output, trimmed_paired_output, cutadapt_stats ]
 
   sentieon_bwa_mem:

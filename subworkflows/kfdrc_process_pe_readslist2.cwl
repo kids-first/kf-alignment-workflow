@@ -13,6 +13,7 @@ inputs:
   indexed_reference_fasta:
     type: File
     secondaryFiles: ['.64.amb', '.64.ann', '.64.bwt', '.64.pac', '.64.sa', '^.dict', '.fai']
+  output_basename: { type: 'string?' }
   cutadapt_r1_adapter: { type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove it from read1" }
   cutadapt_r2_adapter: { type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove it from read2" }
   cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
@@ -37,6 +38,7 @@ steps:
       input_pe_reads: input_pe_reads_list
       input_pe_mates: input_pe_mates_list
       input_pe_rgs: input_pe_rgs_list
+      output_basename: output_basename
       cutadapt_r1_adapter: cutadapt_r1_adapter
       cutadapt_r2_adapter: cutadapt_r2_adapter
       cutadapt_min_len: cutadapt_min_len

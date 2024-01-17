@@ -17,7 +17,7 @@ requirements:
     coresMin: $(inputs.cpu)
     ramMin: $(inputs.ram * 1000)
 baseCommand: [cutadapt]
-stdout: $(inputs.outputname_reads1.replace(/.f(ast)?[aq](\.gz)?$/, ".cutadapt_stats.txt"))
+stdout: $(inputs.outputname_stats)
 inputs:
   input_reads1: { type: 'File', inputBinding: { position: 8 }, doc: "FASTQ file containing reads1 or interleaved reads." }
   input_reads2: { type: 'File?', inputBinding: { position: 9 },  doc: "FASTQ file containing reads2." }
@@ -29,6 +29,7 @@ inputs:
   quality_cutoff: {type: 'string?', default: "0", inputBinding: { position: 2, prefix: "--quality-cutoff" }, doc: "Quality trim cutoff. If you specify a single cutoff value, the 3' end of each read is trimmed. If you specify two cutoff values separated by a comma, the first value will be trimmed from the 5' and the second value will be trimmed from the 3'" }
   outputname_reads1: { type: 'string?', default: "reads1.trimmed.fastq", inputBinding: { position: 2, prefix: "--output" }, doc: "Write trimmed reads to FILE. Can be FASTQ or FASTA format" }
   outputname_reads2: { type: 'string?', inputBinding: { position: 2, prefix: "--paired-output" }, doc: "Write R2 to FILE." }
+  outputname_stats: { type: 'string?', default: "cutadapt_stats.txt", doc: "Name for stats output file." }
   additional_args: {type: 'string?', inputBinding: { position: 2, shellQuote: false }, doc: "Any additional args to be set"}
   cpu: { type: 'int?', default: 8, inputBinding: { position: 2, prefix: "--cores" }, doc: "CPUs to allocate to this task" }
   ram: { type: 'int?', default: 16, doc: "GB of RAM to allocate to this task" }
