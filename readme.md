@@ -97,6 +97,7 @@ to `true`; no additonal inputs are required.
   cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned Reads File"}
   gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
   verifybamid_output: {type: 'File[]?', outputSource: generate_gvcf/verifybamid_output, doc: "Ouput from VerifyBamID that is used to calculate contamination."}
+  cutadapt_stats: { type: 'File[]?', outputSource: collect_cutadapt_stats/out_filelist, doc: "Stats from Cutadapt runs, if run. One or more per read group." }
   bqsr_report: {type: File, outputSource: gatk_gatherbqsrreports/output, doc: "Recalibration report from BQSR."}
   gvcf_calling_metrics: {type: ['null', {type: array, items: {type: array, items: File}}], outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF calling quality."}
   hs_metrics: {type: 'File[]?', outputSource: picard_collecthsmetrics/output, doc: "Picard CollectHsMetrics metrics for the analysis of target-capture sequencing experiments."}
