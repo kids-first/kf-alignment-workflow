@@ -4,6 +4,7 @@ id: kfdrc_rgbam_to_realnbam
 requirements:
   - class: ScatterFeatureRequirement
   - class: InlineJavascriptRequirement
+  - class: StepInputExpressionRequirement
   - class: MultipleInputFeatureRequirement
 inputs:
   input_rgbam: File
@@ -87,7 +88,8 @@ steps:
     in:
       in_filelist:
         source: [cutadapt/trimmed_output, bamtofastq_chomp/output]
-        pickValue: first_non_null
+        valueFrom: |
+          $(self[0].some(function(e) { return e != null }) ? self[0] : self[1])
     out: [out_filelist]
 
   bwa_mem_naive_bam:
