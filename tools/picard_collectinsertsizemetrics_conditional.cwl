@@ -13,7 +13,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 12000
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:picard'
 baseCommand: [ java, -Xms5000m, -jar, /picard.jar, CollectInsertSizeMetrics]
 arguments:
   - position: 1

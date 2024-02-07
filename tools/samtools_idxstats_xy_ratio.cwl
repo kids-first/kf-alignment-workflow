@@ -7,7 +7,7 @@ requirements:
     ramMin: ${return inputs.ram * 1000}
     coresMin: $(inputs.threads)
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:samtools'
   - class: InlineJavascriptRequirement
     expressionLib:
     - |2-

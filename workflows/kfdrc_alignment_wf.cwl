@@ -398,6 +398,7 @@ requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
 - class: SubworkflowFeatureRequirement
+- class: StepInputExpressionRequirement
 - class: InlineJavascriptRequirement
   expressionLib:
   - |-

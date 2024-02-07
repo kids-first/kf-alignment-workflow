@@ -10,7 +10,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:picard'
   - class: ResourceRequirement
     ramMin: 8000
 baseCommand: []

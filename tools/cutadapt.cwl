@@ -11,7 +11,7 @@ doc: |
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'quay.io/biocontainers/cutadapt:4.6--py310h4b81fae_1'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:cutadapt-4.6'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cpu)

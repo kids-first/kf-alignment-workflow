@@ -12,7 +12,7 @@ requirements:
     ramMin: 15000
     coresMin: 36
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/bogdang/sambamba:0.6.3'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:sambamba'
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:

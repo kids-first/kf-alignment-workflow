@@ -4,7 +4,7 @@ id: gatekeeper
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/ubuntu:18.04'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:ubuntu'
 baseCommand: ["/bin/bash","-c"]
 arguments:
   - position: 0

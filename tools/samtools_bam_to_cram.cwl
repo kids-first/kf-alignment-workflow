@@ -13,7 +13,7 @@ requirements:
     ramMin: 16000
     coresMin: $(inputs.threads)
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.8-dev'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:samtools.1.8.dev'
 baseCommand: [samtools, view]
 arguments:
   - position: 1

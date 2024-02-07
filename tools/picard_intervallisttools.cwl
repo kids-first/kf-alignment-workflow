@@ -9,7 +9,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:picard'
 baseCommand: [java, -Xmx2000m, -jar, /picard.jar]
 arguments:
   - position: 1

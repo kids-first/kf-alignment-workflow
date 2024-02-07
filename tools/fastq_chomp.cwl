@@ -12,7 +12,7 @@ requirements:
     ramMin: 8000
     coresMin: 4
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/bwa-bundle:dev'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:bwa-bundle-dev'
   - class: InlineJavascriptRequirement
 baseCommand: ["/bin/bash", "-c"]
 arguments:

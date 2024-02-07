@@ -7,7 +7,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 3000
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:picard'
 baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 1

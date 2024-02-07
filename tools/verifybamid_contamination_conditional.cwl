@@ -10,7 +10,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/verifybamid:1.0.2'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:verifybamid-1.0.2'
   - class: ResourceRequirement
     ramMin: 5000
     coresMin: 4

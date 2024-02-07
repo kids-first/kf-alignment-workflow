@@ -9,7 +9,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/gatk:4.0.3.0'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:gatk4'
   - class: ResourceRequirement
     ramMin: 8000
 baseCommand: [/gatk, GatherBQSRReports]

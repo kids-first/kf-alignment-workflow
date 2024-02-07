@@ -11,7 +11,7 @@ doc: |-
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:samtools'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     ramMin: ${ return inputs.max_memory * 1000 }

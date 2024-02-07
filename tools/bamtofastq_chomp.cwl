@@ -15,7 +15,7 @@ requirements:
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.cpu)
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/bwa-bundle:dev'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:bwa-bundle-dev'
   - class: InlineJavascriptRequirement
 baseCommand: ["/bin/bash", "-c"]
 arguments:

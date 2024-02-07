@@ -12,7 +12,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: 10000
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/gatk:4.beta.1-3.5'
+    dockerPull: '684194535433.dkr.ecr.us-east-1.amazonaws.com/d3b-healthomics:gatk-4.beta.1-3.5'
 baseCommand: [/gatk-launch, --javaOptions, -Xms2000m]
 arguments:
   - position: 1
