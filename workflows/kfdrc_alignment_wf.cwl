@@ -676,9 +676,15 @@ steps:
         in_filelist: {type: 'Any?'}
       outputs:
         out_filelist:
-          type: File[]
+          type: File[]?
           outputBinding:
-            outputEval: $(flatten(inputs.in_filelist))
+            outputEval: |
+              ${
+                var flatarray = flatten(inputs.in_filelist);
+                var filearray = flatarray.filter(function(e) { return e != null });
+                var outarr = filearray.length > 0 ? filearray : null;
+                return outarr;
+              }
     when: $(inputs.in_filelist.some(function(e) { return e != null }))
     in:
       in_filelist:
