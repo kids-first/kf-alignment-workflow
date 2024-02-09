@@ -49,28 +49,32 @@ requirements:
           }
           return o1;
       };
+  - class: InitialWorkDirRequirement
+    listing:
+      - writable: false
+        entryname: "get_ratios.awk"
+        entry: |
+          #!/usr/bin/env awk -f
+          {
+          if($1 == "chrX") {x_rat = $3/$2; X_reads = $3;};
+          if($1 == "chrY") {y_rat = $3/$2; Y_reads = $3;};
+          } END {
+          printf "Y_reads_fraction %f\nX:Y_ratio %f\nX_norm_reads %f\nY_norm_reads %f\nY_norm_reads_fraction %f", Y_reads/(X_reads+Y_reads), x_rat/y_rat, x_rat, y_rat, y_rat/(x_rat+y_rat)
+          }
 baseCommand: []
 arguments:
   - position: 0
     shellQuote: false
-    valueFrom: |
+    valueFrom: >
       $(inputs.run_idxstats ? '' : 'echo "idxstats not run" 1>&2 && exit 0;')
   - position: 1
     shellQuote: false
-    valueFrom: |
+    valueFrom: >
       samtools idxstats $(inputs.input_bam.path) > $(inputs.input_bam.nameroot).idxstats.txt
   - position: 2
     shellQuote: false
-    valueFrom: |
-      && /bin/bash -c
-  - position: 3
-    shellQuote: true
     valueFrom: >
-      set -eo pipefail;
-      cat $(inputs.input_bam.nameroot+".idxstats.txt")
-      | awk '{if($1=="chrX") {x_rat = $3/$2; X_reads=$3;}; if($1=="chrY") {y_rat = $3/$2; Y_reads = $3;}}END
-      {printf "Y_reads_fraction %f\nX:Y_ratio %f\nX_norm_reads %f\nY_norm_reads %f\nY_norm_reads_fraction %f", Y_reads/(X_reads+Y_reads), x_rat/y_rat, x_rat, y_rat, y_rat/(x_rat+y_rat)}'
-      > $(inputs.input_bam.nameroot).ratio.txt
+      && awk -f get_ratios.awk $(inputs.input_bam.nameroot).idxstats.txt > $(inputs.input_bam.nameroot).ratio.txt
 inputs:
   run_idxstats: { type: 'boolean' }
   input_bam: { type: 'File', secondaryFiles: [^.bai] }
