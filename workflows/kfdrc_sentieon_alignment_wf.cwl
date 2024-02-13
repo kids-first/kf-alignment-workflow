@@ -258,11 +258,34 @@ steps:
     in:
       reference_tar: reference_tar
     out: [indexed_fasta, dict]
+  pad_knownsites_indexes:
+    run:
+      class: CommandLineTool
+      cwlVersion: v1.2
+      baseCommand: [echo, done]
+      inputs:
+        in_filelist:
+          type:
+            type: array
+            items: ['null', File]
+      outputs:
+        out_filelist:
+          type:
+            type: array
+            items: ['null', File]
+          outputBinding:
+            outputEval: $(inputs.in_filelist)
+    in:
+      in_filelist:
+        source: [knownsites, knownsites_indexes]
+        valueFrom: |
+          $(self[0].map(function(v,i) { return (self[1] != null ? self[1][i] : self[1]) }))
+    out: [out_filelist]
   index_knownsites:
     run: ../tools/tabix_index.cwl
     in:
       input_file: knownsites
-      input_index: knownsites_indexes
+      input_index: pad_knownsites_indexes/out_filelist
     scatter: [input_file, input_index]
     scatterMethod: dotproduct
     out: [output]
