@@ -34,5 +34,5 @@ inputs:
   conditional_run: { type: int, doc: "Placeholder variable to allow conditional running" } 
 outputs:
   detail: { type: File, outputBinding: { glob: '*.gc_bias_metrics.txt' } }
-  summary: { type: File, outputBinding: { glob: '*.summary_metrics.txt' } }
+  summary: { type: File, outputBinding: { glob: '*.gc_bias_summary_metrics.txt' } }
   chart: { type: File, outputBinding: { glob: '*.gc_bias_metrics.pdf' } }
