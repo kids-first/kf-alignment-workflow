@@ -337,25 +337,12 @@ steps:
         linkMerge: merge_flattened
         pickValue: all_non_null
     out: [realgn_bam, cutadapt_stats]
-  sentieon_readwriter_merge_bams:
-    run: ../tools/sentieon_ReadWriter.cwl
-    in:
-      sentieon_license: sentieon_license
-      reference: untar_reference/indexed_fasta
-      input_bam: sentieon_bwa_mem_payloads/realgn_bam
-      output_file_name:
-        source: output_basename
-        valueFrom: $(self).aligned.sorted.bam
-    out: [output_reads]
   sentieon_markdups:
     run: ../tools/sentieon_dedup.cwl
     in:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
-      in_alignments:
-        source: sentieon_readwriter_merge_bams/output_reads
-        valueFrom: |
-          $(self ? [self] : self)
+      in_alignments: sentieon_bwa_mem_payloads/realgn_bam
     out: [metrics_file, out_alignments]
   sentieon_bqsr:
     run: ../tools/sentieon_bqsr.cwl
