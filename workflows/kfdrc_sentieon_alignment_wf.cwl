@@ -194,8 +194,8 @@ inputs:
       to samtools split."}
   samtools_split_cores: {type: 'int?', default: 36, doc: "Minimum reserved number
       of CPU cores for samtools split."}
-  bamtofastq_cpu: { type: 'int?', default: 3, doc: "CPUs to allocate to bamtofastq" }
-  bamtofastq_ram: { type: 'int?', default: 4, doc: "RAM in GB to allocate to bamtofastq" }
+  bamtofastq_cpu: { type: 'int?', default: 1, doc: "CPUs to allocate to bamtofastq" }
+  bamtofastq_ram: { type: 'int?', default: 2, doc: "RAM in GB to allocate to bamtofastq" }
   bwa_cpu: { type: 'int?', default: 36, doc: "CPUs to allocate to Sentieon BWA" }
   bwa_ram: { type: 'int?', default: 72, doc: "RAM in GB to allocate to Sentieon BWA" }
 outputs:
@@ -316,7 +316,7 @@ steps:
   prepare_bam_bwa_payloads:
     hints:
     - class: "sbg:AWSInstanceType"
-      value: c5.9xlarge
+      value: c5.xlarge
     run: ../subworkflows/rgbam_to_bwa_payload.cwl
     when: $(inputs.input_rgbam != null)
     scatter: [input_rgbam]
