@@ -9,6 +9,8 @@ inputs:
   input_rgbam: File
   sample_name: string
   cram_reference: { type: 'File?', doc: "Fasta file if input is cram", secondaryFiles: [.fai] }
+  bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
+  bamtofastq_ram: { type: 'int?', doc: "RAM in GB to allocate to bamtofastq" }
 
 outputs:
   bwa_payload:
@@ -46,6 +48,8 @@ steps:
     in:
       input_align: input_rgbam
       reference: cram_reference
+      cpu: bamtofastq_cpu
+      ram: bamtofastq_ram
     out: [output]
 
   clt_prepare_bwa_payload:

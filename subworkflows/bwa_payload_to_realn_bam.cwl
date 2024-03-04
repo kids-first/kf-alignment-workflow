@@ -30,8 +30,8 @@ inputs:
   cutadapt_min_len: { type: 'int?', doc: "If adapter trimming, discard reads/read-pairs where the read length is less than this value. Set to 0 to turn off" }
   cutadapt_quality_base: { type: 'int?', doc: "If adapter trimming, use this value as the base quality score. Defaults to 33 but very old reads might need this value set to 64" }
   cutadapt_quality_cutoff: { type: 'string?', doc: "If adapter trimming, remove bases from the 3'/5' that fail to meet this cutoff value. If you specify a single cutoff value, the 3' end of each read is trimmed. If you specify two cutoff values separated by a comma, the first value will be trimmed from the 5' and the second value will be trimmed from the 3'" }
-  cpu_per_job: { type: 'int?' }
-  mem_per_job: { type: 'int?' }
+  bwa_cpu: { type: 'int?', doc: "CPUs to allocate to Sentieon BWA MEM." }
+  bwa_ram: { type: 'int?', doc: "RAM in GB to allocate to Sentieon BWA MEM." }
 outputs:
   realgn_bam:
     type: File
@@ -98,8 +98,8 @@ steps:
       min_alignment_score: min_alignment_score
       chunk_size:
         valueFrom: $(100000000)
-      cpu_per_job: cpu_per_job
-      mem_per_job: mem_per_job
+      cpu_per_job: bwa_cpu
+      mem_per_job: bwa_ram
     out: [output]
 
 $namespaces:

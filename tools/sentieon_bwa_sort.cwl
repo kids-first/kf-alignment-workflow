@@ -17,9 +17,9 @@ requirements:
 - class: InlineJavascriptRequirement
 - class: ResourceRequirement
   coresMin: |
-    $(inputs.cpu_per_job ? inputs.cpu_per_job : 32)
+    $(inputs.cpu_per_job)
   ramMin: |
-    $(inputs.mem_per_job ? inputs.mem_per_job: 32000)
+    $(inputs.mem_per_job * 1000)
 - class: DockerRequirement
   dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 - class: EnvVarRequirement
@@ -137,10 +137,12 @@ inputs:
   label: CPU per job
   doc: CPU per job
   type: int?
+  default: 32
 - id: mem_per_job
   label: Memory per job
-  doc: Memory per job[MB].
+  doc: Memory per job[GB].
   type: int?
+  default: 72
 outputs:
 - id: output
   type: File
