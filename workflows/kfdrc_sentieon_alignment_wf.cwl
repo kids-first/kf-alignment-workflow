@@ -194,10 +194,10 @@ inputs:
       to samtools split."}
   samtools_split_cores: {type: 'int?', default: 36, doc: "Minimum reserved number
       of CPU cores for samtools split."}
-  bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
-  bamtofastq_ram: { type: 'int?', doc: "RAM in GB to allocate to bamtofastq" }
-  bwa_cpu: { type: 'int?', doc: "CPUs to allocate to Sentieon BWA" }
-  bwa_ram: { type: 'int?', doc: "RAM in GB to allocate to Sentieon BWA" }
+  bamtofastq_cpu: { type: 'int?', default: 3, doc: "CPUs to allocate to bamtofastq" }
+  bamtofastq_ram: { type: 'int?', default: 4, doc: "RAM in GB to allocate to bamtofastq" }
+  bwa_cpu: { type: 'int?', default: 36, doc: "CPUs to allocate to Sentieon BWA" }
+  bwa_ram: { type: 'int?', default: 72, doc: "RAM in GB to allocate to Sentieon BWA" }
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned
       Reads File"}
