@@ -194,6 +194,10 @@ inputs:
       to samtools split."}
   samtools_split_cores: {type: 'int?', default: 36, doc: "Minimum reserved number
       of CPU cores for samtools split."}
+  bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
+  bamtofastq_ram: { type: 'int?', doc: "RAM in GB to allocate to bamtofastq" }
+  bwa_cpu: { type: 'int?', doc: "CPUs to allocate to Sentieon BWA" }
+  bwa_ram: { type: 'int?', doc: "RAM in GB to allocate to Sentieon BWA" }
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned
       Reads File"}
@@ -320,6 +324,8 @@ steps:
       input_rgbam: flatten_split_rgbams/output_files
       sample_name: biospecimen_name
       cram_reference: cram_reference
+      bamtofastq_cpu: bamtofastq_cpu
+      bamtofastq_ram: bamtofastq_ram
     out: [bwa_payload]
   prepare_pe_fq_bwa_payloads:
     run: ../tools/clt_prepare_bwa_payload.cwl
@@ -359,6 +365,8 @@ steps:
           prepare_se_fq_bwa_payloads/bwa_payload]
         linkMerge: merge_flattened
         pickValue: all_non_null
+      bwa_cpu: bwa_cpu
+      bwa_ram: bwa_ram
     out: [realgn_bam, cutadapt_stats]
   sentieon_markdups:
     run: ../tools/sentieon_dedup.cwl

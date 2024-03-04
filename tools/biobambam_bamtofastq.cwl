@@ -10,7 +10,8 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 1000
+    ramMin: $(inputs.ram * 1000)
+    coresMin: $(inputs.cpu)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/bwa-bundle:dev'
 baseCommand: []
@@ -27,6 +28,8 @@ inputs:
   input_align: { type: File, doc: "Input alignment file", inputBinding: { position: 1, prefix: "filename=", separate: false } }
   reference: { type: 'File?', doc: "Fasta file if input is cram", secondaryFiles: [.fai],
     inputBinding: { position: 1, prefix: "reference=", separate: false } }
+  cpu: { type: 'int?', default: 1, doc: "CPUs to allocate to this task." }
+  ram: { type: 'int?', default: 2, doc: "RAM in GBs to allocate to this task." }
 outputs:
   output: { type: 'File', outputBinding: { glob: '*.fq' } }
 
