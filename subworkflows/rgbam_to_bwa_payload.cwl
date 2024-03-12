@@ -25,7 +25,7 @@ outputs:
           type: string
         interleaved:
           type: boolean
-    outputSource: clt_prepare_bwa_payload/bwa_payload
+    outputSource: bamtofastq/bwa_payload
 
 steps:
   samtools_head_rg:
@@ -48,19 +48,10 @@ steps:
     in:
       input_align: input_rgbam
       reference: cram_reference
+      rg_str: expression_updatergsample/rg_str
       cpu: bamtofastq_cpu
       ram: bamtofastq_ram
-    out: [output]
-
-  clt_prepare_bwa_payload:
-    run: ../tools/clt_prepare_bwa_payload.cwl
-    in:
-      reads: bamtofastq/output
-      rg_str: expression_updatergsample/rg_str
-      interleaved:
-        valueFrom: $(1 == 1)
-    out: [bwa_payload]
-
+    out: [output, bwa_payload]
 
 $namespaces:
   sbg: https://sevenbridges.com
