@@ -503,6 +503,10 @@ inputs:
   min_alignment_score: {type: 'int?', default: 30, doc: "For BWA MEM, Don't output
       alignment with score lower than INT. This option only affects output."}
   bamtofastq_cpu: {type: 'int?', doc: "CPUs to allocate to bamtofastq"}
+  run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
+  hla_dna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA." }
+  hla_dna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA." }
+  t1k_preset: {type: ['null', {type: enum, name: preset, symbols: ["hla", "hla-wgs"]}], doc: "Preset for T1k HLA genotyper. Choose hla-wgs for WGS samples and hla for WXS/Targetted Sequencing"}
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned
       Reads File"}
@@ -562,6 +566,7 @@ outputs:
       idxstats of the realigned BAM file."}
   xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text
       file containing X and Y reads statistics generated from idxstats."}
+  t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "HLA genotype results from T1k" }
 steps:
   untar_reference:
     run: ../tools/untar_indexed_reference.cwl
@@ -768,6 +773,18 @@ steps:
       input_bam: gatk_applybqsr/recalibrated_bam
       output_bam_basename: output_basename
     out: [output]
+  t1k:
+    run: ../tools/t1k.cwl
+    when: $(inputs.run_t1k)
+    in:
+      run_t1k: run_t1k
+      bam: picard_gatherbamfiles/output
+      reference: hla_dna_ref_seqs
+      gene_coordinates: hla_dna_gene_coords
+      preset: t1k_preset
+      skip_post_analysis:
+        valueFrom: $(1 == 1)
+    out: [genotype_tsv]
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
     in:
