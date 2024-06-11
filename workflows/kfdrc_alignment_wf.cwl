@@ -782,6 +782,9 @@ steps:
       reference: hla_dna_ref_seqs
       gene_coordinates: hla_dna_gene_coords
       preset: t1k_preset
+      output_basename:
+        source: output_basename
+        valueFrom: $(self).t1k_hla
       skip_post_analysis:
         valueFrom: $(1 == 1)
     out: [genotype_tsv]
