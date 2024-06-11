@@ -90,6 +90,10 @@ to `true`; no additonal inputs are required.
   cutadapt_quality_cutoff: { type: 'string?', doc: "If adapter trimming, remove bases from the 3'/5' that fail to meet this cutoff value. If you specify a single cutoff value, the 3' end of each read is trimmed. If you specify two cutoff values separated by a comma, the first value will be trimmed from the 5' and the second value will be trimmed from the 3'" }
   min_alignment_score: { type: 'int?', default: 30, doc: "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output." }
   bamtofastq_cpu: { type: 'int?', doc: "CPUs to allocate to bamtofastq" }
+  run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
+  hla_dna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA." }
+  hla_dna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA." }
+  t1k_preset: {type: ['null', {type: enum, name: preset, symbols: ["hla", "hla-wgs"]}], doc: "Preset for T1k HLA genotyper. Choose hla-wgs for WGS samples and hla for WXS/Targetted Sequencing"}
 ```
 
 ### Outputs:
@@ -117,6 +121,7 @@ to `true`; no additonal inputs are required.
   qual_chart: {type: 'File[]?', outputSource: picard_qualityscoredistribution/chart, doc: "Visualization of quality metrics."}
   idxstats: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/output, doc: "samtools idxstats of the realigned BAM file."}
   xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text file containing X and Y reads statistics generated from idxstats."}
+  t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "HLA genotype results from T1k" }
 ```
 
 #### Detailed Input Information:
