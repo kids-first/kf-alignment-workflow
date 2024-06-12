@@ -198,6 +198,11 @@ inputs:
   bamtofastq_ram: { type: 'int?', default: 2, doc: "RAM in GB to allocate to bamtofastq" }
   bwa_cpu: { type: 'int?', default: 36, doc: "CPUs to allocate to Sentieon BWA" }
   bwa_ram: { type: 'int?', default: 72, doc: "RAM in GB to allocate to Sentieon BWA" }
+  run_t1k: {type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing"}
+  hla_dna_ref_seqs: {type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA.", "sbg:suggestedValue": {
+      class: File, path: 6669ac8127374715fc3ba3c4, name: hla_v3.43.0_gencode_v39_dna_seq.fa}}
+  hla_dna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA.", "sbg:suggestedValue": {
+      class: File, path: 6669ac8127374715fc3ba3c2, name: hla_v3.43.0_gencode_v39_dna_coord.fa}}
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned
       Reads File"}
@@ -256,6 +261,7 @@ outputs:
       idxstats of the realigned BAM file."}
   xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text
       file containing X and Y reads statistics generated from idxstats."}
+  t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "HLA genotype results from T1k"}
 steps:
   untar_reference:
     run: ../tools/untar_indexed_reference_2.cwl
@@ -384,6 +390,22 @@ steps:
       prefix: output_basename
       known_sites: index_knownsites/output
     out: [output_reads, recal_table]
+  t1k:
+    run: ../tools/t1k.cwl
+    when: $(inputs.run_t1k)
+    in:
+      run_t1k: run_t1k
+      bam: sentieon_bqsr/output_reads
+      reference: hla_dna_ref_seqs
+      gene_coordinates: hla_dna_gene_coords
+      preset:
+        valueFrom: "hla"
+      output_basename:
+        source: output_basename
+        valueFrom: $(self).t1k_hla
+      skip_post_analysis:
+        valueFrom: $(1 == 1)
+    out: [genotype_tsv]
   sentieon_readwriter_bam_to_cram:
     run: ../tools/sentieon_ReadWriter.cwl
     in:

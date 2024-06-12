@@ -1,7 +1,5 @@
 # Kids First Data Resource Center Alignment and GATK HaplotypeCaller Workflows
 
-![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
-
 The Kids First Data Resource Center Alignment and Haplotype Calling Workflow (bam/fastq-to-cram, gVCF optional) follows
 Broad best practices outlined in [Data pre-processing for variant discovery.](https://gatk.broadinstitute.org/hc/en-us/articles/360035535912-Data-pre-processing-for-variant-discovery)
 It uses bam/fastq input and aligns/re-aligns to a bwa-indexed reference fasta, version hg38. Resultant bam is de-dupped and
@@ -10,28 +8,44 @@ this can be used later on for further analysis in joint trio genotyping and subs
  Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-alignment-workflow) and supersedes the [old workflow](https://github.com/kids-first/kf-alignment-workflow/tree/1.0.0) and [public app](https://cavatica.sbgenomics.com/public/apps#kids-first-drc/kids-first-drc-alignment-workflow/kfdrc-alignment-bam2cram2gvcf/); however outputs are considered equivalent.
 
+<p align="center">
+  <img src="docs/kids_first_logo.svg" alt="Kids First repository logo" width="660px" />
+</p>
+<p align="center">
+  <a href="https://github.com/kids-first/kf-alignment-workflow/blob/main/LICENSE"><img src="https://img.shields.io/github/license/kids-first/kf-alignment-workflow.svg?style=for-the-badge"></a>
+</p>
+
 ## Input Agnostic Alignment Workflow
-Workflow for the alignment or realignment of input SAMs/BAMs/CRAMs (Alignment/Map files, or AMs), PE reads, and/or SE reads; conditionally generate gVCF and metrics.
+Workflow for the alignment or realignment of input SAMs/BAMs/CRAMs
+(Alignment/Map files, or AMs), PE reads, and/or SE reads; conditionally
+generate gVCF and metrics.
 
-This workflow is a all-in-one workflow for handling any kind of reads inputs: BAM inputs, PE reads
-and mates inputs, SE reads inputs,  or any combination of these. The workflow will naively attempt
-to process these depending on what you tell it you have provided. The user informs the workflow of
-which inputs to process using three boolean inputs: `run_bam_processing`, `run_pe_reads_processing`,
-and `run_se_reads_processing`. Providing `true` values for these as well their corresponding inputs
-will result in those inputs being processed.
+This workflow is a all-in-one workflow for handling any kind of reads inputs:
+BAM inputs, PE reads and mates inputs, SE reads inputs,  or any combination of
+these. The workflow will naively attempt to process these depending on what you
+tell it you have provided. The user informs the workflow of which inputs to
+process using three boolean inputs: `run_bam_processing`,
+`run_pe_reads_processing`, and `run_se_reads_processing`. Providing `true`
+values for these as well their corresponding inputs will result in those inputs
+being processed.
 
-The second half of the workflow deals with optional gVCF creation and metrics collection.
-This workflow is capable of collecting the metrics using the following boolean flags: `run_hs_metrics`,
-`run_wgs_metrics`, and `run_agg_metrics`. To run these metrics, additional optional inputs must
-also be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for HsMetrics,
-`wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF, set `run_gvcf_processing` to
-`true` and provide the following optional files: `dbsnp_vcf`, `contamination_sites_bed`,
-`contamination_sites_mu`, `contamination_sites_ud`, `wgs_calling_interval_list`, and
-`wgs_evaluation_interval_list`. Additionally, the workflow is capable of performing a basic
-evaluation of the X and Y sex chromosomes using idxstats. To activate this feature, set `run_sex_metrics`
-to `true`; no additonal inputs are required.
-
-
+The second half of the workflow deals with optional gVCF creation and metrics
+collection.  This workflow is capable of collecting the metrics using the
+following boolean flags: `run_hs_metrics`, `run_wgs_metrics`, and
+`run_agg_metrics`. To run these metrics, additional optional inputs must also
+be provided: `wxs_bait_interval_list` and `wxs_target_interval_list` for
+HsMetrics, `wgs_coverage_interval_list` for WgsMetrics. To generate the gVCF,
+set `run_gvcf_processing` to `true` and provide the following optional files:
+`dbsnp_vcf`, `contamination_sites_bed`, `contamination_sites_mu`,
+`contamination_sites_ud`, `wgs_calling_interval_list`, and
+`wgs_evaluation_interval_list`. Additionally, the workflow is capable of
+performing a basic evaluation of the X and Y sex chromosomes using idxstats. To
+activate this feature, set `run_sex_metrics` to `true`; no additonal inputs are
+required. Finally, the workflow is capable of collecting HLA genotype data
+using [T1k](./docs/T1K_README.md). This feature is on by default but can be
+disabled by setting `run_t1k` to `false`. HLA genotyping also requires the
+`hla_dna_ref_seqs` and `hla_dna_gene_coords` inputs. The public app provides
+default files for these.
 
 ### Basic Info
 - dockerfiles: https://github.com/d3b-center/bixtools
@@ -93,7 +107,6 @@ to `true`; no additonal inputs are required.
   run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
   hla_dna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA." }
   hla_dna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA." }
-  t1k_preset: {type: ['null', {type: enum, name: preset, symbols: ["hla", "hla-wgs"]}], doc: "Preset for T1k HLA genotyper. Choose hla-wgs for WGS samples and hla for WXS/Targetted Sequencing"}
 ```
 
 ### Outputs:
@@ -391,8 +404,6 @@ knownsites_indexes:
   - 1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
   - 1000G_omni2.5.hg38.vcf.gz.tbi
 ```
-
-![WF Visualized](https://github.com/kids-first/kf-alignment-workflow/blob/master/docs/kfdrc_alignment_gatk_hc_cyoa_wf.png?raw=true "BAM to CRAM to gVCF Workflow diagram")
 
 ## KFDRC GATK HaplotypeCaller CRAM to gVCF Workflow
 

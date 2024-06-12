@@ -98,7 +98,6 @@ doc: |+
     run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
     hla_dna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA." }
     hla_dna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA." }
-    t1k_preset: {type: ['null', {type: enum, name: preset, symbols: ["hla", "hla-wgs"]}], doc: "Preset for T1k HLA genotyper. Choose hla-wgs for WGS samples and hla for WXS/Targetted Sequencing"}
   ```
 
   ### Outputs:
@@ -488,8 +487,6 @@ inputs:
       class: File, path: 6669ac8127374715fc3ba3c4, name: hla_v3.43.0_gencode_v39_dna_seq.fa}}
   hla_dna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c2, name: hla_v3.43.0_gencode_v39_dna_coord.fa}}
-  t1k_preset: {type: ['null', {type: enum, name: preset, symbols: ["hla", "hla-wgs"]}], doc: "Preset for T1k HLA genotyper. Choose
-      hla-wgs for WGS samples and hla for WXS/Targetted Sequencing"}
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned Reads File"}
   gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
@@ -745,7 +742,8 @@ steps:
       bam: picard_gatherbamfiles/output
       reference: hla_dna_ref_seqs
       gene_coordinates: hla_dna_gene_coords
-      preset: t1k_preset
+      preset:
+        valueFrom: "hla"
       output_basename:
         source: output_basename
         valueFrom: $(self).t1k_hla

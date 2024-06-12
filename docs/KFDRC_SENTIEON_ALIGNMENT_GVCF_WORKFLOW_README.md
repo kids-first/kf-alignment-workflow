@@ -1,7 +1,7 @@
 # Kids First Data Resource Center Sentieon Short Reads Alignment and gVCF Workflow
 
 <p align="center">
-  <img src="https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png">
+  <img src="./kids_first_logo.svg" alt="Kids First repository logo" width="660px" />
 </p>
 
 The Kids First Data Resource Center (KFDRC) Short Reads Alignment and GATK
