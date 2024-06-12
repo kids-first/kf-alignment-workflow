@@ -20,6 +20,7 @@ sentieon_bwa_sort.cwl|pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 sentieon_dedup.cwl|pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 sentieon_haplotyper.cwl|pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 sentieon_run_agg_metrics.cwl|pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
+t1k.cwl|pgc-images.sbgenomics.com/d3b-bixu/t1k:v1.0.5
 tabix_index.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 untar_indexed_reference_2.cwl|None
 verifybamid_contamination_conditional.cwl|pgc-images.sbgenomics.com/d3b-bixu/verifybamid:1.0.2
