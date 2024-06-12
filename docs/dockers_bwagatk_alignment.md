@@ -31,6 +31,7 @@ sambamba_sort.cwl|images.sbgenomics.com/bogdang/sambamba:0.6.3
 samtools_bam_to_cram.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.8-dev
 samtools_idxstats_xy_ratio.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 samtools_split.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
+t1k.cwl|pgc-images.sbgenomics.com/d3b-bixu/t1k:v1.0.5
 tabix_index.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 untar_indexed_reference.cwl|None
 verifybamid_contamination_conditional.cwl|pgc-images.sbgenomics.com/d3b-bixu/verifybamid:1.0.2
