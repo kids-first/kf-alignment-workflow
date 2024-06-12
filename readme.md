@@ -107,6 +107,7 @@ default files for these.
   run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
   hla_dna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA." }
   hla_dna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA." }
+  t1k_abnormal_unmap_flag: { type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant" }
 ```
 
 ### Outputs:
