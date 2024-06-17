@@ -59,9 +59,9 @@ doc: |+
     - cwltool: https://github.com/common-workflow-language/cwltool/releases/tag/3.0.20200324120055
 
   ### References:
-  - https://console.cloud.google.com/storage/browser/broad-references/hg38/v0/
-  - kfdrc bucket: s3://kids-first-seq-data/broad-references/
-  - cavatica: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
+  - Broad Google Cloud Storage: https://console.cloud.google.com/storage/browser/gcp-public-data--broad-references/hg38/v0
+  - KFDRC AWS S3: s3://kids-first-seq-data/broad-references/
+  - CAVATICA: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
 
   ### Inputs:
   ```yaml
