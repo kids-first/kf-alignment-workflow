@@ -32,8 +32,8 @@ doc: |
   This workflow has a unique input `sentieon_license` that is not present in our
   main alignment workflow. To run the Sentieon tool, users must provide the license
   value to run any of the Sentieon tools. We have provided a default value that
-  works exclusively on Cavatica. Alternatively, if you wish to use this outside
-  of Cavatica, you will need to provide your own server license.
+  works exclusively on CAVATICA. Alternatively, if you wish to use this outside
+  of CAVATICA, you will need to provide your own server license.
 
   Otherwise, this workflow uses identical inputs as our existing alignment workflow.
   For more information see: https://github.com/kids-first/kf-alignment-workflow#inputs
@@ -95,14 +95,14 @@ doc: |
   ## Basic Info
   - [D3b dockerfiles](https://github.com/d3b-center/bixtools)
   - Testing Tools:
-      - [Seven Bridges Cavatica Platform](https://cavatica.sbgenomics.com/)
+      - [Seven Bridges CAVATICA Platform](https://cavatica.sbgenomics.com/)
       - [Common Workflow Language reference implementation (cwltool)](https://github.com/common-workflow-language/cwltool/)
 
   ## References
-  - KFDRC AWS s3 bucket: s3://kids-first-seq-data/broad-references/
-  - Cavatica: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
+  - KFDRC AWS S3 bucket: s3://kids-first-seq-data/broad-references/
+  - CAVATICA: https://cavatica.sbgenomics.com/u/kfdrc-harmonization/kf-references/
   - Sentieon: https://support.sentieon.com/manual/DNAseq_usage/dnaseq/
-  - Broad Institute Goolge Cloud: https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0/
+  - Broad Institute Goolge Cloud: https://console.cloud.google.com/storage/browser/gcp-public-data--broad-references/hg38/v0
 requirements:
 - class: ScatterFeatureRequirement
 - class: StepInputExpressionRequirement
@@ -178,7 +178,7 @@ inputs:
       class: File, path: 6669ac8127374715fc3ba3c4, name: hla_v3.43.0_gencode_v39_dna_seq.fa}}
   hla_dna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c2, name: hla_v3.43.0_gencode_v39_dna_coord.fa}}
-  t1k_abnormal_unmap_flag: { type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant" }
+  t1k_abnormal_unmap_flag: {type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant"}
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned Reads File"}
   gvcf: {type: 'File?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
