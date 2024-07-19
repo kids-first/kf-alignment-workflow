@@ -453,5 +453,5 @@ hints:
 - GVCF
 - SENTIEON
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.10.0'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.11.0'
   label: github-release
