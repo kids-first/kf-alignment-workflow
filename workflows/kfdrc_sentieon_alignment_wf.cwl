@@ -182,6 +182,7 @@ inputs:
   hla_dna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c2, name: hla_v3.43.0_gencode_v39_dna_coord.fa}}
   t1k_abnormal_unmap_flag: {type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant"}
+  t1k_ram: {type: 'int?', doc: "GB of RAM to allocate to T1k." }
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned Reads File"}
   gvcf: {type: 'File?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
@@ -368,6 +369,7 @@ steps:
       skip_post_analysis:
         valueFrom: $(1 == 1)
       abnormal_unmap_flag: t1k_abnormal_unmap_flag
+      ram: t1k_ram
     out: [genotype_tsv]
   sentieon_readwriter_bam_to_cram:
     run: ../tools/sentieon_ReadWriter.cwl
