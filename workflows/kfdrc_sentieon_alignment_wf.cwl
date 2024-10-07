@@ -176,6 +176,7 @@ inputs:
   bamtofastq_ram: {type: 'int?', default: 2, doc: "RAM in GB to allocate to bamtofastq"}
   bwa_cpu: {type: 'int?', default: 36, doc: "CPUs to allocate to Sentieon BWA"}
   bwa_ram: {type: 'int?', default: 72, doc: "RAM in GB to allocate to Sentieon BWA"}
+  dedup_ram: {type: 'int?', default: 32, doc: "RAM in GB to allocate to Sentieon DeDup"}
   run_t1k: {type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing"}
   hla_dna_ref_seqs: {type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c4, name: hla_v3.43.0_gencode_v39_dna_seq.fa}}
@@ -343,6 +344,7 @@ steps:
       sentieon_license: sentieon_license
       reference: untar_reference/indexed_fasta
       in_alignments: sentieon_bwa_mem_payloads/realgn_bam
+      mem_per_job: dedup_ram
     out: [metrics_file, out_alignments]
   sentieon_bqsr:
     run: ../tools/sentieon_bqsr.cwl
