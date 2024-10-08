@@ -177,6 +177,7 @@ inputs:
   bwa_cpu: {type: 'int?', default: 36, doc: "CPUs to allocate to Sentieon BWA"}
   bwa_ram: {type: 'int?', default: 72, doc: "RAM in GB to allocate to Sentieon BWA"}
   dedup_ram: {type: 'int?', default: 32, doc: "RAM in GB to allocate to Sentieon DeDup"}
+  bam_to_cram_ram: {type: 'int?', default: 16, doc:  "RAM in GB to allocate to Sentieon BAM to CRAM"}
   run_t1k: {type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing"}
   hla_dna_ref_seqs: {type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c4, name: hla_v3.43.0_gencode_v39_dna_seq.fa}}
@@ -387,6 +388,7 @@ steps:
         valueFrom: $(self.nameroot).cram
       rm_cram_bai:
         valueFrom: $(1 == 1)
+      mem_per_job: bam_to_cram_ram
     out: [output_reads]
   sentieon_hsmetrics:
     run: ../tools/sentieon_HsMetricAlgo.cwl
