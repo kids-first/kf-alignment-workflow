@@ -17,28 +17,8 @@ doc: |-
 requirements:
 - class: ShellCommandRequirement
 - class: ResourceRequirement
-  coresMin: |-
-    ${
-        if (inputs.cpu_per_job)
-        {
-            return inputs.cpu_per_job
-        }
-        else
-        {
-            return 32
-        }
-    }
-  ramMin: |-
-    ${
-        if (inputs.mem_per_job)
-        {
-            return inputs.mem_per_job
-        }
-        else
-        {
-            return 32000
-        }
-    }
+  coresMin: $(inputs.cpu_per_job)
+  ramMin: $(inputs.mem_per_job * 1000)
 - class: DockerRequirement
   dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
 - class: EnvVarRequirement
@@ -108,6 +88,12 @@ inputs:
   label: Basename for output files
   doc: Basename for the output files that are to be written.
   type: string?
+- id: cpu_per_job
+  type: int?
+  default: 32
+- id: mem_per_job
+  type: int?
+  default: 32
 
 outputs:
 - id: metrics_file

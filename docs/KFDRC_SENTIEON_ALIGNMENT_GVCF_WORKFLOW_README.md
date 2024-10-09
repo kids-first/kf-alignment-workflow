@@ -90,6 +90,12 @@ Metrics collection and contamination estimation are unchanged.
 | Gather VCFs                | Picard MergeVcfs                    | No splitting occurs in Sentieon     |
 | Metrics                    | Picard CollectVariantCallingMetrics | Picard CollectVariantCallingMetrics |
 
+### Workflow Troubleshooting
+
+- Sentieon tools scale up RAM usage to match allocated CPUs. If a task that is
+  running into memory issues, that can be solved by EITHER scaling UP the
+  task's allocated RAM and scaling DOWN the tasks allocated CPUs.
+
 ## Basic Info
 - [D3b dockerfiles](https://github.com/d3b-center/bixtools)
 - Testing Tools:
