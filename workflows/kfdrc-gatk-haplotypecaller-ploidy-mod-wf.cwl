@@ -1,7 +1,7 @@
 cwlVersion: v1.2
 class: Workflow
 id: kfdrc-gatk-haplotypecaller-ploidy-mod-workflow
-label: Kids First DRC GATK HaplotypeCaller Modified Ploidy Workflow
+label: Kids First DRC GATK HaplotypeCaller Modified Ploidy BETA Workflow
 doc: "This workflow re-runs a subset of regions with a different expected ploidy and re-integrates those results into existing results"
 
 requirements:
@@ -17,8 +17,6 @@ inputs:
       name: Homo_sapiens_assembly38.fasta, secondaryFiles: [{class: File, path: 60639016357c3a53540ca7af, name: Homo_sapiens_assembly38.fasta.fai}, {class: File, path: 60639019357c3a53540ca7e7,
       name: Homo_sapiens_assembly38.dict}]},
     secondaryFiles: ['.fai', '^.dict']} 
-  reference_dict: {type: 'File?', "sbg:suggestedValue": {class: File, path: 60639019357c3a53540ca7e7,
-      name: Homo_sapiens_assembly38.dict}}
   region: { type: 'string?', doc: "Specific region to pull, in format 'chr21' or 'chr3:1-1000'" }
   dbsnp_vcf: {type: 'File', doc: "dbSNP vcf file", "sbg:suggestedValue": {class: File,
       path: 6063901f357c3a53540ca84b, name: Homo_sapiens_assembly38.dbsnp138.vcf}}
@@ -80,7 +78,9 @@ steps:
       output_basename: output_basename
       dbsnp_vcf: dbsnp_vcf
       dbsnp_idx: dbsnp_idx
-      reference_dict: reference_dict
+      reference_dict:
+        source: reference_fasta
+        valueFrom: "${self.secondaryFiles.filter(function(e) {return e.nameext == '.dict'})[0])}"
       wgs_calling_interval_list: re_calling_interval_list
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
       conditional_run:
