@@ -38,6 +38,8 @@ requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
 - class: SubworkflowFeatureRequirement
+- class: InlineJavascriptRequirement
+- class: StepInputExpressionRequirement
 inputs:
   input_cram: {type: 'File', doc: "Input CRAM file"}
   input_gvcf: {type: File, secondaryFiles: ['.tbi'], doc: "gVCF generated in standard workflow"}
