@@ -11,22 +11,29 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/vcfutils:latest'
 
-baseCommand: [bedtools, intersect]
+baseCommand: [/bin/bash -c]
 arguments:
-  - position: 2
+  - position: 1
     shellQuote: false
     valueFrom: >-
-      -wa -header | bgzip -c -@ 4 > $(inputs.output_basename).bed_intersect.vcf.gz
+        'set -eo pipefail; bedtools intersect -wa -header
+  - position: 3
+    shellQuote: false
+    valueFrom: >-
+      | bgzip -c -@ 4 > $(inputs.output_basename).bed_intersect.vcf.gz'
+  - position: 4
+    shellQuote: false
+    valueFrom: >-
       && tabix $(inputs.output_basename).bed_intersect.vcf.gz
 
 inputs:
     input_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "Input VCF file.",
-      inputBinding: { position: 1, prefix: "-a" } }
+      inputBinding: { position: 2, prefix: "-a" } }
     input_bed_file: { type: File, doc: "bed intervals to intersect with.",
-      inputBinding: { position: 1, prefix: "-b" } }
+      inputBinding: { position: 2, prefix: "-b" } }
     output_basename: string
     inverse: {type: 'boolean?', doc: "Select whatever is NOT in the interval bed file",
-      inputBinding: { position: 1, prefix: "-v"} }
+      inputBinding: { position: 2, prefix: "-v"} }
 
 outputs:
   intersected_vcf:

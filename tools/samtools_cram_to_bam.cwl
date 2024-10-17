@@ -11,7 +11,7 @@ requirements:
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
 baseCommand: [samtools, view, -b]
 arguments:
-  - position: 3
+  - position: 4
     shellQuote: false
     valueFrom: >-
       > $(inputs.output_basename).bam
@@ -20,7 +20,7 @@ inputs:
   input_cram: { type: File, secondaryFiles: ['.crai?'], doc: "cram file to convert",
     inputBinding: { position: 2 } }
   region: { type: 'string?', doc: "Specific region to pull, in format 'chr21' or 'chr3:1-1000'",
-    inputBinding: { position: 2 } }
+    inputBinding: { position: 3 } }
   output_basename: string
   threads: { type: 'int?', doc: "num threads to use", default: 8,
     inputBinding: { position: 1, prefix: "-@"} }
