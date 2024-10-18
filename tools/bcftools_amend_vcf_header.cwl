@@ -12,26 +12,27 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
-      - entryname: "amend_header.sh"
-        entry: |
-          #!/usr/bin/env bash
-          set -xeo pipefail
-
-          bcftools head $(inputs.input_vcf.path) | head -n -1 > header_build.txt
-          bcftools head $(inputs.mod_vcf.path) | grep GATK | sed 's/Caller,/Caller_rpt_subset,/' >> header_build.txt
-          bcftools head $(inputs.input_vcf.path) | tail -n 1 >> header_build.txt
-          bcftools reheader --threads $(inputs.threads) -h header_build.txt $(inputs.input_vcf.path) > $(inputs.output_basename).ploidy_mod.g.vcf.gz
+      - writable: false
+        entryname: "bcftools_amend_header.sh"
+        entry:
+          $include: ../scripts/bcftools_amend_header.sh
 
 baseCommand: []
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      /bin/bash amend_header.sh
+      /bin/bash bcftools_amend_header.sh
+  - position: 3
+    shellQuote: false
+    valueFrom: >-
+      && bcftools reheader --threads $(inputs.threads) -h header_build.txt $(inputs.input_vcf.path) > $(inputs.output_basename).ploidy_mod.g.vcf.gz
 
 inputs:
-  input_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "Reconstituted VCF with modified ploidy region calls" }
-  mod_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "VCF with modified region cals only. Header will be used to modift input_vcf" }
+  input_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "Reconstituted VCF with modified ploidy region calls",
+    inputBinding: { position: 1} }
+  mod_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "VCF with modified region cals only. Header will be used to modift input_vcf",
+    inputBinding:  {position: 2 } }
   threads: { type: 'int?', default: 4 }
   output_basename: string
 outputs:
