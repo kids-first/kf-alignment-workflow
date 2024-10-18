@@ -40,5 +40,7 @@ inputs:
   input_bam: { type: File, secondaryFiles: [^.bai], doc: "Input bam file" }
   interval_list: { type: File, doc: "File containing one or more genomic intervals over which to operate" }
   contamination: { type: float, doc: "Fraction of contamination in sequencing data (for all samples) to aggressively remove" }
+  sample_ploidy: { type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy",
+    inputBinding: {position: 1, prefix: "--sample_ploidy" } }
 outputs:
   output: { type: File, outputBinding: { glob: '*.vcf.gz' }, secondaryFiles: [.tbi] }
