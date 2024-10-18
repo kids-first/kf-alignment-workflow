@@ -70,7 +70,7 @@ inputs:
   sample_ploidy: {type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy"}
 
 outputs:
-  mixed_ploidy_gvcf: {type: File, outputSource: picard_mergevcfs_python_renamesample/output}
+  mixed_ploidy_gvcf: {type: File, outputSource: bcftools_amend_header/header_amended_vcf}
 
 steps:
   gatk_intervallist_to_bed:
@@ -119,14 +119,24 @@ steps:
       biospecimen_name: biospecimen_name
       sample_ploidy: sample_ploidy
     out: [verifybamid_output, gvcf, gvcf_calling_metrics]
-  picard_mergevcfs_python_renamesample:
-    run: ../tools/picard_mergevcfs_python_renamesample.cwl
+  picard_mergevcfs:
+    run: ../tools/picard_mergevcfs.cwl
     in:
       input_vcf:
         source: [bedtools_intersect/intersected_vcf, generate_gvcf/gvcf]
       output_vcf_basename: output_basename
       biospecimen_name: biospecimen_name
     out: [output]
+  bcftools_amend_header:
+    run: ../tools/bcftools_amend_vcf_header.cwl
+    hints:
+    - class: 'sbg:AWSInstanceType'
+      value: c6i.2xlarge
+    in:
+      input_vcf: picard_mergevcfs/output
+      mod_vcf: generate_gvcf/gvcf
+      output_basename: output_basename
+    out: [header_amended_vcf]
 
 $namespaces:
   sbg: https://sevenbridges.com
