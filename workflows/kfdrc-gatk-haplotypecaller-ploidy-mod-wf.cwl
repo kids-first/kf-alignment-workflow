@@ -110,7 +110,7 @@ steps:
       dbsnp_idx: dbsnp_idx
       reference_dict:
         source: reference_fasta
-        valueFrom: "${self.secondaryFiles.filter(function(e) {return e.nameext == '.dict'})[0])}"
+        valueFrom: "$(self.secondaryFiles.filter(function(e) {return e.nameext == '.dict'})[0])"
       wgs_calling_interval_list: re_calling_interval_list
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
       conditional_run:
