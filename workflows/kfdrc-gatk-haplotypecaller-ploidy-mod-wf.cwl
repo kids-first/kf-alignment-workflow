@@ -46,7 +46,7 @@ requirements:
 - class: InlineJavascriptRequirement
 - class: StepInputExpressionRequirement
 inputs:
-  input_cram: {type: 'File', doc: "Input CRAM file"}
+  input_cram: {type: File, doc: "Input CRAM file", secondaryFiles: ['.crai']}
   input_gvcf: {type: File, secondaryFiles: ['.tbi'], doc: "gVCF generated in standard workflow"}
   biospecimen_name: {type: 'string', doc: "String name of biospecimen"}
   output_basename: {type: 'string', doc: "String to use as the base for output filenames"}
@@ -121,11 +121,13 @@ steps:
     out: [verifybamid_output, gvcf, gvcf_calling_metrics]
   picard_mergevcfs:
     run: ../tools/picard_mergevcfs.cwl
+    hints:
+    - class: 'sbg:AWSInstanceType'
+      value: c6i.2xlarge
     in:
       input_vcf:
         source: [bedtools_intersect/intersected_vcf, generate_gvcf/gvcf]
       output_vcf_basename: output_basename
-      biospecimen_name: biospecimen_name
     out: [output]
   bcftools_amend_header:
     run: ../tools/bcftools_amend_vcf_header.cwl
