@@ -17,7 +17,7 @@ arguments:
       > $(inputs.output_basename).bam
       && samtools index -@ $(inputs.threads) $(inputs.output_basename).bam $(inputs.output_basename).bai
 inputs:
-  input_cram: { type: File, secondaryFiles: ['.crai?'], doc: "cram file to convert",
+  input_cram: { type: File, secondaryFiles: ['.crai'], doc: "cram file to convert",
     inputBinding: { position: 2 } }
   region: { type: 'string?', doc: "Specific region to pull, in format 'chr21' or 'chr3:1-1000'",
     inputBinding: { position: 3 } }
