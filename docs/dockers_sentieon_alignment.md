@@ -9,7 +9,7 @@ cutadapt.cwl|quay.io/biocontainers/cutadapt:4.6--py310h4b81fae_1
 expression_preparerg.cwl|None
 gatk_indexfeaturefile.cwl|pgc-images.sbgenomics.com/d3b-bixu/gatk:4.1.7.0R
 picard_collectgvcfcallingmetrics.cwl|pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R
-samtools_head.cwl|dmiller15/samtools:1.15
+samtools_head.cwl|staphb/samtools:1.15
 samtools_idxstats_xy_ratio.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 samtools_split.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 sentieon_HsMetricAlgo.cwl|pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
