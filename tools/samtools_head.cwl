@@ -19,7 +19,7 @@ doc: |-
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'dmiller15/samtools:1.15'
+    dockerPull: 'staphb/samtools:1.15'
   - class: InlineJavascriptRequirement
 baseCommand: [samtools, head]
 arguments:
