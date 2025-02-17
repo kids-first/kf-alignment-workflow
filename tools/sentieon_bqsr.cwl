@@ -19,7 +19,7 @@ requirements:
   coresMin: $(inputs.cpu_per_job)
   ramMin: $(inputs.mem_per_job)
 - class: DockerRequirement
-  dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
+  dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112_hifi_patched
 - class: EnvVarRequirement
   envDef:
   - envName: SENTIEON_LICENSE
