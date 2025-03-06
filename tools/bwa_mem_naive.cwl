@@ -33,7 +33,7 @@ arguments:
       ${if (inputs.mates != null) {return inputs.mates.path} else {return ""}}
       | /opt/samblaster/samblaster -i /dev/stdin -o /dev/stdout
       | /opt/sambamba_0.6.3/sambamba_v0.6.3 view -t 36 -f bam -l 0 -S /dev/stdin
-      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 36 --natural-sort -m 15GiB --tmpdir ./
+      | /opt/sambamba_0.6.3/sambamba_v0.6.3 sort -t 36 -m 10G --tmpdir ./
       -o ${if (inputs.reads != null) {return inputs.reads.nameroot} else {return ""}}.unsorted.bam -l 5 /dev/stdin
 inputs:
   ref: { type: File, secondaryFiles: [.64.amb, .64.ann, .64.bwt, .64.pac, .64.sa, ^.dict, .fai], doc: "Reference fasta file with associated indexes" }

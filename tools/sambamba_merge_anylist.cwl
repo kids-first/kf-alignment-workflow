@@ -48,4 +48,4 @@ inputs:
   bams: { type: 'File[]', doc: "List of BAM files" }
   base_file_name: { type: string, doc: "String to be used in naming the output bam" }
 outputs:
-  merged_bam: { type: File, outputBinding: { glob: '*.bam' }, format: BAM }
+  merged_bam: { type: File, outputBinding: { glob: '*.bam' }, secondaryFiles: [.bai], format: BAM }

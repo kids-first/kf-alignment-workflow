@@ -43,7 +43,6 @@ found [here](./dockers_bwagatk_alignment.md).
 | Adapter Trimming           | cutadapt                            |
 | Fastq to RG Bam            | bwa mem                             |
 | Merge RG Bams              | sambamba merge                      |
-| Sort Bam                   | sambamba sort                       |
 | Mark Duplicates            | samblaster                          |
 | BaseRecalibration          | GATK BaseRecalibrator               |
 | ApplyRecalibration         | GATK ApplyBQSR                      |
