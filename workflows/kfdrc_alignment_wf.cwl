@@ -48,7 +48,6 @@ doc: |
   | Adapter Trimming           | cutadapt                            |
   | Fastq to RG Bam            | bwa mem                             |
   | Merge RG Bams              | sambamba merge                      |
-  | Sort Bam                   | sambamba sort                       |
   | Mark Duplicates            | samblaster                          |
   | BaseRecalibration          | GATK BaseRecalibrator               |
   | ApplyRecalibration         | GATK ApplyBQSR                      |
@@ -392,7 +391,7 @@ inputs:
   hla_dna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c2, name: hla_v3.43.0_gencode_v39_dna_coord.fa}}
   t1k_abnormal_unmap_flag: {type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant"}
-  t1k_ram: {type: 'int?', doc: "GB of RAM to allocate to T1k." }
+  t1k_ram: {type: 'int?', doc: "GB of RAM to allocate to T1k."}
 outputs:
   cram: {type: File, outputSource: samtools_bam_to_cram/output, doc: "(Re)Aligned Reads File"}
   gvcf: {type: 'File[]?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
@@ -596,15 +595,6 @@ steps:
           $(flatten(self))
       base_file_name: output_basename
     out: [merged_bam]
-  sambamba_sort:
-    hints:
-    - class: "sbg:AWSInstanceType"
-      value: c5.9xlarge;ebs-gp2;2048
-    run: ../tools/sambamba_sort.cwl
-    in:
-      bam: sambamba_merge/merged_bam
-      base_file_name: output_basename
-    out: [sorted_bam]
   python_createsequencegroups:
     run: ../tools/python_createsequencegroups.cwl
     in:
@@ -613,7 +603,7 @@ steps:
   gatk_baserecalibrator:
     run: ../tools/gatk_baserecalibrator.cwl
     in:
-      input_bam: sambamba_sort/sorted_bam
+      input_bam: sambamba_merge/merged_bam
       knownsites: index_knownsites/output
       reference: bundle_secondaries/output
       sequence_interval: python_createsequencegroups/sequence_intervals
@@ -629,7 +619,7 @@ steps:
     run: ../tools/gatk_applybqsr.cwl
     in:
       bqsr_report: gatk_gatherbqsrreports/output
-      input_bam: sambamba_sort/sorted_bam
+      input_bam: sambamba_merge/merged_bam
       reference: bundle_secondaries/output
       sequence_interval: python_createsequencegroups/sequence_intervals_with_unmapped
     scatter: [sequence_interval]
@@ -761,5 +751,5 @@ hints:
 - WXS
 - GVCF
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.11.1'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.11.2'
   label: github-release
