@@ -27,7 +27,6 @@ picard_mergevcfs_python_renamesample.cwl|pgc-images.sbgenomics.com/d3b-bixu/pica
 picard_qualityscoredistribution_conditional.cwl|pgc-images.sbgenomics.com/d3b-bixu/picard:2.18.9R
 python_createsequencegroups.cwl|pgc-images.sbgenomics.com/d3b-bixu/python:2.7.13
 sambamba_merge_anylist.cwl|images.sbgenomics.com/bogdang/sambamba:0.6.3
-sambamba_sort.cwl|images.sbgenomics.com/bogdang/sambamba:0.6.3
 samtools_bam_to_cram.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.8-dev
 samtools_idxstats_xy_ratio.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 samtools_split.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
