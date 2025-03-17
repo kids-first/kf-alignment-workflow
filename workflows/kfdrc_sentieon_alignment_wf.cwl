@@ -3,7 +3,7 @@ class: Workflow
 id: kfdrc-sentieon-alignment-workflow
 label: Kids First DRC Sentieon Alignment and gVCF Workflow
 doc: |
-  # Kids First Data Resource Center Sentieon Short Reads Alignment and gVCF Workflow
+  # Kids First Data Resource Center Sentieon Short Reads Alignment and Haplotyper Workflow
 
   <p align="center">
     <img src="./kids_first_logo.svg" alt="Kids First repository logo" width="660px" />
@@ -70,7 +70,6 @@ doc: |
   | Adapter Trimming           | cutadapt              | cutadapt                          |
   | Fastq to RG Bam            | bwa mem               | Sentieon bwa mem                  |
   | Merge RG Bams              | sambamba merge        | Sentieon ReadWriter               |
-  | Sort Bam                   | sambamba sort         | Sentieon ReadWriter               |
   | Mark Duplicates            | samblaster            | Sentieon LocusCollector + Dedup   |
   | BaseRecalibration          | GATK BaseRecalibrator | Sentieon QualCal                  |
   | ApplyRecalibration         | GATK ApplyBQSR        | Sentieon ReadWriter QualCalFilter |
@@ -94,6 +93,12 @@ doc: |
   | gVCF Calling               | GATK HaplotypeCaller                | Senteion Haplotyper                 |
   | Gather VCFs                | Picard MergeVcfs                    | No splitting occurs in Sentieon     |
   | Metrics                    | Picard CollectVariantCallingMetrics | Picard CollectVariantCallingMetrics |
+
+  ### Workflow Troubleshooting
+
+  - Sentieon tools scale up RAM usage to match allocated CPUs. If a task that is
+    running into memory issues, that can be solved by EITHER scaling UP the
+    task's allocated RAM and scaling DOWN the tasks allocated CPUs.
 
   ## Basic Info
   - [D3b dockerfiles](https://github.com/d3b-center/bixtools)
@@ -178,15 +183,15 @@ inputs:
   bwa_ram: {type: 'int?', default: 72, doc: "RAM in GB to allocate to Sentieon BWA"}
   dedup_cpu: {type: 'int?', default: 32, doc: "CPUs to allocate to Sentieon DeDup"}
   dedup_ram: {type: 'int?', default: 32, doc: "RAM in GB to allocate to Sentieon DeDup"}
-  bam_to_cram_cpu: {type: 'int?', default: 16, doc:  "CPUs to allocate to Sentieon BAM to CRAM"}
-  bam_to_cram_ram: {type: 'int?', default: 16, doc:  "RAM in GB to allocate to Sentieon BAM to CRAM"}
+  bam_to_cram_cpu: {type: 'int?', default: 16, doc: "CPUs to allocate to Sentieon BAM to CRAM"}
+  bam_to_cram_ram: {type: 'int?', default: 16, doc: "RAM in GB to allocate to Sentieon BAM to CRAM"}
   run_t1k: {type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing"}
   hla_dna_ref_seqs: {type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c4, name: hla_v3.43.0_gencode_v39_dna_seq.fa}}
   hla_dna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for DNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c2, name: hla_v3.43.0_gencode_v39_dna_coord.fa}}
   t1k_abnormal_unmap_flag: {type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant"}
-  t1k_ram: {type: 'int?', doc: "GB of RAM to allocate to T1k." }
+  t1k_ram: {type: 'int?', doc: "GB of RAM to allocate to T1k."}
 outputs:
   cram: {type: File, outputSource: sentieon_readwriter_bam_to_cram/output_reads, doc: "(Re)Aligned Reads File"}
   gvcf: {type: 'File?', outputSource: generate_gvcf/gvcf, doc: "Genomic VCF generated from the realigned alignment file."}
@@ -466,5 +471,5 @@ hints:
 - GVCF
 - SENTIEON
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.11.1'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.11.2'
   label: github-release
