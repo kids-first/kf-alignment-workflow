@@ -179,5 +179,5 @@ hints:
 - SENTIEON
 - WGS
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.9.1'
+- id: 'https://github.com/kids-first/kf-alignment-workflow/releases/tag/v2.11.2'
   label: github-release

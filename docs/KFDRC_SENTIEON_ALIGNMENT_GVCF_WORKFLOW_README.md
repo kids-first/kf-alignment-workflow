@@ -65,7 +65,6 @@ that match our existing Picard metrics suite.
 | Adapter Trimming           | cutadapt              | cutadapt                          |
 | Fastq to RG Bam            | bwa mem               | Sentieon bwa mem                  |
 | Merge RG Bams              | sambamba merge        | Sentieon ReadWriter               |
-| Sort Bam                   | sambamba sort         | Sentieon ReadWriter               |
 | Mark Duplicates            | samblaster            | Sentieon LocusCollector + Dedup   |
 | BaseRecalibration          | GATK BaseRecalibrator | Sentieon QualCal                  |
 | ApplyRecalibration         | GATK ApplyBQSR        | Sentieon ReadWriter QualCalFilter |
