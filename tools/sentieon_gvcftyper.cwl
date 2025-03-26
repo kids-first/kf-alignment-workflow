@@ -29,7 +29,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >
-      driver --thread_count \$(nproc)
+      driver -t \$(nproc)
   - position: 10
     shellQuote: false
     valueFrom: >
@@ -39,7 +39,7 @@ inputs:
   # Required Arguments
   sentieon_license: { type: 'string', doc: "License server host and port" }
   indexed_reference_fasta: { type: 'File', secondaryFiles: [{ pattern: '.fai', required: true }, { pattern: '^.dict', required: true }], inputBinding: { position: 2, prefix: "--reference"}, doc: "Reference file (FASTA)", "sbg:fileTypes": "FA, FASTA" }
-  vcf: { type: 'File', inputBinding: { position: 12, prefix: "--vcf" }, doc: "Input gVCF file" }
+  vcf: { type: 'File', inputBinding: { position: 12, prefix: "--vcf" }, doc: "Input gVCF file", secondaryFiles: ['.tbi'] }
   output_filename: { type: 'string', inputBinding: { position: 19 }, doc: "Name for output VCF or VCF.GZ. Naming file GZ will compress the output." }
 
   # Driver Arguments
@@ -53,11 +53,12 @@ inputs:
 
   # GVCFtyper Arguments
   annotation: { type: 'string?', inputBinding: { position: 12, prefix: "--annotation" }, doc: "Annotations to include, or exclude using '!' prefix" }
-  dbsnp: { type: 'File?', inputBinding: { position: 12, prefix: "--dbsnp" }, doc: "dbSNP file" }
+  dbsnp: { type: 'File?', inputBinding: { position: 12, prefix: "--dbsnp" }, doc: "dbSNP file", secondaryFiles: [{ pattern: '.tbi', required: false}, { pattern: '.idx', required: false} ] }
   call_conf: { type: 'int?', inputBinding: { position: 12, prefix: "--call_conf" }, doc: "Call confidence level (default: 30)" }
   emit_conf: { type: 'int?', inputBinding: { position: 12, prefix: "--emit_conf" }, doc: "Emit confidence level (default: 30)" }
-  emit_mode: { type: 'string?', inputBinding: { position: 12, prefix: "--emit_mode" }, doc: "Emit mode: variant, confident or all (default: variant)" }
-  genotype_model: { type: 'string?', inputBinding: { position: 12, prefix: "--genotype_model" }, doc: "Genotype model: coalescent or multinomial (default: coalescent)" }
+  emit_mode: { type: ['null', {type: 'enum', name: genotype_model, symbols: ["variant", "confident", "all"]}], inputBinding: { position: 12, prefix: "--emit_mode" }, doc: "Emit mode: variant, confident or all (default: variant)" }
+  genotype_model: { type: ['null', {type: 'enum', name: genotype_model, symbols: ["multinomial", "coalescent"]}],
+    inputBinding: { position: 12, prefix: "--genotype_model" }, doc: "Genotype model: coalescent (GATK3.8) or multinomial (GATK4.1) (default: coalescent)" }
   max_alt_alleles: { type: 'int?', inputBinding: { position: 12, prefix: "--max_alt_alleles" }, doc: "Maximum number of alternate alleles (default: 100)" }
 
   cpu:
