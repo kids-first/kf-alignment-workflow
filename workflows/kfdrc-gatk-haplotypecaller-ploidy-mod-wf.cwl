@@ -48,6 +48,7 @@ requirements:
 inputs:
   input_cram: {type: File, doc: "Input CRAM file", secondaryFiles: ['.crai']}
   input_gvcf: {type: File, secondaryFiles: ['.tbi'], doc: "gVCF generated in standard workflow"}
+  sentieon_license: { type: 'string?', doc: "License server host and port", default: "10.5.64.221:8990" }
   biospecimen_name: {type: 'string', doc: "String name of biospecimen"}
   output_basename: {type: 'string', doc: "String to use as the base for output filenames"}
   reference_fasta: {type: 'File', "sbg:suggestedValue": {class: File, path: 60639014357c3a53540ca7a3, name: Homo_sapiens_assembly38.fasta,
@@ -68,9 +69,20 @@ inputs:
   wgs_evaluation_interval_list: {type: 'File', doc: "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)",
     "sbg:suggestedValue": {class: File, path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
   sample_ploidy: {type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy"}
+  # Sentieon GVCF Genotyping
+  genotype_call_conf: { type: 'int?', doc: "Call confidence level (default: 30)" }
+  genotype_emit_conf: { type: 'int?', doc: "Emit confidence level (default: 30)" }
+  genotype_emit_mode: { type: ['null', {type: 'enum', name: genotype_model, symbols: ["variant", "confident", "all"]}], doc: "Emit mode: variant, confident or all (default: variant)", default: "variant" }
+  genotype_model: { type: ['null', {type: 'enum', name: genotype_model, symbols: ["multinomial", "coalescent"]}],
+    doc: "Genotype model: coalescent (GATK3.8) or multinomial (GATK4.1) (default: coalescent)", default: "multinomial" }
+  genotype_max_alt_alleles: { type: 'int?', doc: "Maximum number of alternate alleles", default: 6 }
+  genotype_cpus: { type: 'int?', doc : "Min num CPUs to make available for Sentieon GVCFtyper", default: 32}
+  genotype_ram: { type: 'int?', doc : "Min amt RAM in GB to make available for Sentieon GVCFtyper", default: 64}
+
 
 outputs:
   mixed_ploidy_gvcf: {type: File, outputSource: bcftools_amend_header/header_amended_vcf}
+  mixed_ploidy_genotyped_vcf: { type: File, outputSource: sentieon_gvcftyper/output}
 
 steps:
   gatk_intervallist_to_bed:
@@ -139,6 +151,28 @@ steps:
       mod_vcf: generate_gvcf/gvcf
       output_basename: output_basename
     out: [header_amended_vcf]
+  sentieon_gvcftyper:
+    run: ../tools/sentieon_gvcftyper.cwl
+    in:
+      sentieon_license: sentieon_license
+      indexed_reference_fasta: reference_fasta
+      vcf: bcftools_amend_header/header_amended_vcf
+      output_filename:
+        source: output_basename
+        valueFrom: "$(self).ploidy_mod.vcf.gz"
+      dbsnp:
+        source: [dbsnp_vcf, dbsnp_idx]
+        valueFrom: |
+          $([self[0], self[0].secondaryFiles[0], self[1]])
+      call_conf: genotype_call_conf
+      emit_conf: genotype_emit_conf
+      emit_mode: genotype_emit_mode
+      genotype_model: genotype_model
+      max_alt_alleles: genotype_max_alt_alleles
+      cpu: genotype_cpus
+      ram: genotype_ram
+    out: [output]
+
 
 $namespaces:
   sbg: https://sevenbridges.com

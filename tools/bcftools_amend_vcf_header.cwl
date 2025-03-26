@@ -34,7 +34,7 @@ arguments:
 inputs:
   input_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "Reconstituted VCF with modified ploidy region calls",
     inputBinding: { position: 1 } }
-  mod_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "VCF with modified region cals only. Header will be used to modift input_vcf",
+  mod_vcf: { type: File, secondaryFiles: ['.tbi'], doc: "VCF with modified region calls only. Header will be used to modify input_vcf",
     inputBinding: { position: 2 } }
   threads: { type: 'int?', default: 4 }
   output_basename: string

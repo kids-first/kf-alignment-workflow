@@ -31,7 +31,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >
-      driver --thread_count \$(nproc)
+      driver -t \$(nproc)
   - position: 10
     shellQuote: false
     valueFrom: >
