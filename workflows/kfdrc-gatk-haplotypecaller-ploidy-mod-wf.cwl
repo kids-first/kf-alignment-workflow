@@ -159,11 +159,16 @@ steps:
       vcf: bcftools_amend_header/header_amended_vcf
       output_filename:
         source: output_basename
-        valueFrom: "$(self).ploidy_mod.vcf.gz"
+        valueFrom: |
+          $(self).ploidy_mod.vcf.gz
       dbsnp:
         source: [dbsnp_vcf, dbsnp_idx]
         valueFrom: |
-          $([self[0], self[0].secondaryFiles[0], self[1]])
+          ${
+            var dbsnp = self[0];
+            dbsnp.secondaryFiles = [self[1]];
+            return dbsnp;
+          }
       call_conf: genotype_call_conf
       emit_conf: genotype_emit_conf
       emit_mode: genotype_emit_mode
