@@ -70,28 +70,36 @@ inputs:
     "sbg:suggestedValue": {class: File, path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
   sample_ploidy: {type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy"}
   # Sentieon GVCF Genotyping
+  haplotyper_emit_mode: { type: 'string?', doc: "Emit mode: variant, confident, all or gvcf (default: variant)", default: "gvcf" }
+  haplotyper_genotype_model: { type: 'string?', doc: "Genotype model: coalescent or multinomial (default: coalescent)", default: "coalescent"}
   genotype_call_conf: { type: 'int?', doc: "Call confidence level (default: 30)" }
   genotype_emit_conf: { type: 'int?', doc: "Emit confidence level (default: 30)" }
-  genotype_emit_mode: { type: ['null', {type: 'enum', name: genotype_model, symbols: ["variant", "confident", "all"]}], doc: "Emit mode: variant, confident or all (default: variant)", default: "variant" }
+  genotype_emit_mode: { type: ['null', {type: 'enum', name: genotype_emit_mode, symbols: ["variant", "confident", "all"]}], doc: "Emit mode: variant, confident or all (default: variant)", default: "variant" }
   genotype_model: { type: ['null', {type: 'enum', name: genotype_model, symbols: ["multinomial", "coalescent"]}],
-    doc: "Genotype model: coalescent (GATK3.8) or multinomial (GATK4.1) (default: coalescent)", default: "multinomial" }
+    doc: "Genotype model: coalescent (GATK3.8) or multinomial (GATK4.1) (default: coalescent)", default: "coalescent" }
   genotype_max_alt_alleles: { type: 'int?', doc: "Maximum number of alternate alleles", default: 6 }
   genotype_cpus: { type: 'int?', doc : "Min num CPUs to make available for Sentieon GVCFtyper", default: 32}
   genotype_ram: { type: 'int?', doc : "Min amt RAM in GB to make available for Sentieon GVCFtyper", default: 64}
 
 
 outputs:
-  mixed_ploidy_gvcf: {type: File, outputSource: bcftools_amend_header/header_amended_vcf}
+  mixed_ploidy_gvcf: {type: File, outputSource: picard_mergevcfs/output}
   mixed_ploidy_genotyped_vcf: { type: File, outputSource: sentieon_gvcftyper/output}
 
 steps:
   gatk_intervallist_to_bed:
     run: ../tools/gatk_intervallist_to_bed.cwl
+    hints:
+    - class: "sbg:AWSInstanceType"
+      value: c6i.2xlarge
     in:
       interval_list: re_calling_interval_list
     out: [output]
   bedtools_intersect:
     run: ../tools/bedtools_intersect.cwl
+    hints:
+    - class: "sbg:AWSInstanceType"
+      value: c6i.2xlarge
     in:
       input_vcf: input_gvcf
       input_bed_file: gatk_intervallist_to_bed/output
@@ -109,28 +117,79 @@ steps:
       threads:
         valueFrom: ${ return 16 }
     out: [output]
-  generate_gvcf:
-    run: ../subworkflows/kfdrc_bam_to_gvcf.cwl
+  verifybamid_checkcontam_conditional:
+    run: ../tools/verifybamid_contamination_conditional.cwl
+    hints:
+    - class: "sbg:AWSInstanceType"
+      value: c6i.2xlarge
     in:
-      contamination_sites_ud: contamination_sites_ud
-      contamination_sites_mu: contamination_sites_mu
       contamination_sites_bed: contamination_sites_bed
+      contamination_sites_mu: contamination_sites_mu
+      contamination_sites_ud: contamination_sites_ud
+      precalculated_contamination: contamination
       input_bam: samtools_cram_to_bam/output
-      indexed_reference_fasta: reference_fasta
+      ref_fasta: reference_fasta
       output_basename: output_basename
-      dbsnp_vcf: dbsnp_vcf
-      dbsnp_idx: dbsnp_idx
+    out: [output, contamination]
+  sentieon_haplotyper:
+    run: ../tools/sentieon_haplotyper.cwl
+    in:
+      sentieon_license: sentieon_license
+      output_filename:
+        source: output_basename
+        valueFrom: $(self).ploidy_mod.g.vcf.gz
+      indexed_reference_fasta: reference_fasta
+      input_reads:
+        source: samtools_cram_to_bam/output
+        valueFrom: |
+          $(self ? [self] : self)
+      dbsnp:
+        source: [dbsnp_vcf, dbsnp_idx]
+        valueFrom: |
+          ${
+            var dbsnp = self[0];
+            dbsnp.secondaryFiles = [self[1]];
+            return dbsnp;
+          }
+      genotype_model: haplotyper_genotype_model
+      emit_mode: haplotyper_emit_mode
+      ploidy: sample_ploidy
+      interval: re_calling_interval_list
+      interval_padding:
+        valueFrom: |
+          $(500)
+    out: [output, recalibrated_reads]
+  picard_mergevcfs_python_renamesample:
+    run: ../tools/picard_mergevcfs_python_renamesample.cwl
+    hints:
+    - class: "sbg:AWSInstanceType"
+      value: c6i.2xlarge
+    in:
+      input_vcf: 
+        source: sentieon_haplotyper/output
+        valueFrom: |
+          $([self])
+      output_vcf_basename: output_basename
+      biospecimen_name: biospecimen_name
+    out: [output]
+  picard_collectgvcfcallingmetrics:
+    run: ../tools/picard_collectgvcfcallingmetrics.cwl
+    in:
+      dbsnp_vcf:
+        source: [dbsnp_vcf, dbsnp_idx]
+        valueFrom: |
+          ${
+            var dbsnp = self[0];
+            dbsnp.secondaryFiles = [self[1]];
+            return dbsnp;
+          }
+      final_gvcf_base_name: output_basename
+      input_vcf: picard_mergevcfs_python_renamesample/output
       reference_dict:
         source: reference_fasta
         valueFrom: "$(self.secondaryFiles.filter(function(e) {return e.nameext == '.dict'})[0])"
-      wgs_calling_interval_list: re_calling_interval_list
       wgs_evaluation_interval_list: wgs_evaluation_interval_list
-      conditional_run:
-        valueFrom: $(1)
-      contamination: contamination
-      biospecimen_name: biospecimen_name
-      sample_ploidy: sample_ploidy
-    out: [verifybamid_output, gvcf, gvcf_calling_metrics]
+    out: [output]
   picard_mergevcfs:
     run: ../tools/picard_mergevcfs.cwl
     hints:
@@ -138,25 +197,15 @@ steps:
       value: c6i.2xlarge
     in:
       input_vcf:
-        source: [bedtools_intersect/intersected_vcf, generate_gvcf/gvcf]
+        source: [bedtools_intersect/intersected_vcf, picard_mergevcfs_python_renamesample/output]
       output_vcf_basename: output_basename
     out: [output]
-  bcftools_amend_header:
-    run: ../tools/bcftools_amend_vcf_header.cwl
-    hints:
-    - class: 'sbg:AWSInstanceType'
-      value: c6i.2xlarge
-    in:
-      input_vcf: picard_mergevcfs/output
-      mod_vcf: generate_gvcf/gvcf
-      output_basename: output_basename
-    out: [header_amended_vcf]
   sentieon_gvcftyper:
     run: ../tools/sentieon_gvcftyper.cwl
     in:
       sentieon_license: sentieon_license
       indexed_reference_fasta: reference_fasta
-      vcf: bcftools_amend_header/header_amended_vcf
+      vcf: picard_mergevcfs/output
       output_filename:
         source: output_basename
         valueFrom: |
@@ -177,12 +226,10 @@ steps:
       cpu: genotype_cpus
       ram: genotype_ram
     out: [output]
-
-
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
 - class: 'sbg:maxNumberOfParallelInstances'
-  value: 4
+  value: 2
 sbg:license: Apache License 2.0
 sbg:publisher: KFDRC
