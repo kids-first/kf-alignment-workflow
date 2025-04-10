@@ -1,6 +1,7 @@
 # Kids First DRC GATK HaplotypeCaller Modified Ploidy BETA Workflow
 This is a research workflow for users wishing to modify the ploidy of certain
-regions of their existing GVCF calls.
+regions of their existing GVCF calls. This uses the `coalescent` genotype model, equivalent to GATK 3.8
+from Sentieon, a close analog of the original production workflow GATK 3.5 (via 4beta).
 
 ## Inputs
 ### Ploidy-related
@@ -20,8 +21,9 @@ regions of their existing GVCF calls.
   corresponding `.fai` and `.dict` files.
 - dbsnp_vcf: dbSNP vcf file
 - dbsnp_idx: dbSNP vcf index file
-- contamination: Precalculated contamination value. Providing the value here
-  will skip the run of VerifyBAMID and use the provided value as ground truth.
+- contamination: Precalculated contamination value. 
+  **Strongly recommend using `0` or value ascertained when running sample as pure diploid.**
+  Otherwise a high value using chr21 only will result in very few triploid calls and mostly diploid calls despite obvious AF.
 - contamination_sites_bed: .Bed file for markers used in this
   analysis,format(chr\tpos-1\tpos\trefAllele\taltAllele)
 - contamination_sites_mu: .mu matrix file of genotype matrix
@@ -30,5 +32,5 @@ regions of their existing GVCF calls.
   analysis (for VariantCallingMetrics)
 
 ## Outputs
-
 - mixed_ploidy_gvcf: Updated complete GVCF in which the desired region has had its ploidy updated
+- mixed_ploidy_genotyped_vcf: mixed_ploidy_gvcf run through GVCFtyper
