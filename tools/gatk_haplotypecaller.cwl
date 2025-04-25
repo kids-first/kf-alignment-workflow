@@ -22,7 +22,8 @@ arguments:
       -I $(inputs.input_bam.path)
       --interval_padding 500
       -L $(inputs.interval_list.path)
-      -O local.sharded.bam && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
+      -O local.sharded.bam
+      && java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms8000m
       -jar /GenomeAnalysisTK.jar
       -T HaplotypeCaller
       -R $(inputs.reference.path)
@@ -42,5 +43,6 @@ inputs:
   contamination: { type: float, doc: "Fraction of contamination in sequencing data (for all samples) to aggressively remove" }
   sample_ploidy: { type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy",
     inputBinding: {position: 1, prefix: "--sample_ploidy" } }
+  dbsnp: { type: File?, doc: "DBSNP VCF file", inputBinding: { position: 1, prefix: "--dbsnp" } }
 outputs:
   output: { type: File, outputBinding: { glob: '*.vcf.gz' }, secondaryFiles: [.tbi] }

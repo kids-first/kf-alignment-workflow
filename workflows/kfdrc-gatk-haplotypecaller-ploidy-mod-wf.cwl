@@ -69,6 +69,7 @@ inputs:
   wgs_evaluation_interval_list: {type: 'File', doc: "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)",
     "sbg:suggestedValue": {class: File, path: 60639017357c3a53540ca7d3, name: wgs_evaluation_regions.hg38.interval_list}}
   sample_ploidy: {type: 'int?', doc: "If sample/interval is expected to not have ploidy=2, enter expected ploidy"}
+  use_sentieon: { type: 'boolean?', doc: "If true, use Sentieon implementation for haplotype caller instead of GATK", default: true }
   # Sentieon GVCF Genotyping
   haplotyper_emit_mode: { type: 'string?', doc: "Emit mode: variant, confident, all or gvcf (default: variant)", default: "gvcf" }
   haplotyper_genotype_model: { type: 'string?', doc: "Genotype model: coalescent or multinomial (default: coalescent)", default: "coalescent"}
@@ -132,6 +133,7 @@ steps:
       output_basename: output_basename
     out: [output, contamination]
   sentieon_haplotyper:
+    when: $(inputs.conditional)
     run: ../tools/sentieon_haplotyper.cwl
     in:
       sentieon_license: sentieon_license
@@ -158,7 +160,39 @@ steps:
       interval_padding:
         valueFrom: |
           $(500)
+      conditional: use_sentieon
     out: [output, recalibrated_reads]
+
+  picard_intervallisttools:
+    run: ../tools/picard_intervallisttools.cwl
+    in:
+      interval_list: re_calling_interval_list
+    out: [output]
+
+  gatk_haplotypecaller:
+    when: $(inputs.conditional == false)
+    hints:
+      - class: sbg:AWSInstanceType
+        value: c6i.4xlarge
+    run: ../tools/gatk_haplotypecaller.cwl
+    in:
+      contamination: verifybamid_checkcontam_conditional/contamination
+      input_bam: samtools_cram_to_bam/output
+      interval_list: picard_intervallisttools/output
+      reference: reference_fasta
+      sample_ploidy: sample_ploidy
+      conditional: use_sentieon
+      dbsnp:
+        source: [dbsnp_vcf, dbsnp_idx]
+        valueFrom: |
+          ${
+            var dbsnp = self[0];
+            dbsnp.secondaryFiles = [self[1]];
+            return dbsnp;
+          }
+    scatter: [interval_list]
+    out: [output]
+  
   picard_mergevcfs_python_renamesample:
     run: ../tools/picard_mergevcfs_python_renamesample.cwl
     hints:
@@ -166,9 +200,16 @@ steps:
       value: c6i.2xlarge
     in:
       input_vcf: 
-        source: sentieon_haplotyper/output
+        source: [sentieon_haplotyper/output, gatk_haplotypecaller/output]
+        pickValue: first_non_null
         valueFrom: |
-          $([self])
+          ${
+            if (Array.isArray(self)){
+              return self;
+            } else {
+              return [self];
+            }
+          }
       output_vcf_basename: output_basename
       biospecimen_name: biospecimen_name
     out: [output]
