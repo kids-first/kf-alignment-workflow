@@ -133,7 +133,7 @@ steps:
       output_basename: output_basename
     out: [output, contamination]
   sentieon_haplotyper:
-    when: $(inputs.conditional)
+    when: $(inputs.use_sentieon)
     run: ../tools/sentieon_haplotyper.cwl
     in:
       sentieon_license: sentieon_license
@@ -160,18 +160,19 @@ steps:
       interval_padding:
         valueFrom: |
           $(500)
-      conditional: use_sentieon
+      use_sentieon: use_sentieon
     out: [output, recalibrated_reads]
 
   picard_intervallisttools:
-    when: $(inputs.conditional == false)
+    when: $(inputs.use_sentieon == false)
     run: ../tools/picard_intervallisttools.cwl
     in:
       interval_list: re_calling_interval_list
+      use_sentieon: use_sentieon
     out: [output]
 
   gatk_haplotypecaller:
-    when: $(inputs.conditional == false)
+    when: $(inputs.use_sentieon == false)
     hints:
       - class: sbg:AWSInstanceType
         value: c6i.4xlarge
@@ -182,7 +183,7 @@ steps:
       interval_list: picard_intervallisttools/output
       reference: reference_fasta
       sample_ploidy: sample_ploidy
-      conditional: use_sentieon
+      use_sentieon: use_sentieon
       dbsnp:
         source: [dbsnp_vcf, dbsnp_idx]
         valueFrom: |
