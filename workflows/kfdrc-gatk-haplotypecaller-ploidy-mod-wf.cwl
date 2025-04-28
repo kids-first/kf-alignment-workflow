@@ -164,6 +164,7 @@ steps:
     out: [output, recalibrated_reads]
 
   picard_intervallisttools:
+    when: $(inputs.conditional == false)
     run: ../tools/picard_intervallisttools.cwl
     in:
       interval_list: re_calling_interval_list
