@@ -204,13 +204,7 @@ steps:
         source: [sentieon_haplotyper/output, gatk_haplotypecaller/output]
         pickValue: first_non_null
         valueFrom: |
-          ${
-            if (Array.isArray(self)){
-              return self;
-            } else {
-              return [self];
-            }
-          }
+          $(Array.isArray(self) ? self : [self])
       output_vcf_basename: output_basename
       biospecimen_name: biospecimen_name
     out: [output]
