@@ -72,8 +72,6 @@ inputs:
   prune_factor: { type: 'int?', inputBinding: { position: 12, prefix: "--prune_factor"}, doc: "Pruning factor in the kmer graph (default: 2)" }
   trim_soft_clip: { type: 'boolean?', inputBinding: { position: 12, prefix: "--trim_soft_clip"}, doc: "Trim off soft-clipped bases" }
 
-  conditional: { type: 'boolean?', doc: "Hook to disable this tool when wrapped in a workflow" }
-
   cpu:
     type: 'int?'
     default: 32
