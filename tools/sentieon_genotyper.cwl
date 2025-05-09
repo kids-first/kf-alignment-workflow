@@ -16,7 +16,7 @@ requirements:
 - class: ShellCommandRequirement
 - class: InlineJavascriptRequirement
 - class: DockerRequirement
-  dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112.01_hifi
+  dockerPull: pgc-images.sbgenomics.com/hdchen/sentieon:202112_hifi_patched
 - class: ResourceRequirement
   coresMin: $(inputs.cpu)
   ramMin: $(inputs.ram * 1000)
