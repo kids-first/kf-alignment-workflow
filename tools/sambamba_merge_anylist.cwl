@@ -4,7 +4,7 @@ id: sambamba_merge_anylist
 doc: |-
   Takes a list of BAMs, flattens that list, then merges the items of the list.
   This tool runs the following programs:
-    - sambamba merge && rm
+    - sambamba merge || cp
 requirements:
   - class: ShellCommandRequirement
   - class: ResourceRequirement
@@ -34,18 +34,14 @@ arguments:
     valueFrom: |-
       ${
         var flatin = flatten(inputs.bams);
-        var arr = [];
-        for (var i=0; i<flatin.length; i++) {
-          arr = arr.concat(flatin[i].path);
-        }
-        if (arr.length > 1) {
-          return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + arr.join(' ');
+        if (flatin.length > 1) {
+          return "/opt/sambamba_0.6.3/sambamba_v0.6.3 merge -t 36 " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam " + flatin.map(function(e) { return e.path }).join(' ');
         } else {
-          return "cp " + arr.join(' ') + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam";
+          return "cp " + flatin.map(function(e) { return e.path }).join(' ') + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam && cp " + flatin.map(function(e) { return e.secondaryFiles[0].path }).join(' ') + " " + inputs.base_file_name + ".aligned.duplicates_marked.unsorted.bam.bai";
         }
       }
 inputs:
-  bams: { type: 'File[]', doc: "List of BAM files" }
+  bams: { type: 'File[]', secondaryFiles: [.bai], doc: "List of BAM files" }
   base_file_name: { type: string, doc: "String to be used in naming the output bam" }
 outputs:
   merged_bam: { type: File, outputBinding: { glob: '*.bam' }, secondaryFiles: [.bai], format: BAM }
