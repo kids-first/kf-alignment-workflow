@@ -44,4 +44,4 @@ inputs:
   rg: { type: string, doc: "Formatted RG header to use in the resulting BAM, check BWA for formatting guidelines (e.g. escaped tabs '\t')", inputBinding: {position: 1, shellQuote: true} }
 
 outputs:
-  output: { type: File, outputBinding: { glob: '*.bam' } }
+  output: { type: File, outputBinding: { glob: '*.bam' }, secondaryFiles: [.bai] }
