@@ -27,7 +27,7 @@ inputs:
   output_basename: { type: 'string', doc: "Prefix string for output file name.", inputBinding: { position: 1, prefix: "-o"} }
   sample_name: { type: 'string', doc: "Input sample id.", inputBinding: { position: 1, prefix: "-s"} }
   ratio_file: { type: 'File', doc: "Input sex ratio file.", inputBinding: { position: 1, prefix: "-r"} }
-  run_generate_ped_file: {type: 'boolean?'}
+  run_step: {type: 'boolean?'}
   threads: { type: 'int?', default: 2 }
   ram: { type: 'int?', default: 3 }
 outputs:
