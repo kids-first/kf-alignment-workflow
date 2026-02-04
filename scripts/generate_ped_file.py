@@ -9,7 +9,7 @@ def get_args():
     parser.add_argument(
         "-o", "--output-basename", required=True, help="Base name for ped file"
     )
-    parser.add_argument("-s", "--sample-id", required=True, help="Input sample id")
+    parser.add_argument("-s", "--sample-name", required=True, help="Input sample name")
     parser.add_argument(
         "-r", "--ratio-file", required=True, help="Path to the ratio file."
     )
@@ -30,7 +30,7 @@ def main(args):
         elif last_line.split(" ")[-1] == "F":
             sex_estimate = 2
 
-    ped_line = f"0\t{args.sample_id}\t0\t0\t{sex_estimate}\t2"
+    ped_line = f"0\t{args.sample_name}\t0\t0\t{sex_estimate}\t2"
     out_file = f"{args.output_basename}.ped"
 
     with open(out_file, 'w') as out:

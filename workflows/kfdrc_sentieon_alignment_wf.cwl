@@ -162,6 +162,8 @@ inputs:
   run_sex_metrics: {type: boolean, doc: "idxstats will be collected and X/Y ratios calculated."}
   run_gvcf_processing: {type: boolean, doc: "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu,
       contamination_sites_ud, and wgs_evaluation_interval_list."}
+  run_generate_ped_file: {type: boolean, doc: "Generate a ped file. Usually only created for normal samples
+      that will be used in single sample germline workflow."}
   cutadapt_r1_adapter: {type: 'string?', doc: "If read1 reads have an adapter, provide regular 3' adapter sequence here to remove
       it from read1"}
   cutadapt_r2_adapter: {type: 'string?', doc: "If read2 reads have an adapter, provide regular 3' adapter sequence here to remove
@@ -235,6 +237,7 @@ outputs:
   xy_ratio: {type: 'File?', outputSource: samtools_idxstats_xy_ratio/ratio, doc: "Text file containing X and Y reads statistics generated
       from idxstats."}
   t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "HLA genotype results from T1k"}
+  ped_file: {type: 'File?', outputSource: generate_ped_file/ped_file, doc: "Single sample ped file"}
 steps:
   untar_reference:
     run: ../tools/untar_indexed_reference_2.cwl
@@ -456,6 +459,15 @@ steps:
       run_sex_metrics:
         valueFrom: $(1 == 0)
     out: [verifybamid_output, gvcf, gvcf_calling_metrics, idxstats, xy_ratio]
+  generate_ped_file:
+    run: ../tools/generate_ped_file.cwl
+    when: $(inputs.run_generate_ped_file != false)
+    in:
+      output_basename: output_basename
+      sample_name: biospecimen_name
+      ratio_file: samtools_idxstats_xy_ratio/ratio
+      run_generate_ped_file: run_generate_ped_file
+    out: [ped_file]
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
