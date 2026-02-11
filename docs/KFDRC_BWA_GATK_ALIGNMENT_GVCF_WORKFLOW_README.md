@@ -1,4 +1,4 @@
-# Kids First Data Resource Center BWA-GATK Short Reads Alignment and HaplotypeCaller Workflow
+ # Kids First Data Resource Center BWA-GATK Short Reads Alignment and HaplotypeCaller Workflow
 
 <p align="center">
   <img src="./kids_first_logo.svg" alt="Kids First repository logo" width="660px" />
@@ -99,7 +99,7 @@ Additionally, these files must have appropriate read group information. For
 aligned and unaligned BAM/CRAM/SAM files, we assume that information is
 contained within the file header. If your files do not have read group (`@RG`)
 header information, you **must** add that information to the file header for
-the pipeline to work! Make sure your the read groups have the following fields:
+the pipeline to work! Make sure the read groups have the following fields:
 - `ID`
 - `SM`
 - `LB`
