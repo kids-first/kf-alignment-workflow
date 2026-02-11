@@ -99,7 +99,11 @@ Additionally, these files must have appropriate read group information. For
 aligned and unaligned BAM/CRAM/SAM files, we assume that information is
 contained within the file header. If your files do not have read group (`@RG`)
 header information, you **must** add that information to the file header for
-the pipeline to work!
+the pipeline to work! Make sure your the read groups have the following fields:
+- `ID`
+- `SM`
+- `LB`
+- `PL`
 
 If the user provides CRAM inputs, they must also provide the reference that was
 used to generate the CRAM file.
