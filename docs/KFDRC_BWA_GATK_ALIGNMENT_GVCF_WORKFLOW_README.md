@@ -1,4 +1,4 @@
- # Kids First Data Resource Center BWA-GATK Short Reads Alignment and HaplotypeCaller Workflow
+# Kids First Data Resource Center BWA-GATK Short Reads Alignment and HaplotypeCaller Workflow
 
 <p align="center">
   <img src="./kids_first_logo.svg" alt="Kids First repository logo" width="660px" />
