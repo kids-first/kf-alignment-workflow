@@ -62,6 +62,7 @@ that match our existing Picard metrics suite.
 |----------------------------|-----------------------|-----------------------------------|
 | Bam to Read Group (RG) BAM | samtools split        | samtools split                    |
 | RG Bam to Fastq            | biobambam2 bamtofastq | biobambam2 bamtofastq             |
+| Adapter Detection          | fastp                 | fastp                             |
 | Adapter Trimming           | cutadapt              | cutadapt                          |
 | Fastq to RG Bam            | bwa mem               | Sentieon bwa mem                  |
 | Merge RG Bams              | sambamba merge        | Sentieon ReadWriter               |
