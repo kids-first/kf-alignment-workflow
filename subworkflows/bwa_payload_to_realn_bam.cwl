@@ -36,13 +36,34 @@ outputs:
   realgn_bam:
     type: File
     outputSource: sentieon_bwa_mem/output
-  cutadapt_stats: { type: 'File', outputSource: cutadapt/cutadapt_stats }
+  cutadapt_stats: { type: 'File?', outputSource: cutadapt/cutadapt_stats }
+  fastp_json: { type: 'File', outputSource: fastp_adapter_detect/fastp_json }
+  fastp_html: { type: 'File', outputSource: fastp_adapter_detect/fastp_html }
 
 steps:
+  fastp_adapter_detect:
+    run: ../tools/fastp_adapter_detect.cwl
+    in:
+      reads1:
+        source: bwa_payload
+        valueFrom: $(self.reads_file)
+      reads2:
+        source: bwa_payload
+        valueFrom: $(self.mates_file)
+      sample_name:
+        source: [output_basename, bwa_payload]
+        valueFrom: |
+          ${
+            var basename = self[0];
+            var rg_id = self[1].rg_str.match(/ID:[A-Za-z0-9-_/]*?([A-Za-z0-9-_]*)\\t/);
+            var reads_name = self[1].reads_file.basename.replace(/.f(ast)?[aq](\.gz)?$/, "");
+            return [basename, (rg_id != null ? rg_id[1] : "UNKNOWN"), reads_name].join('.');
+          }
+    out: [fastp_json, fastp_html, r1_adapter, r2_adapter]
+
   cutadapt:
     run: ../tools/cutadapt.cwl
-    when: |
-      $(inputs.r1_threeprime_adapter != null && (inputs.r2_threeprime_adapter != null || inputs.input_reads2.mates_file == null) && (inputs.r2_threeprime_adapter != null || !inputs.interleaved.interleaved))
+    when: $(inputs.r1_threeprime_adapter != null && (inputs.input_reads2 == null || inputs.interleaved || inputs.r2_threeprime_adapter != null))
     in:
       input_reads1:
         source: bwa_payload
@@ -53,8 +74,14 @@ steps:
       interleaved:
         source: bwa_payload
         valueFrom: $(self.interleaved)
-      r1_threeprime_adapter: cutadapt_r1_adapter
-      r2_threeprime_adapter: cutadapt_r2_adapter
+      r1_threeprime_adapter:
+        source: [fastp_adapter_detect/r1_adapter, cutadapt_r1_adapter]
+        valueFrom: |
+          $(self[0] != null ? self[0] : self[1])
+      r2_threeprime_adapter:
+        source: [fastp_adapter_detect/r2_adapter, cutadapt_r2_adapter]
+        valueFrom: |
+          $(self[0] != null ? self[0] : self[1])
       minimum_length: cutadapt_min_len
       quality_base: cutadapt_quality_base
       quality_cutoff: cutadapt_quality_cutoff

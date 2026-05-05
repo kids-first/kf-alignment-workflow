@@ -201,6 +201,10 @@ outputs:
       calculate contamination."}
   cutadapt_stats: {type: 'File[]?', outputSource: sentieon_bwa_mem_payloads/cutadapt_stats, doc: "Stats from Cutadapt activity on
       inputs."}
+  fastp_adapter_json: {type: 'File[]?', outputSource: sentieon_bwa_mem_payloads/fastp_json, doc: "fastp adapter detection JSON
+      reports for each payload."}
+  fastp_adapter_html: {type: 'File[]?', outputSource: sentieon_bwa_mem_payloads/fastp_html, doc: "fastp adapter detection HTML
+      reports for each payload."}
   bqsr_report: {type: File, outputSource: sentieon_bqsr/recal_table, doc: "Recalibration report from BQSR."}
   gvcf_calling_metrics: {type: 'File[]?', outputSource: generate_gvcf/gvcf_calling_metrics, doc: "General metrics for gVCF calling
       quality."}
@@ -348,7 +352,7 @@ steps:
         pickValue: all_non_null
       bwa_cpu: bwa_cpu
       bwa_ram: bwa_ram
-    out: [realgn_bam, cutadapt_stats]
+    out: [realgn_bam, cutadapt_stats, fastp_json, fastp_html]
   sentieon_markdups:
     run: ../tools/sentieon_dedup.cwl
     in:
@@ -483,5 +487,5 @@ hints:
 - GVCF
 - SENTIEON
 "sbg:links":
-- id: 'https://github.com/childrens-bti/kf-alignment-workflow-cnh/releases/tag/v1.0.0'
+- id: 'https://github.com/childrens-bti/kf-alignment-workflow-cnh'
   label: github-release
