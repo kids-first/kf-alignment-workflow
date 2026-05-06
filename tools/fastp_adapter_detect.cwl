@@ -5,8 +5,9 @@ label: "fastp v0.23.4 Adapter Detection"
 doc: |
   Run fastp to detect adapter sequences and produce JSON and HTML QC reports.
   Trimmed reads are discarded (/tmp); only the reports are used downstream.
-  Processes up to 1M reads by default. --detect_adapter_for_pe is added
-  automatically when reads2 is provided.
+  Processes up to 1M reads by default.
+  - For paired-end input: provide reads2 for separate files, or set interleaved=true for interleaved file.
+  - Automatically adds --detect_adapter_for_pe when reads2 is provided or interleaved=true.
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -21,16 +22,20 @@ baseCommand: [fastp]
 inputs:
   reads1:
     type: File
-    doc: "R1 FASTQ (or FASTQ.GZ) file"
+    doc: "R1 FASTQ (or FASTQ.GZ) file, or interleaved paired-end FASTQ if interleaved=true"
     inputBinding:
       prefix: "-i"
       position: 1
   reads2:
     type: 'File?'
-    doc: "R2 FASTQ (or FASTQ.GZ) file for paired-end input"
+    doc: "R2 FASTQ (or FASTQ.GZ) file for paired-end input (set to null if interleaved=true)"
     inputBinding:
       prefix: "-I"
       position: 2
+  interleaved:
+    type: 'boolean?'
+    default: false
+    doc: "Set to true if reads1 contains interleaved paired-end reads"
   sample_name:
     type: string
     doc: "Sample name used to name output reports"
@@ -49,9 +54,12 @@ inputs:
       position: 4
 
 arguments:
+  - position: 2
+    shellQuote: false
+    valueFrom: $(inputs.interleaved ? "--interleaved_in" : "")
   - position: 5
     shellQuote: false
-    valueFrom: $(inputs.reads2 != null ? "--detect_adapter_for_pe" : "")
+    valueFrom: $(inputs.interleaved || inputs.reads2 != null ? "--detect_adapter_for_pe" : "")
   - position: 6
     shellQuote: false
     valueFrom: >-

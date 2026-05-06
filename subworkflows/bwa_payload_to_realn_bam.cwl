@@ -50,6 +50,9 @@ steps:
       reads2:
         source: bwa_payload
         valueFrom: $(self.mates_file)
+      interleaved:
+        source: bwa_payload
+        valueFrom: $(self.interleaved)
       sample_name:
         source: [output_basename, bwa_payload]
         valueFrom: |
@@ -63,7 +66,7 @@ steps:
 
   cutadapt:
     run: ../tools/cutadapt.cwl
-    when: $(inputs.r1_threeprime_adapter != null && (inputs.input_reads2 == null || inputs.interleaved || inputs.r2_threeprime_adapter != null))
+    when: $(inputs.r1_threeprime_adapter != null && ((inputs.input_reads2 == null && !inputs.interleaved) || inputs.r2_threeprime_adapter != null))
     in:
       input_reads1:
         source: bwa_payload
@@ -75,13 +78,9 @@ steps:
         source: bwa_payload
         valueFrom: $(self.interleaved)
       r1_threeprime_adapter:
-        source: [fastp_adapter_detect/r1_adapter, cutadapt_r1_adapter]
-        valueFrom: |
-          $(self[0] != null ? self[0] : self[1])
+        source: fastp_adapter_detect/r1_adapter
       r2_threeprime_adapter:
-        source: [fastp_adapter_detect/r2_adapter, cutadapt_r2_adapter]
-        valueFrom: |
-          $(self[0] != null ? self[0] : self[1])
+        source: fastp_adapter_detect/r2_adapter
       minimum_length: cutadapt_min_len
       quality_base: cutadapt_quality_base
       quality_cutoff: cutadapt_quality_cutoff
