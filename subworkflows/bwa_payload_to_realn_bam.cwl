@@ -75,8 +75,9 @@ steps:
           var s = String(v).trim().toLowerCase();
           return s.length > 0 && s !== "unspecified";
         }
+        var payload = inputs.input_reads2;
         var r1ok = hasAdapter(inputs.r1_threeprime_adapter);
-        var needsR2 = (inputs.input_reads2 != null || inputs.interleaved);
+        var needsR2 = payload != null && (payload.mates_file != null || payload.interleaved === true);
         var r2ok = hasAdapter(inputs.r2_threeprime_adapter);
         return r1ok && (!needsR2 || r2ok);
       }
