@@ -56,17 +56,30 @@ inputs:
 arguments:
   - position: 2
     shellQuote: false
-    valueFrom: $(inputs.interleaved ? "--interleaved_in" : "")
+    valueFrom: |
+      $(inputs.interleaved ? "--interleaved_in" : null)
   - position: 5
     shellQuote: false
-    valueFrom: $(inputs.interleaved || inputs.reads2 != null ? "--detect_adapter_for_pe" : "")
+    valueFrom: |
+      $(inputs.interleaved || inputs.reads2 != null ? "--detect_adapter_for_pe" : null)
   - position: 6
+    prefix: "-h"
+    valueFrom: $(inputs.sample_name + ".fastp.html")
+  - position: 7
+    prefix: "-j"
+    valueFrom: $(inputs.sample_name + ".fastp.json")
+  - position: 8
+    prefix: "-o"
+    valueFrom: /tmp/fastp_discard_r1.fastq.gz
+  - position: 9
+    prefix: "-O"
+    valueFrom: |
+      $(inputs.reads2 != null ? "/tmp/fastp_discard_r2.fastq.gz" : null)
+  - position: 100
     shellQuote: false
     valueFrom: >-
-      -h $(inputs.sample_name).fastp.html
-      -j $(inputs.sample_name).fastp.json
-      -o /tmp/fastp_discard_r1.fastq.gz
-      $(inputs.reads2 != null ? "-O /tmp/fastp_discard_r2.fastq.gz" : "")
+      && sed -n 's/.*"read1_adapter_sequence"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(inputs.sample_name).fastp.json > r1_adapter.txt
+      && sed -n 's/.*"read2_adapter_sequence"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(inputs.sample_name).fastp.json > r2_adapter.txt
 
 outputs:
   fastp_json:
@@ -81,25 +94,15 @@ outputs:
       glob: $(inputs.sample_name).fastp.html
   r1_adapter:
     type: 'string?'
-    doc: "Detected R1 adapter sequence"
+    doc: "Detected R1 adapter sequence (empty file => null)"
     outputBinding:
-      glob: $(inputs.sample_name).fastp.json
+      glob: r1_adapter.txt
       loadContents: true
-      outputEval: |
-        ${
-          var ac = JSON.parse(self[0].contents).adapter_cutting || {};
-          var v = ac.read1_adapter_sequence || "";
-          return v.length > 0 ? v : null;
-        }
+      outputEval: $(self[0].contents.trim() || null)
   r2_adapter:
     type: 'string?'
-    doc: "Detected R2 adapter sequence"
+    doc: "Detected R2 adapter sequence (empty file => null)"
     outputBinding:
-      glob: $(inputs.sample_name).fastp.json
+      glob: r2_adapter.txt
       loadContents: true
-      outputEval: |
-        ${
-          var ac = JSON.parse(self[0].contents).adapter_cutting || {};
-          var v = ac.read2_adapter_sequence || "";
-          return v.length > 0 ? v : null;
-        }
+      outputEval: $(self[0].contents.trim() || null)
