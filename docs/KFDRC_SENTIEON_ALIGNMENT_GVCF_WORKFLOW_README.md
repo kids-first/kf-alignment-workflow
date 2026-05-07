@@ -58,6 +58,11 @@ process in the main workflow see https://github.com/childrens-bti/kf-alignment-w
 Finally, the metrics collection is done with a series of Sentieon algorithms
 that match our existing Picard metrics suite.
 
+Adapter detection is implemented with `fastp` in detection mode on a sampled
+subset of reads (up to 1M by default). This step emits JSON/HTML QC reports
+and extracts detected R1/R2 adapter sequences used to gate `cutadapt` trimming
+for paired-end and interleaved inputs.
+
 | Step                       | KFDRC GATK            | KFDRC Sentieon                    |
 |----------------------------|-----------------------|-----------------------------------|
 | Bam to Read Group (RG) BAM | samtools split        | samtools split                    |
