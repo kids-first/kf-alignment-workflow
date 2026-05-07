@@ -66,7 +66,20 @@ steps:
 
   cutadapt:
     run: ../tools/cutadapt.cwl
-    when: $(inputs.r1_threeprime_adapter != null && ((inputs.input_reads2 == null && !inputs.interleaved) || inputs.r2_threeprime_adapter != null))
+    when: |
+      ${
+        function hasAdapter(v) {
+          if (v == null) {
+            return false;
+          }
+          var s = String(v).trim().toLowerCase();
+          return s.length > 0 && s !== "unspecified";
+        }
+        var r1ok = hasAdapter(inputs.r1_threeprime_adapter);
+        var needsR2 = (inputs.input_reads2 != null || inputs.interleaved);
+        var r2ok = hasAdapter(inputs.r2_threeprime_adapter);
+        return r1ok && (!needsR2 || r2ok);
+      }
     in:
       input_reads1:
         source: bwa_payload
