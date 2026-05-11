@@ -487,5 +487,5 @@ hints:
 - GVCF
 - SENTIEON
 "sbg:links":
-- id: 'https://github.com/childrens-bti/kf-alignment-workflow-cnh'
+- id: 'https://github.com/childrens-bti/kf-alignment-workflow-cnh/releases/tag/v1.1.0'
   label: github-release
