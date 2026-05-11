@@ -91,10 +91,8 @@ steps:
       interleaved:
         source: bwa_payload
         valueFrom: $(self.interleaved)
-      r1_threeprime_adapter:
-        source: fastp_adapter_detect/r1_adapter
-      r2_threeprime_adapter:
-        source: fastp_adapter_detect/r2_adapter
+      r1_threeprime_adapter: fastp_adapter_detect/r1_adapter
+      r2_threeprime_adapter: fastp_adapter_detect/r2_adapter
       minimum_length: cutadapt_min_len
       quality_base: cutadapt_quality_base
       quality_cutoff: cutadapt_quality_cutoff
