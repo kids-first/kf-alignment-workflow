@@ -3,3 +3,10 @@ test/
 local-test/
 !.gitignore
 !.github/
+
+data/
+*.sh
+cavatica/
+logs/
+outputs/
+params/
